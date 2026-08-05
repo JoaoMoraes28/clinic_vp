@@ -58,7 +58,8 @@ create table patient (
 	born_date date not null,
 	phone_emergency varchar(11),
 	notes varchar(500),
-	record_date date default current_date
+	record_date date default current_date,
+	active boolean default true
 );
 
 create table uf (
@@ -69,8 +70,8 @@ create table uf (
 
 create table patient_address (
 	id SERIAL primary key,
-	patient_id int,
-	uf_id int,
+	patient_id int not null,
+	uf_id int not null,
 	city varchar(150) not null,
 	district varchar(150) not null,
 	street varchar(150) not null,
@@ -89,7 +90,7 @@ create table doctor (
 	name varchar(255) not null,
 	admission_date date default current_date,
 	crm varchar(10) not null,
-	crm_uf_id int,
+	crm_uf_id int not null,
 	cpf varchar(11) not null unique,
 	phone varchar(11) not null,
 	email varchar(255) not null unique,
@@ -105,8 +106,8 @@ create table doctor (
 
 create table doctor_address (
 	id SERIAL primary key,
-	doctor_id int,
-	uf_id int,
+	doctor_id int not null,
+	uf_id int not null,
 	city varchar(150) not null,
 	district varchar(150) not null,
 	street varchar(150) not null,
@@ -135,8 +136,8 @@ create table recepcionist (
 
 create table recepcionist_address (
 	id SERIAL primary key,
-	recepcionist_id int,
-	uf_id int,
+	recepcionist_id int not null,
+	uf_id int not null,
 	city varchar(150) not null,
 	district varchar(150) not null,
 	street varchar(150) not null,
@@ -151,13 +152,13 @@ create table recepcionist_address (
 
 create table speciality (
 	id SERIAL primary key,
-	speciality_name varchar(50)
+	speciality_name varchar(50) not null
 );
 
 create table doctor_speciality (
 	id SERIAL primary key,
-	doctor_id int,
-	speciality_id int,
+	doctor_id int not null,
+	speciality_id int not null,
 	constraint fk_doctor_speciality
 		foreign key (doctor_id)
 		references doctor(id),
@@ -173,8 +174,8 @@ create table week_day (
 
 create table doctor_day (
 	id SERIAL primary key,
-	doctor_id int,
-	week_day_id int,
+	doctor_id int not null,
+	week_day_id int not null,
 	start_time time not null,
 	end_time time not null,
 	constraint fk_doctor_day
@@ -187,7 +188,7 @@ create table doctor_day (
 
 create table consultation_duration (
 	id SERIAL primary key,
-	doctor_id int,
+	doctor_id int not null,
 	duration int not null,
 	constraint fk_duration_doctor
 		foreign key (doctor_id)
@@ -201,8 +202,8 @@ create table contract_type (
 
 create table contract_doctor (
 	id SERIAL primary key,
-	contract_type_id int,
-	doctor_id int,
+	contract_type_id int not null,
+	doctor_id int not null,
 	constraint fk_contract_doctor
 		foreign key (contract_type_id)
 		references contract_type(id),
@@ -213,7 +214,7 @@ create table contract_doctor (
 
 create table medical_record (
 	id SERIAL primary key,
-	patient_id int,
+	patient_id int not null,
 	constraint fk_medical_patient
 		foreign key (patient_id)
 		references patient(id)
@@ -221,11 +222,11 @@ create table medical_record (
 
 create table consultation (
 	id SERIAL primary key,
-	medical_record_id int,
-	patient_id int,
-	doctor_id int,
-	speciality_id int,
-	recepcionist_id int,
+	medical_record_id int not null,
+	patient_id int not null,
+	doctor_id int not null,
+	speciality_id int not null,
+	recepcionist_id int not null,
 	date date not null,
 	hour time not null,
 	status status_consultation not null default 'SCHEDULED',
@@ -248,7 +249,7 @@ create table consultation (
 
 create table consultation_record (
 	id SERIAL primary key,
-	consultation_id int,
+	consultation_id int not null,
 	syntoms varchar(600) not null,
 	diagnosis varchar(600) not null,
 	treatment varchar(600) not null,
@@ -276,7 +277,7 @@ create table exame_type (
  
 create table medicine (
 	id SERIAL primary key,
-	measure_id int,
+	measure_id int not null,
 	medicine_name varchar(150) not null,
 	constraint fk_medicine_measure
 		foreign key (measure_id)
@@ -285,8 +286,8 @@ create table medicine (
 
 create table medical_recipe (
 	id SERIAL primary key,
-	consultation_record_id int,
-	medicine_id int,
+	consultation_record_id int not null,
+	medicine_id int not null,
 	dosage varchar(255) not null,
 	notes varchar(500),
 	constraint fk_consultation_medical_recipe
@@ -299,8 +300,8 @@ create table medical_recipe (
 
 create table exame (
 	id SERIAL primary key,
-	exame_type_id int,
-	laboratory_id int,
+	exame_type_id int not null,
+	laboratory_id int not null,
 	priority priority_exame not null,
 	limit_date date not null,
 	constraint fk_exame_type
@@ -313,8 +314,8 @@ create table exame (
 
 create table consultation_record_exame (
 	id SERIAL primary key,
-	exame_id int,
-	consultation_record_id int,
+	exame_id int not null,
+	consultation_record_id int not null,
 	constraint fk_exame_consultation_record
 		foreign key (exame_id)
 		references exame(id),

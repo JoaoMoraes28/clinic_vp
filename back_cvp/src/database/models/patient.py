@@ -85,6 +85,11 @@ class Patient(Base):
         default=date.today
     )
 
+    active: Mapped[bool] = mapped_column(
+        default=True,
+        nullable=False
+    )
+
     patient_address: Mapped["PatientAddress"] = relationship(
         back_populates="patient",
         uselist=False

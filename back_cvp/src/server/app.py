@@ -1,6 +1,39 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, status, Request
+from fastapi.responses import JSONResponse
 from src.routes.patient_routes import patient_routes
+
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError, OperationalError
 
 app = FastAPI()
 
 app.include_router(patient_routes)
+
+@app.exception_handler(IntegrityError)
+async def integrity_exception_handler(request: Request, exc: IntegrityError):
+    return JSONResponse(
+        status_code=status.HTTP_400_BAD_REQUEST,
+        content={
+            "error_code": "INTEGRITY_ERROR",
+            "detail": "field invalid."
+        }
+    )
+
+@app.exception_handler(SQLAlchemyError)
+async def sqlalchemy_exception_handler(request: Request, exc: SQLAlchemyError):
+    return JSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content={
+            "error_code": "DATABASE_ERROR",
+            "detail": "fail in comunication with database."
+        }
+    )
+
+@app.exception_handler(OperationalError)
+async def sqlalchemy_exception_handler(request: Request, exc: OperationalError):
+    return JSONResponse(
+        status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+        content={
+            "error_code": "CONNECTION_REFUSED",
+            "detail": "could not connect to server."
+        }
+    )
