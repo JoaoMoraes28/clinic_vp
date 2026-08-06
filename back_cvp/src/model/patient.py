@@ -1,44 +1,44 @@
-from src.database.connection import SessionLocal
+from sqlalchemy.orm import Session
 from src.database.models.patient import Patient
-from src.schemas.patient import PatientCreate
-from src.schemas.patient import PatientUpdate
+from src.database.models.views.patient_data import PatientData
+from src.database.connection import Base
 
-db = SessionLocal()
+from src.schemas.patient import PatientBase
 
-async def select_patients():
-    return db.query(Patient).filter(Patient.active == True).all()
+def select_patients(db: Session, active: bool):
+    return db.query(PatientData).filter(PatientData.active == active).all()
 
-async def select_patient_id(id: int):
-    return db.query(Patient).filter(Patient.id == id).first()
+def select_patient_id(db: Session, id: int, active: bool, model: type[Base]):
+    return db.query(model).filter(model.id == id).filter(model.active == active).first()
 
-async def insert_patient(patient: PatientCreate):
+def insert_patient(db: Session, patient: PatientBase):
     new_patient = Patient(**patient.model_dump())
 
     db.add(new_patient)
-    db.commit()
+    db.flush()
 
     db.refresh(new_patient)
 
-    return new_patient
+    return new_patient.id
 
-async def update_patient(patient_db: Patient, patient_update: PatientUpdate):
+def update_patient(db: Session, patient_db: Patient, patient_update: PatientBase):
     update_patient = patient_update.model_dump(exclude_unset=True)
 
     for field, value in update_patient.items():
         setattr(patient_db, field, value)
 
-    db.commit()
+    db.flush()
 
     db.refresh(patient_db)
 
     return patient_db
 
-async def delete_patient(patient: Patient):
+def delete_patient(db: Session, patient: Patient):
     setattr(patient, "active", False)
 
-    db.commit()
+    db.flush()
 
-async def reactive_patient(patient: Patient):
+def reactive_patient(db: Session, patient: Patient):
     setattr(patient, "active", True)
     
-    db.commit()
+    db.flush()

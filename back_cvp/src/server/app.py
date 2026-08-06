@@ -1,5 +1,6 @@
 from fastapi import FastAPI, status, Request
 from fastapi.responses import JSONResponse
+
 from src.routes.patient_routes import patient_routes
 
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError, OperationalError
@@ -10,6 +11,7 @@ app.include_router(patient_routes)
 
 @app.exception_handler(IntegrityError)
 async def integrity_exception_handler(request: Request, exc: IntegrityError):
+    print(exc.orig)
     return JSONResponse(
         status_code=status.HTTP_400_BAD_REQUEST,
         content={
@@ -20,6 +22,7 @@ async def integrity_exception_handler(request: Request, exc: IntegrityError):
 
 @app.exception_handler(SQLAlchemyError)
 async def sqlalchemy_exception_handler(request: Request, exc: SQLAlchemyError):
+    print(exc)
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         content={

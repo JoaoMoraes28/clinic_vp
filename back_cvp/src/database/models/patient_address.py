@@ -46,7 +46,6 @@ class PatientAddress(Base):
     )
 
     cep: Mapped[str] = mapped_column(
-        "CEP",
         String(8),
         nullable=False
     )
