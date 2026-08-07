@@ -2,12 +2,14 @@ from fastapi import FastAPI, status, Request
 from fastapi.responses import JSONResponse
 
 from src.routes.patient_routes import patient_routes
+from src.routes.doctor_routes import doctor_routes
 
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError, OperationalError
 
 app = FastAPI()
 
 app.include_router(patient_routes)
+app.include_router(doctor_routes)
 
 @app.exception_handler(IntegrityError)
 async def integrity_exception_handler(request: Request, exc: IntegrityError):

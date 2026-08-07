@@ -3,8 +3,9 @@ from decimal import Decimal
 from typing import Optional
 from datetime import date
 
-from .address import Address
+from .address import AddressWithUfStr
 from .address import AddressWithUfId
+
 
 class PatientBase(BaseModel):
     name: str = Field(..., max_length=255)
@@ -21,16 +22,32 @@ class PatientBase(BaseModel):
     born_date: date
     phone_emergency: Optional[str] = None
     notes: Optional[str] = None
-        
-class PatientResponseData(PatientBase, Address):
+
+
+class PatientResponse(PatientBase):
     id: int
     record_date: date
     active: bool
-    uf: str
 
-    class Config:
-        from_attributes = True
+
+class PatientResponseData(BaseModel):
+    patient: PatientResponse
+    address: AddressWithUfStr
+
+
+class PatientPreview(BaseModel):
+    id: int
+    name: str = Field(..., max_length=255)
+    cpf: str = Field(..., min_length=11, max_length=11)
+    phone: str = Field(..., max_length=11)
+    photo: Optional[str] = None
+
 
 class PatientWrite(BaseModel):
     patient: PatientBase
     address: AddressWithUfId
+
+
+class PatientReponseStatus(BaseModel):
+    id: int
+    status_patient: str

@@ -45,6 +45,11 @@ class DoctorAddress(Base):
         nullable=False
     )
 
+    cep: Mapped[str] = mapped_column(
+        String(8),
+        nullable=False
+    )
+
     doctor: Mapped["Doctor"] = relationship(
         back_populates="doctor_address"
     )

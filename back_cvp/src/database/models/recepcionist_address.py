@@ -45,6 +45,11 @@ class RecepcionistAddress(Base):
         nullable=False
     )
 
+    cep: Mapped[str] = mapped_column(
+        String(8),
+        nullable=False
+    )
+
     recepcionist: Mapped["Recepcionist"] = relationship(
         back_populates="recepcionist_address"
     )
