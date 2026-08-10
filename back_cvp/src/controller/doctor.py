@@ -108,9 +108,8 @@ def build_doctor_response(doctor):
                     email=_doctor.email,
                     bio=_doctor.bio,
                     photo=_doctor.photo,
-                    password=_doctor.password,
                     status=_doctor.status,
-                    gender=_doctor.gender,
+                    gender=_doctor.gender
                 ),
                 address=AddressWithUfStr(
                     uf_address=_doctor.uf_address,
@@ -118,7 +117,7 @@ def build_doctor_response(doctor):
                     district=_doctor.district,
                     street=_doctor.street,
                     number=_doctor.number,
-                    cep=_doctor.cep,
+                    cep=_doctor.cep
                 ),
             )
 
@@ -138,9 +137,8 @@ def build_doctor_response(doctor):
             email=doctor.email,
             bio=doctor.bio,
             photo=doctor.photo,
-            password=doctor.password,
             status=doctor.status,
-            gender=doctor.gender,
+            gender=doctor.gender
         ),
         address=AddressWithUfStr(
             uf_address=doctor.uf_address,
@@ -148,7 +146,7 @@ def build_doctor_response(doctor):
             district=doctor.district,
             street=doctor.street,
             number=doctor.number,
-            cep=doctor.cep,
+            cep=doctor.cep
         ),
     )
 

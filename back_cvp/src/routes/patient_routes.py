@@ -22,7 +22,7 @@ def get_patients(db: Session = Depends(get_db), active: bool = True):
 def get_patient_id(
     patient_id: int = Path(..., ge=1),
     active: bool = True,
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db)
 ):
     return controller.get_patient_id(db, patient_id, active)
 

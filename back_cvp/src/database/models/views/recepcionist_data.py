@@ -1,10 +1,11 @@
 from sqlalchemy.orm import Mapped, mapped_column
 from datetime import date
+from decimal import Decimal
 
 from src.database.connection import Base
 
-class DoctorData(Base):
-    __tablename__ = "doctor_data"
+class RecepcionistData(Base):
+    __tablename__ = "recepcionist_data"
 
     id: Mapped[int] = mapped_column(
         primary_key=True
@@ -14,23 +15,19 @@ class DoctorData(Base):
 
     admission_date: Mapped[date] = mapped_column()
 
-    crm: Mapped[str] = mapped_column()
+    salary: Mapped[Decimal] = mapped_column()
 
     cpf: Mapped[str] = mapped_column()
+
+    status: Mapped[str] = mapped_column()
 
     phone: Mapped[str] = mapped_column()
 
     email: Mapped[str] = mapped_column()
 
-    bio: Mapped[str | None] = mapped_column()
-
     photo: Mapped[str | None] = mapped_column()
 
-    status: Mapped[str] = mapped_column()
-
     gender: Mapped[str] = mapped_column()
-
-    uf_crm: Mapped[str] = mapped_column()
 
     uf_address: Mapped[str] = mapped_column()
 

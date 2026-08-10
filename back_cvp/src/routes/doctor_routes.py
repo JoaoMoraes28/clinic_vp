@@ -57,7 +57,9 @@ def put_doctor(
     status_code=status.HTTP_200_OK,
 )
 def change_status_doctor(
-    new_status: DoctorChangeStatus, db: Session = Depends(get_db), doctor_id: int = Path(..., ge=1)
+    new_status: DoctorChangeStatus,
+    db: Session = Depends(get_db),
+    doctor_id: int = Path(..., ge=1),
 ):
     controller.modify_status_doctor(db, doctor_id, new_status)
     return {"id": doctor_id, "status_doctor": new_status.new_status}
