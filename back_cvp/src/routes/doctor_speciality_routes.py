@@ -11,7 +11,8 @@ from src.controller import doctor_speciality as controller_doctor_speciality
 from src.schemas.doctor_speciality import DoctorSpecialityCreate
 from src.schemas.doctor_speciality import DoctorSpecialityDelete
 from src.schemas.doctor_speciality import DoctorSpecialityResponse
-from src.schemas.doctor_speciality import DoctorSpecialityDeleteResponse
+from src.schemas.return_messages_standart import ReturnMessageStandard
+from src.schemas.return_messages_standart import ReturnMessageCreateElement
 
 doctor_speciality_routes = APIRouter(
     prefix="/doctor_speciality", tags=["Médicos(as)/Especialidades"]
@@ -26,18 +27,21 @@ def get_doctor_speciality(db: Session = Depends(get_db)):
 
 
 @doctor_speciality_routes.post(
-    "/", response_model=int, status_code=status.HTTP_201_CREATED
+    "/", response_model=ReturnMessageCreateElement, status_code=status.HTTP_201_CREATED
 )
 def post_doctor_speciality(
     doctor_speciality: DoctorSpecialityCreate, db: Session = Depends((get_db))
 ):
-    return controller_doctor_speciality.registry_doctor_speciality(
-        db, doctor_speciality
-    )
+    id = controller_doctor_speciality.registry_doctor_speciality(db, doctor_speciality)
+
+    return {
+        "id": id,
+        "element": "Doctor speciality"
+    }
 
 
 @doctor_speciality_routes.delete(
-    "/", response_model=DoctorSpecialityDeleteResponse, status_code=status.HTTP_200_OK
+    "/", response_model=ReturnMessageStandard, status_code=status.HTTP_200_OK
 )
 def delete_doctor_speciality(
     delete_id: DoctorSpecialityDelete, db: Session = Depends(get_db)

@@ -10,6 +10,7 @@ from src.controller import speciality as controller_speciality
 
 from src.schemas.speciality import SpecialityResponse
 from src.schemas.speciality import SpecialityCreate
+from src.schemas.return_messages_standart import ReturnMessageCreateElement
 
 speciality_routes = APIRouter(prefix="/speciality", tags=["Especialidades"])
 
@@ -21,6 +22,10 @@ def get_speciality(db: Session = Depends(get_db)):
     return controller_speciality.get_all_speciality(db)
 
 
-@speciality_routes.post("/", response_model=int, status_code=status.HTTP_201_CREATED)
+@speciality_routes.post(
+    "/", response_model=ReturnMessageCreateElement, status_code=status.HTTP_201_CREATED
+)
 def post_speciality(speciality: SpecialityCreate, db: Session = Depends(get_db)):
-    return controller_speciality.registry_speciality(db, speciality)
+    id = controller_speciality.registry_speciality(db, speciality)
+
+    return {"id": id, "element": "Speciality"}

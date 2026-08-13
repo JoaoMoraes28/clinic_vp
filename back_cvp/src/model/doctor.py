@@ -6,8 +6,11 @@ from src.database.models.views.doctor_data import DoctorData
 from src.schemas.doctor import DoctorCreate
 from src.schemas.doctor import DoctorUpdateData
 
-def select_doctor(db: Session, filter="ACTIVE"):
-    return db.query(DoctorData).filter(DoctorData.status == filter).all()
+def select_doctor(db: Session, filter: str | None):
+    if filter:
+        return db.query(DoctorData).filter(DoctorData.status == filter).all()
+
+    return db.query(DoctorData).all()
 
 def select_doctor_id(
     db: Session, 

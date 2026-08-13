@@ -18,7 +18,7 @@ from src.database.models.doctor import Doctor
 from src.database.models.views.doctor_data import DoctorData
 
 
-def get_all_doctors(db: Session, filter: str):
+def get_all_doctors(db: Session, filter: str | None):
     doctors = doctor_dao.select_doctor(db, filter)
 
     return build_doctor_response(doctors)
@@ -109,7 +109,8 @@ def build_doctor_response(doctor):
                     bio=_doctor.bio,
                     photo=_doctor.photo,
                     status=_doctor.status,
-                    gender=_doctor.gender
+                    gender=_doctor.gender,
+                    contract=_doctor.contract
                 ),
                 address=AddressWithUfStr(
                     uf_address=_doctor.uf_address,
@@ -118,7 +119,7 @@ def build_doctor_response(doctor):
                     street=_doctor.street,
                     number=_doctor.number,
                     cep=_doctor.cep
-                ),
+                )
             )
 
             _doctors.append(new_JSON)
@@ -138,7 +139,8 @@ def build_doctor_response(doctor):
             bio=doctor.bio,
             photo=doctor.photo,
             status=doctor.status,
-            gender=doctor.gender
+            gender=doctor.gender,
+            contract=doctor.contract
         ),
         address=AddressWithUfStr(
             uf_address=doctor.uf_address,
@@ -147,7 +149,7 @@ def build_doctor_response(doctor):
             street=doctor.street,
             number=doctor.number,
             cep=doctor.cep
-        ),
+        )
     )
 
     return new_JSON

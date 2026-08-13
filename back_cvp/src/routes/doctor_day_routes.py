@@ -10,7 +10,8 @@ from src.database.connection import get_db
 
 from src.schemas.doctor_day import DoctorDayCreate
 from src.schemas.doctor_day import DoctorDayReponse
-from src.schemas.doctor_day import DoctorDayDeleteResponse
+from src.schemas.return_messages_standart import ReturnMessageStandard
+from src.schemas.return_messages_standart import ReturnMessageCreateElement
 
 doctor_day_routes = APIRouter(
     prefix="/doctor_day", tags=["Dias da semana de trabalho dos médicos(as)"]
@@ -24,14 +25,18 @@ def get_doctor_days(db: Session = Depends(get_db)):
     return controller_doctor_day.get_all_doctor_days(db)
 
 
-@doctor_day_routes.post("/", response_model=int, status_code=status.HTTP_201_CREATED)
+@doctor_day_routes.post(
+    "/", response_model=ReturnMessageCreateElement, status_code=status.HTTP_201_CREATED
+)
 def post_doctor_day(doctor_day: DoctorDayCreate, db: Session = Depends(get_db)):
-    return controller_doctor_day.registry_doctor_day(db, doctor_day)
+    id = controller_doctor_day.registry_doctor_day(db, doctor_day)
+
+    return {"id": id, "element": "Doctor day"}
 
 
 @doctor_day_routes.delete(
     "/{id_doctor_day}",
-    response_model=DoctorDayDeleteResponse,
+    response_model=ReturnMessageStandard,
     status_code=status.HTTP_200_OK,
 )
 def delete_doctor_day(

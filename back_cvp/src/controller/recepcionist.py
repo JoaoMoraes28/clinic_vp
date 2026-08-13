@@ -19,7 +19,7 @@ from src.database.models.recepcionist import Recepcionist
 from src.database.models.recepcionist_address import RecepcionistAddress
 
 
-def get_all_recepcionist(db: Session, filter: str):
+def get_all_recepcionist(db: Session, filter: str | None):
     get_recepcionists = recepcionist_dao.select_recepcionist(db, filter)
 
     return build_recepcionist_response(get_recepcionists)

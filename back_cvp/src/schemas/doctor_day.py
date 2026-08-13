@@ -18,6 +18,3 @@ class DoctorDayCreate(BaseModel):
     week_day_id: int
     start_time: time
     end_time: time
-
-class DoctorDayDeleteResponse(BaseModel):
-    message: str

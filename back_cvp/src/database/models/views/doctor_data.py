@@ -28,6 +28,8 @@ class DoctorData(Base):
 
     status: Mapped[str] = mapped_column()
 
+    contract: Mapped[str | None] = mapped_column()
+
     gender: Mapped[str] = mapped_column()
 
     uf_crm: Mapped[str] = mapped_column()

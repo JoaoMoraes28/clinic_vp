@@ -20,7 +20,7 @@ doctor_routes = APIRouter(prefix="/doctor", tags=["Médicos(as)"])
 @doctor_routes.get(
     "/", response_model=List[DoctorDataResponse], status_code=status.HTTP_200_OK
 )
-def get_doctors(db: Session = Depends(get_db), filter: str = "ACTIVE"):
+def get_doctors(db: Session = Depends(get_db), filter: str | None = None):
     return controller.get_all_doctors(db, filter)
 
 

@@ -9,6 +9,8 @@ from src.routes.speciality_routes import speciality_routes
 from src.routes.doctor_speciality_routes import doctor_speciality_routes
 from src.routes.week_day_routes import week_day_routes
 from src.routes.doctor_day_routes import doctor_day_routes
+from src.routes.consultation_duration_routes import consultation_duration_routes
+from src.routes.contract_type import contract_type_routes
 
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError, OperationalError
 
@@ -22,17 +24,18 @@ app.include_router(speciality_routes)
 app.include_router(doctor_speciality_routes)
 app.include_router(week_day_routes)
 app.include_router(doctor_day_routes)
+app.include_router(consultation_duration_routes)
+app.include_router(contract_type_routes)
+
 
 @app.exception_handler(IntegrityError)
 async def integrity_exception_handler(request: Request, exc: IntegrityError):
     print(exc.orig)
     return JSONResponse(
         status_code=status.HTTP_400_BAD_REQUEST,
-        content={
-            "error_code": "INTEGRITY_ERROR",
-            "detail": "field invalid."
-        }
+        content={"error_code": "INTEGRITY_ERROR", "detail": "field invalid."},
     )
+
 
 @app.exception_handler(SQLAlchemyError)
 async def sqlalchemy_exception_handler(request: Request, exc: SQLAlchemyError):
@@ -41,9 +44,10 @@ async def sqlalchemy_exception_handler(request: Request, exc: SQLAlchemyError):
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         content={
             "error_code": "DATABASE_ERROR",
-            "detail": "fail in comunication with database."
-        }
+            "detail": "fail in comunication with database.",
+        },
     )
+
 
 @app.exception_handler(OperationalError)
 async def sqlalchemy_exception_handler(request: Request, exc: OperationalError):
@@ -51,6 +55,6 @@ async def sqlalchemy_exception_handler(request: Request, exc: OperationalError):
         status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
         content={
             "error_code": "CONNECTION_REFUSED",
-            "detail": "could not connect to server."
-        }
+            "detail": "could not connect to server.",
+        },
     )

@@ -19,7 +19,7 @@ recepcionist_routes = APIRouter(prefix="/recepcionist", tags=["Recepcionistas"])
 @recepcionist_routes.get(
     "/", response_model=List[RecepcionistResponseData], status_code=status.HTTP_200_OK
 )
-def get_recepcionist(db: Session = (Depends(get_db)), filter: str = "ACTIVE"):
+def get_recepcionist(db: Session = (Depends(get_db)), filter: str | None = None):
     return controller_recepcionist.get_all_recepcionist(db, filter)
 
 

@@ -7,8 +7,11 @@ from src.database.models.recepcionist import Recepcionist
 from src.database.connection import Base
 
 
-def select_recepcionist(db: Session, filter: str):
-    return db.query(RecepcionistData).filter(RecepcionistData.status == filter).all()
+def select_recepcionist(db: Session, filter: str | None):
+    if filter:
+        return db.query(RecepcionistData).filter(RecepcionistData.status == filter).all()
+
+    return db.query(RecepcionistData).all()
 
 
 def select_recepcionist_id(db: Session, id: int, model: type[Base]):

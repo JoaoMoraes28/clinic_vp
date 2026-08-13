@@ -22,6 +22,7 @@ class DoctorResponse(DoctorBase):
     id: int
     admission_date: date
     uf_crm: str = Field(..., max_length=2)
+    contract: str | None
 
 
 class DoctorDataResponse(BaseModel):
