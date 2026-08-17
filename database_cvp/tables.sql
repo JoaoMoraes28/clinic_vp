@@ -17,7 +17,7 @@ create type status_doctor_recepcionist as enum (
 	'VACATION',
 	'AWAY'
 );
-
+select * from doctor;
 create type status_consultation as enum (
 	'SCHEDULED',
 	'WAITING',
@@ -76,7 +76,7 @@ create table patient_address (
 	district varchar(150) not null,
 	street varchar(150) not null,
 	number varchar(10) not null,
-	CEP varchar(8) not null,
+	cep varchar(8) not null,
 	constraint fk_patient_adress_uf 
 		foreign key (uf_id)
 		references uf(id),
@@ -112,6 +112,7 @@ create table doctor_address (
 	district varchar(150) not null,
 	street varchar(150) not null,
 	number varchar(10) not null,
+	cep varchar(8) not null,
 	constraint fk_doctor_adress_uf 
 		foreign key (uf_id)
 		references uf(id),
@@ -142,6 +143,7 @@ create table recepcionist_address (
 	district varchar(150) not null,
 	street varchar(150) not null,
 	number varchar(10) not null,
+	cep varchar(8) not null,
 	constraint fk_recepcionist_adress_uf 
 		foreign key (uf_id)
 		references uf(id),
@@ -164,7 +166,9 @@ create table doctor_speciality (
 		references doctor(id),
 	constraint fk_speciality_doctor
 		foreign key (speciality_id)
-		references speciality(id)
+		references speciality(id),
+	constraint uq_doctor_speciality
+        unique (doctor_id, speciality_id)
 );
 
 create table week_day (
@@ -181,14 +185,16 @@ create table doctor_day (
 	constraint fk_doctor_day
 		foreign key (doctor_id)
 		references doctor(id),
-	constraint fk_week_dday_doctor
+	constraint fk_week_day_doctor
 		foreign key (week_day_id)
-		references week_day(id)
+		references week_day(id),
+	constraint uq_doctor_day 
+		unique (doctor_id, week_day_id)
 );
 
 create table consultation_duration (
 	id SERIAL primary key,
-	doctor_id int not null,
+	doctor_id int not null unique,
 	duration int not null,
 	constraint fk_duration_doctor
 		foreign key (doctor_id)
@@ -206,10 +212,12 @@ create table contract_doctor (
 	doctor_id int not null,
 	constraint fk_contract_doctor
 		foreign key (contract_type_id)
-		references contract_type(id),
+		references contract_type(id)
+		on delete cascade,
 	constraint fk_doctor_contract
 		foreign key (doctor_id)
 		references doctor(id)
+		on delete cascade
 );
 
 create table medical_record (

@@ -46,7 +46,7 @@ class Consultation(Base):
         nullable=False
     )
 
-    date: Mapped[date] = mapped_column(
+    consultation_date: Mapped[date] = mapped_column(
         Date,
         nullable=False
     )

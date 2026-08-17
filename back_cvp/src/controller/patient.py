@@ -118,6 +118,7 @@ def build_patient_response(patient):
             record_date=patient.record_date,
             active=patient.active,
             born_date=patient.born_date,
+            medical_record_id=patient.medical_record_id
         ),
         address=AddressWithUfStr(
             uf_address=patient.uf_address,
@@ -125,7 +126,7 @@ def build_patient_response(patient):
             district=patient.district,
             street=patient.street,
             number=patient.number,
-            cep=patient.cep,
+            cep=patient.cep
         )
     )
 

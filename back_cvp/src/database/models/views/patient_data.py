@@ -43,6 +43,8 @@ class PatientData(Base):
 
     active: Mapped[bool] = mapped_column()
 
+    medical_record_id: Mapped[int] = mapped_column()
+
     uf_address: Mapped[str] = mapped_column()
 
     city: Mapped[str] = mapped_column()

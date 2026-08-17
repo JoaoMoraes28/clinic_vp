@@ -11,6 +11,10 @@ from src.routes.week_day_routes import week_day_routes
 from src.routes.doctor_day_routes import doctor_day_routes
 from src.routes.consultation_duration_routes import consultation_duration_routes
 from src.routes.contract_type import contract_type_routes
+from src.routes.consultation_routes import consultation_routes
+from src.routes.consultation_record_routes import consultation_record_routes
+from src.routes.measure_routes import measure_routes
+from src.routes.laboratory_routes import laboratory_routes
 
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError, OperationalError
 
@@ -26,6 +30,10 @@ app.include_router(week_day_routes)
 app.include_router(doctor_day_routes)
 app.include_router(consultation_duration_routes)
 app.include_router(contract_type_routes)
+app.include_router(consultation_routes)
+app.include_router(consultation_record_routes)
+app.include_router(measure_routes)
+app.include_router(laboratory_routes)
 
 
 @app.exception_handler(IntegrityError)

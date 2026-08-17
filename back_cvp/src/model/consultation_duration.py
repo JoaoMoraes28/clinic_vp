@@ -6,7 +6,7 @@ from src.database.models.views.consultation_duration_data import (
     ConsultationDurationData,
 )
 
-from src.schemas.consultation_duration import ConsultationDurationResponse
+
 from src.schemas.consultation_duration import ConsultationDurationCreate
 
 
@@ -40,8 +40,8 @@ def update_consultation_duration(db: Session, new_duration: int, id: int):
     db.flush()
 
     if result.rowcount == 0 or result.rowcount > 1:
-            return False
-    
+        return False
+
     return True
 
 

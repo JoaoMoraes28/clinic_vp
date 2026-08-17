@@ -28,6 +28,7 @@ class PatientResponse(PatientBase):
     id: int
     record_date: date
     active: bool
+    medical_record_id: int
 
 
 class PatientResponseData(BaseModel):
@@ -41,6 +42,7 @@ class PatientPreview(BaseModel):
     cpf: str = Field(..., min_length=11, max_length=11)
     phone: str = Field(..., max_length=11)
     photo: Optional[str] = None
+    medical_record_id: int
 
 
 class PatientWrite(BaseModel):

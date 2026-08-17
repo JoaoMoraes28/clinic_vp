@@ -1,20 +1,22 @@
 from sqlalchemy.orm import Session
 from src.database.models.patient import Patient
+from src.database.models.views.patient_data import PatientData
 from src.database.connection import Base
 
 from src.schemas.patient import PatientBase
 
 def select_patients(db: Session, active: bool):
     return db.query(
-        Patient.id,
-        Patient.name,
-        Patient.cpf,
-        Patient.phone,
-        Patient.photo
-    ).filter(Patient.active == active).all()
+        PatientData.id,
+        PatientData.name,
+        PatientData.cpf,
+        PatientData.phone,
+        PatientData.photo,
+        PatientData.medical_record_id
+    ).filter(PatientData.active == active).all()
 
 def select_patient_id(
-    db: Session, 
+    db: Session,
     id: int,
     active: bool, 
     model: type[Base]

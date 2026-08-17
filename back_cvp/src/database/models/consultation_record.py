@@ -39,9 +39,8 @@ class ConsultationRecord(Base):
         nullable=False
     )
 
-    notes: Mapped[str] = mapped_column(
-        String(600),
-        nullable=False
+    notes: Mapped[str | None] = mapped_column(
+        String(600)
     )
 
     consultations: Mapped["Consultation"] = relationship(
