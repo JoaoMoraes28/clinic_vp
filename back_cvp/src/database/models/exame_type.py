@@ -7,19 +7,14 @@ from src.database.connection import Base
 if TYPE_CHECKING:
     from .exame import Exame
 
+
 class ExameType(Base):
     __tablename__ = "exame_type"
 
-    id: Mapped[int] = mapped_column(
-        primary_key=True
-    )
+    id: Mapped[int] = mapped_column(primary_key=True)
 
-    type_exame: Mapped[str] = mapped_column(
-        String(150),
-        unique=True,
-        nullable=False
-    )
+    type_exame: Mapped[str] = mapped_column(String(150), unique=True, nullable=False)
 
-    exames: Mapped[list["Exame"]] = relationship(
-        back_populates="exame_type"
-    )
+    active: Mapped[bool] = mapped_column(nullable=False)
+
+    exames: Mapped[list["Exame"]] = relationship(back_populates="exame_type")

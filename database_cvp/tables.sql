@@ -17,7 +17,7 @@ create type status_doctor_recepcionist as enum (
 	'VACATION',
 	'AWAY'
 );
-select * from doctor;
+
 create type status_consultation as enum (
 	'SCHEDULED',
 	'WAITING',
@@ -41,7 +41,7 @@ create type blood_type_enum as enum (
     'O_POSITIVE',
     'O_NEGATIVE'
 );
-
+select * from consultation;
 create table patient (
 	id SERIAL primary key,
 	name varchar(255) not null,
@@ -235,7 +235,7 @@ create table consultation (
 	doctor_id int not null,
 	speciality_id int not null,
 	recepcionist_id int not null,
-	date date not null,
+	consultation_date date not null,
 	hour time not null,
 	status status_consultation not null default 'SCHEDULED',
 	constraint fk_medical_consultation
@@ -262,7 +262,7 @@ create table consultation_record (
 	diagnosis varchar(600) not null,
 	treatment varchar(600) not null,
 	patient_notes varchar(600) not null,
-	notes varchar(600) not null,
+	notes varchar(600),
 	constraint fk_consultation_record
 		foreign key (consultation_id)
 		references consultation(id)
@@ -275,21 +275,26 @@ create table measure (
 
 create table laboratory (
 	id SERIAL primary key,
-	laboratory_name varchar(100) not null unique
+	laboratory_name varchar(100) not null unique,
+	active bool default true
 );
 
 create table exame_type (
 	id SERIAL primary key,
-	type_exame varchar(150) not null unique
+	type_exame varchar(150) not null unique,
+	active bool default true
 );
- 
+
 create table medicine (
 	id SERIAL primary key,
 	measure_id int not null,
 	medicine_name varchar(150) not null,
+	active bool default true,
 	constraint fk_medicine_measure
 		foreign key (measure_id)
-		references measure(id)
+		references measure(id),
+	constraint uq_medicine_measure
+		unique(measure_id, medicine_name)
 );
 
 create table medical_recipe (

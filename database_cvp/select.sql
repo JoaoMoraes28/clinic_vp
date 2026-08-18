@@ -2,12 +2,14 @@ create view medicine_data as
 select
 	med.id as id_medicine,
 	med.medicine_name,
+	med.active,
 	mea.measure_unit
 from medicine med
 inner join measure mea
-	on med.measure_id = mea.id;
+	on med.measure_id = mea.id
+order by medicine_name;
 
-create view patient_data as
+create view patient_data as;
 select 
 	pat.id,
 	pat.name,
@@ -26,17 +28,21 @@ select
 	pat.notes,
 	pat.record_date,
 	pat.active,
+	med.id as medical_record_id,
 	uf.abbreviation as uf_address,
 	address.city,
 	address.district,
 	address.street,
 	address.number,
 	address.cep
-from patient pat
+from medical_record med
+inner join patient pat
+	on med.patient_id = pat.id
 inner join patient_address address
 	on address.patient_id = pat.id 
 inner join uf
-	on address.uf_id = uf.id;
+	on address.uf_id = uf.id
+order by name;
 
 create view doctor_data as
 select
@@ -103,8 +109,9 @@ select
 	pat.notes,
 	pat.phone,
 	doc.name as doctor_name,
+	doc.id as doctor_id,
 	spe.speciality_name,
-	con.date,
+	con.consultation_date,
 	con.hour,
 	con.status
 from consultation con
@@ -114,6 +121,29 @@ inner join doctor doc
 	on con.doctor_id = doc.id 
 inner join speciality spe
 	on con.speciality_id = spe.id;
+
+create view consultation_record_history as
+select
+	con.id as consultation_id,
+	med.id as medical_record_id,
+	con.patient_id,
+	con.consultation_date,
+	doc.name as doctor_name,
+	spe.speciality_name,
+	cre.syntoms,
+	cre.diagnosis,
+	cre.treatment,
+	cre.patient_notes
+from doctor doc
+inner join consultation con
+	on con.doctor_id = doc.id
+inner join medical_record med
+	on med.patient_id = con.patient_id
+inner join speciality spe
+	on con.speciality_id = spe.id 
+inner join consultation_record cre
+	on cre.consultation_id = con.id
+order by con.consultation_date desc;
 
 create view doctor_speciality_data as
 select
