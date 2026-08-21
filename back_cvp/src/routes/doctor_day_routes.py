@@ -10,6 +10,7 @@ from src.database.connection import get_db
 
 from src.schemas.doctor_day import DoctorDayCreate
 from src.schemas.doctor_day import DoctorDayReponse
+from src.schemas.doctor_day import ResponseDaysAvailabelConsultation
 from src.schemas.return_messages_standart import ReturnMessageStandard
 from src.schemas.return_messages_standart import ReturnMessageCreateElement
 
@@ -23,6 +24,17 @@ doctor_day_routes = APIRouter(
 )
 def get_doctor_days(db: Session = Depends(get_db)):
     return controller_doctor_day.get_all_doctor_days(db)
+
+
+@doctor_day_routes.get(
+    "/{id_doctor}/dates_consultation",
+    response_model=ResponseDaysAvailabelConsultation,
+    status_code=status.HTTP_200_OK,
+)
+def get_doctor_dates_consultation(
+    id_doctor: int = Path(..., ge=1), db: Session = Depends(get_db)
+):
+    return controller_doctor_day.get_doctor_dates_consultation_id(db, id_doctor)
 
 
 @doctor_day_routes.post(

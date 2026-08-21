@@ -19,6 +19,7 @@ def select_doctor_id(
 ):
     return db.query(model).filter(model.id == id).first()
 
+
 def insert_doctor(db: Session, doctor: DoctorCreate):
     new_doctor = Doctor(**doctor.model_dump())
 

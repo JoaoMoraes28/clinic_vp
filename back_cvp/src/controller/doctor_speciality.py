@@ -7,8 +7,8 @@ from src.schemas.doctor_speciality import DoctorSpecialityCreate
 
 from src.model import doctor_speciality as doctor_speciality_dao
 
-def get_all_doctor_speciality(db: Session):
-    return doctor_speciality_dao.select_doctor_speciality(db)
+def get_all_doctor_speciality(db: Session, filter_speciality: int | None):
+    return doctor_speciality_dao.select_doctor_speciality(db, filter_speciality)
 
 def registry_doctor_speciality(db: Session, doctor_speciality: DoctorSpecialityCreate):
     new_doctor_speciality_id = doctor_speciality_dao.insert_doctor_speciality(db, doctor_speciality)

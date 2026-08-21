@@ -22,8 +22,10 @@ doctor_speciality_routes = APIRouter(
 @doctor_speciality_routes.get(
     "/", response_model=List[DoctorSpecialityResponse], status_code=status.HTTP_200_OK
 )
-def get_doctor_speciality(db: Session = Depends(get_db)):
-    return controller_doctor_speciality.get_all_doctor_speciality(db)
+def get_doctor_speciality(
+    db: Session = Depends(get_db), filter_speciality: int | None = None
+):
+    return controller_doctor_speciality.get_all_doctor_speciality(db, filter_speciality)
 
 
 @doctor_speciality_routes.post(
@@ -34,10 +36,7 @@ def post_doctor_speciality(
 ):
     id = controller_doctor_speciality.registry_doctor_speciality(db, doctor_speciality)
 
-    return {
-        "id": id,
-        "element": "Doctor speciality"
-    }
+    return {"id": id, "element": "Doctor speciality"}
 
 
 @doctor_speciality_routes.delete(

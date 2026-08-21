@@ -16,7 +16,8 @@ from src.routes.consultation_record_routes import consultation_record_routes
 from src.routes.measure_routes import measure_routes
 from src.routes.laboratory_routes import laboratory_routes
 from src.routes.exame_type_routes import exame_type_routes
-from src.routes.medicine import medicine_routes
+from src.routes.medicine_routes import medicine_routes
+from src.routes.medical_recipe_routes import medical_recipe_routes
 
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError, OperationalError
 
@@ -38,6 +39,7 @@ app.include_router(measure_routes)
 app.include_router(laboratory_routes)
 app.include_router(exame_type_routes)
 app.include_router(medicine_routes)
+app.include_router(medical_recipe_routes)
 
 
 @app.exception_handler(IntegrityError)

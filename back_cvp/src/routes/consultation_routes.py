@@ -15,6 +15,8 @@ from src.schemas.consultation import ConsultationNewStatus
 from src.schemas.consultation import ConsultationResponsePreview
 from src.schemas.consultation import ConsultationResponseDoctor
 from src.schemas.consultation import ConsultationResponseAccess
+from src.schemas.consultation import VerfifyHourConsultationResponse
+from src.schemas.consultation import VerfifyHourConsultationJSONConsult
 from src.schemas.return_messages_standart import ReturnMessageCreateElement
 from src.schemas.return_messages_standart import ReturnMessageStandard
 
@@ -35,7 +37,9 @@ def get_consultation_preview(date: date, db: Session = Depends(get_db)):
     response_model=List[ConsultationResponseDoctor],
     status_code=status.HTTP_200_OK,
 )
-def get_consultation_doctor( date: date, db: Session = Depends(get_db), id_doctor: int = Path(..., ge=1)):
+def get_consultation_doctor(
+    date: date, db: Session = Depends(get_db), id_doctor: int = Path(..., ge=1)
+):
     return controller_consultation.get_all_consultation(db, date, id_doctor)
 
 
@@ -44,8 +48,23 @@ def get_consultation_doctor( date: date, db: Session = Depends(get_db), id_docto
     response_model=ConsultationResponseAccess,
     status_code=status.HTTP_200_OK,
 )
-def get_consultation_access(db: Session = Depends(get_db), id_consultation: int = Path(..., ge=1)):
+def get_consultation_access(
+    db: Session = Depends(get_db), id_consultation: int = Path(..., ge=1)
+):
     return controller_consultation.get_consultation_id(db, id_consultation, None)
+
+
+@consultation_routes.get(
+    "/hour_available",
+    response_model=List[VerfifyHourConsultationResponse],
+    status_code=status.HTTP_200_OK,
+)
+def get_hour_consultation(
+    verify_data: VerfifyHourConsultationJSONConsult, db: Session = Depends(get_db)
+):
+    return controller_consultation.get_hours_consultation(
+        db, verify_data.id_doctor, verify_data.date
+    )
 
 
 @consultation_routes.post(

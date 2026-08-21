@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import update
+from sqlalchemy import update, text
 
 from datetime import date
 
@@ -11,13 +11,33 @@ from src.schemas.consultation import ConsultationCreate
 
 def select_consultation(db: Session, date: date, id_doctor: int | None):
     if id_doctor:
-        return db.query(ConsultationData).filter(ConsultationData.consultation_date == date).filter(ConsultationData.doctor_id == id_doctor).all()
+        return (
+            db.query(ConsultationData)
+            .filter(ConsultationData.consultation_date == date)
+            .filter(ConsultationData.doctor_id == id_doctor)
+            .all()
+        )
 
-    return db.query(ConsultationData).filter(ConsultationData.consultation_date == date).all()
+    return (
+        db.query(ConsultationData)
+        .filter(ConsultationData.consultation_date == date)
+        .all()
+    )
 
 
 def select_consultation_id(db: Session, id: int):
     return db.query(ConsultationData).filter(ConsultationData.id == id).first()
+
+
+def select_hour_doctor_consultation(
+    db: Session, id_doctor: int, date_consultation: date
+):
+    result = db.execute(
+        text("select * from verify_hours_doctor_consultation(:id_doctor, :date)"),
+        {"id_doctor": id_doctor, "date": date_consultation},
+    )
+
+    return result.mappings().all()
 
 
 def insert_consultation(db: Session, consultation: ConsultationCreate):
