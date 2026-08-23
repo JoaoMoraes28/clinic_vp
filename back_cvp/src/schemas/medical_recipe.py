@@ -1,4 +1,5 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+from typing import Optional
 
 
 class MedicalRecipeResponse(BaseModel):
@@ -13,5 +14,5 @@ class MedicalRecipeResponse(BaseModel):
 class MedicalRecipeCreate(BaseModel):
     consultation_record_id: int
     medicine_id: int
-    dosage: str
-    notes: str
+    dosage: str = Field(..., max_length=255)
+    notes: Optional[str] = Field(None, max_length=500)

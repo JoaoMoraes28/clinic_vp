@@ -1,7 +1,7 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 class SpecialityBase(BaseModel):
-    speciality_name: str
+    speciality_name: str = Field(..., max_length=50)
 
 class SpecialityResponse(SpecialityBase):
     id: int

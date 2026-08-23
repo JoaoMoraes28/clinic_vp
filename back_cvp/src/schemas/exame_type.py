@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class ExameTypeResponse(BaseModel):
@@ -8,7 +8,7 @@ class ExameTypeResponse(BaseModel):
 
 
 class ExameTypeWrite(BaseModel):
-    type_exame: str
+    type_exame: str = Field(..., max_length=150)
 
 
 class ExameChangeStatus(BaseModel):

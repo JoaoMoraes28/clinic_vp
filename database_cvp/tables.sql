@@ -41,7 +41,7 @@ create type blood_type_enum as enum (
     'O_POSITIVE',
     'O_NEGATIVE'
 );
-select * from consultation;
+
 create table patient (
 	id SERIAL primary key,
 	name varchar(255) not null,
@@ -154,7 +154,7 @@ create table recepcionist_address (
 
 create table speciality (
 	id SERIAL primary key,
-	speciality_name varchar(50) not null
+	speciality_name varchar(50) not null unique
 );
 
 create table doctor_speciality (
@@ -217,12 +217,14 @@ create table contract_doctor (
 	constraint fk_doctor_contract
 		foreign key (doctor_id)
 		references doctor(id)
-		on delete cascade
+		on delete cascade,
+	constraint uq_doctor_contract
+		unique (doctor_id, contract_type_id)
 );
 
 create table medical_record (
 	id SERIAL primary key,
-	patient_id int not null,
+	patient_id int not null unique,
 	constraint fk_medical_patient
 		foreign key (patient_id)
 		references patient(id)
@@ -257,7 +259,7 @@ create table consultation (
 
 create table consultation_record (
 	id SERIAL primary key,
-	consultation_id int not null,
+	consultation_id int not null unique,
 	syntoms varchar(600) not null,
 	diagnosis varchar(600) not null,
 	treatment varchar(600) not null,

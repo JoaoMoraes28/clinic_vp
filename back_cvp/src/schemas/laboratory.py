@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 class LaboratoryResponse(BaseModel):
     id: int
@@ -6,7 +6,7 @@ class LaboratoryResponse(BaseModel):
     active: bool
 
 class LaboratoryWrite(BaseModel):
-    laboratory_name: str
+    laboratory_name: str = Field(..., max_length=100)
 
 class LaboratoryChangeActive(BaseModel):
     active: bool

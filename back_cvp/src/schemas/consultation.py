@@ -14,21 +14,6 @@ class ConsultationCreate(BaseModel):
     hour: time
 
 
-class ConsultationResponse(BaseModel):
-    id: int
-    patient_name: str
-    cpf: str
-    photo: str | None
-    born_date: date
-    notes: str | None
-    phone: str
-    doctor_name: str
-    speciality_name: str
-    consultation_date: date
-    hour: time
-    status: str
-
-
 class ConsultationResponsePreview(BaseModel):
     id: int
     patient_name: str

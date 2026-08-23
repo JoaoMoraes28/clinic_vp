@@ -2,15 +2,15 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from src.database.connection import Base
 
-from typing import Optional
-
 from datetime import date
 
 
 class ConsultationRecordHistory(Base):
     __tablename__ = "consultation_record_history"
 
-    consultation_id: Mapped[int] = mapped_column(primary_key=True)
+    consultation_record_id: Mapped[int] = mapped_column(primary_key=True)
+
+    consultation_id: Mapped[int] = mapped_column()
 
     medical_record_id: Mapped[int] = mapped_column()
 

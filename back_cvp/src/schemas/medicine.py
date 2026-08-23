@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class MedicineResponse(BaseModel):
@@ -10,7 +10,7 @@ class MedicineResponse(BaseModel):
 
 class MedicineWrite(BaseModel):
     measure_id: int
-    medicine_name: str
+    medicine_name: str = Field(..., max_length=150)
 
 
 class MedicineChangeStatus(BaseModel):

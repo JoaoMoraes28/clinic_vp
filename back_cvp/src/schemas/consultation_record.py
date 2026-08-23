@@ -1,12 +1,12 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from datetime import date
 
 class ConsultationRecordBase(BaseModel):
-    syntoms: str
-    diagnosis: str
-    treatment: str
-    patient_notes: str
+    syntoms: str = Field(..., max_length=600)
+    diagnosis: str = Field(..., max_length=600)
+    treatment: str = Field(..., max_length=600)
+    patient_notes: str = Field(..., max_length=600)
     notes: str | None
 
 
@@ -15,6 +15,7 @@ class ConsultationRecordCreate(ConsultationRecordBase):
 
 
 class ConsultationRecordResponse(BaseModel):
+    consultation_record_id: int
     consultation_id: int
     medical_record_id: int
     patient_id: int

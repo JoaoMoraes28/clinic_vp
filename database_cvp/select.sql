@@ -9,7 +9,7 @@ inner join measure mea
 	on med.measure_id = mea.id
 order by medicine_name;
 
-create view patient_data as;
+create view patient_data as
 select 
 	pat.id,
 	pat.name,
@@ -125,6 +125,7 @@ inner join speciality spe
 create view consultation_record_history as
 select
 	con.id as consultation_id,
+	cre.id as consultation_record_id,
 	med.id as medical_record_id,
 	con.patient_id,
 	con.consultation_date,
@@ -179,6 +180,7 @@ select
 	json_agg(
 		json_build_object(
 			'id', dd.id,
+			'id_day', wek.id,
 			'day', wek.day,
 			'start_time', dd.start_time,
 			'end_time', dd.end_time		
@@ -192,20 +194,40 @@ inner join week_day wek
 	on dd.week_day_id = wek.id
 group by doc.id, doc.name;
 
-create view medical_record_resume as
+create view medical_recipe_data as
 select
-	con.patient_id,
-	conrec.syntoms,
-	conrec.diagnosis,
-	conrec.treatment,
-	conrec.patient_notes,
-	con.date,
-	doc.name,
-	spe.speciality_name
-from consultation con
-inner join consultation_record conrec
-	on conrec.consultation_id = con.id
-inner join doctor doc
-	on con.doctor_id = doc.id
-inner join speciality spe
-	on con.speciality_id = spe.id;
+	mre.id,
+	med.medicine_name,
+	mea.measure_unit,
+	mre.consultation_record_id,
+	mre.dosage,
+	mre.notes
+from medicine med
+inner join measure mea
+	on med.measure_id  = mea.id
+inner join medical_recipe mre
+	on  mre.medicine_id = med.id;
+
+create view exame_data as
+select
+	exa.id,
+	con.id as consultation_id,
+	cre.consultation_record_id,
+	pat.name,
+	ety.type_exame,
+	lab.laboratory_name,
+	exa.priority,
+	exa.limit_date
+from exame_type ety
+inner join exame exa
+	on exa.exame_type_id = ety.id
+inner join consultation_record_exame cre
+	on cre.exame_id = exa.id
+inner join laboratory lab
+	on exa.laboratory_id = lab.id
+inner join consultation_record cor
+	on cre.consultation_record_id = cor.id
+inner join consultation con
+	on cor.consultation_id = con.id
+inner join patient pat
+	on con.patient_id = pat.id;
