@@ -11,6 +11,7 @@ class MedicineResponse(BaseModel):
 class MedicineWrite(BaseModel):
     measure_id: int
     medicine_name: str = Field(..., max_length=150)
+    active: bool = True
 
 
 class MedicineChangeStatus(BaseModel):

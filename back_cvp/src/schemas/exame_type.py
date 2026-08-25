@@ -9,6 +9,7 @@ class ExameTypeResponse(BaseModel):
 
 class ExameTypeWrite(BaseModel):
     type_exame: str = Field(..., max_length=150)
+    active: bool = True
 
 
 class ExameChangeStatus(BaseModel):
