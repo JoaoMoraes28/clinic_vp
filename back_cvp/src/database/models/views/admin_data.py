@@ -3,18 +3,15 @@ from datetime import date
 
 from src.database.connection import Base
 
-class DoctorData(Base):
-    __tablename__ = "doctor_data"
 
-    id: Mapped[int] = mapped_column(
-        primary_key=True
-    )
+class AdminData(Base):
+    __tablename__ = "admin_data"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
 
     name: Mapped[str] = mapped_column()
 
     admission_date: Mapped[date] = mapped_column()
-
-    crm: Mapped[str] = mapped_column()
 
     cpf: Mapped[str] = mapped_column()
 
@@ -22,19 +19,13 @@ class DoctorData(Base):
 
     email: Mapped[str] = mapped_column()
 
-    bio: Mapped[str | None] = mapped_column()
-
-    must_change_password: Mapped[bool] = mapped_column()
-
     photo: Mapped[str | None] = mapped_column()
-
-    status: Mapped[str] = mapped_column()
-
-    contract: Mapped[str | None] = mapped_column()
 
     gender: Mapped[str] = mapped_column()
 
-    uf_crm: Mapped[str] = mapped_column()
+    must_change_password: Mapped[bool] = mapped_column()
+
+    primary_admin: Mapped[bool] = mapped_column()
 
     uf_address: Mapped[str] = mapped_column()
 

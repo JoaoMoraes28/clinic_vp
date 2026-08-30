@@ -14,18 +14,27 @@ from src.schemas.laboratory import LaboratoryChangeActive
 from src.schemas.return_messages_standart import ReturnMessageStandard
 from src.schemas.return_messages_standart import ReturnMessageCreateElement
 
+from src.security.jwt import valide_access_level_doctor
+from src.security.jwt import valide_access_level_admin
+
 laboratory_routes = APIRouter(prefix="/laboratory", tags=["Laboratório"])
 
 
 @laboratory_routes.get(
-    "/", response_model=List[LaboratoryResponse], status_code=status.HTTP_200_OK
+    "/",
+    response_model=List[LaboratoryResponse],
+    status_code=status.HTTP_200_OK,
+    dependencies=[Depends(valide_access_level_doctor)],
 )
 def get_laboratory(filter: str | None = None, db: Session = Depends(get_db)):
     return controller_laboratory.get_all_laboratory(db, filter)
 
 
 @laboratory_routes.post(
-    "/", response_model=ReturnMessageCreateElement, status_code=status.HTTP_201_CREATED
+    "/",
+    response_model=ReturnMessageCreateElement,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(valide_access_level_admin)],
 )
 def post_laboratory(laboratory: LaboratoryWrite, db: Session = Depends(get_db)):
     id = controller_laboratory.registry_laboratory(db, laboratory)
@@ -37,6 +46,7 @@ def post_laboratory(laboratory: LaboratoryWrite, db: Session = Depends(get_db)):
     "/{id_laboratory}",
     response_model=ReturnMessageStandard,
     status_code=status.HTTP_200_OK,
+    dependencies=[Depends(valide_access_level_admin)],
 )
 def change_status_laboratory(
     new_status: LaboratoryChangeActive,

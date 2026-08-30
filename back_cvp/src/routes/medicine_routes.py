@@ -14,18 +14,27 @@ from src.schemas.medicine import MedicineChangeStatus
 from src.schemas.return_messages_standart import ReturnMessageStandard
 from src.schemas.return_messages_standart import ReturnMessageCreateElement
 
+from src.security.jwt import valide_access_level_doctor
+from src.security.jwt import valide_access_level_admin
+
 medicine_routes = APIRouter(prefix="/medicine", tags=["Medicamentos"])
 
 
 @medicine_routes.get(
-    "/", response_model=List[MedicineResponse], status_code=status.HTTP_200_OK
+    "/",
+    response_model=List[MedicineResponse],
+    status_code=status.HTTP_200_OK,
+    dependencies=[Depends(valide_access_level_doctor)],
 )
 def get_medicine(filter: bool | None = None, db: Session = Depends(get_db)):
     return controller_medicine.get_all_medicine(db, filter)
 
 
 @medicine_routes.post(
-    "/", response_model=ReturnMessageCreateElement, status_code=status.HTTP_201_CREATED
+    "/",
+    response_model=ReturnMessageCreateElement,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(valide_access_level_admin)],
 )
 def post_medicine(medicine: MedicineWrite, db: Session = Depends(get_db)):
     id = controller_medicine.registry_medicine(db, medicine)
@@ -37,6 +46,7 @@ def post_medicine(medicine: MedicineWrite, db: Session = Depends(get_db)):
     "/{id_medicine}",
     response_model=ReturnMessageStandard,
     status_code=status.HTTP_200_OK,
+    dependencies=[Depends(valide_access_level_admin)],
 )
 def put_medicine(
     update_medicine: MedicineWrite,
@@ -52,6 +62,7 @@ def put_medicine(
     "/{id_medicine}",
     response_model=ReturnMessageStandard,
     status_code=status.HTTP_200_OK,
+    dependencies=[Depends(valide_access_level_admin)],
 )
 def change_status_medicine(
     new_status: MedicineChangeStatus,

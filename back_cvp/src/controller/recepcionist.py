@@ -6,7 +6,9 @@ from src.model import recepcionist as recepcionist_dao
 
 from src.controller import address as controller_address
 
-from src.schemas.recepcionist import RecepcionistCreate
+from src.schemas.recepcionist import RecepcionistCreateNoPassword
+from src.schemas.recepcionist import RecepcionistCreateBaseWithPassword
+from src.schemas.recepcionist import RecepcionistCreateResponse
 from src.schemas.recepcionist import RecepcionistUpdate
 from src.schemas.recepcionist import RecepcionistResponseData
 from src.schemas.recepcionist import RecepcionistResponse
@@ -17,6 +19,9 @@ from src.schemas.address import AddressCreateRecepcionist
 from src.database.models.views.recepcionist_data import RecepcionistData
 from src.database.models.recepcionist import Recepcionist
 from src.database.models.recepcionist_address import RecepcionistAddress
+
+from .password import password_initial
+from src.security.password_hash import hash_password
 
 
 def get_all_recepcionist(db: Session, filter: str | None):
@@ -43,12 +48,15 @@ def get_recepcionist_entity(db: Session, id: int):
     return get_recepcionist
 
 
-def registry_recepcionist(db: Session, recepcionist: RecepcionistCreate):
+def registry_recepcionist(db: Session, recepcionist: RecepcionistCreateNoPassword):
     try:
-        recepcionist_id = recepcionist_dao.insert_recepcionist(
-            db, recepcionist.recepcionist
+        recepcionist_insert = RecepcionistCreateBaseWithPassword(
+            password=hash_password(password_initial),
+            **recepcionist.recepcionist.model_dump()
         )
-        
+
+        recepcionist_id = recepcionist_dao.insert_recepcionist(db, recepcionist_insert)
+
         address_recepcionist = AddressCreateRecepcionist(
             recepcionist_id=recepcionist_id, **recepcionist.address.model_dump()
         )
@@ -57,9 +65,19 @@ def registry_recepcionist(db: Session, recepcionist: RecepcionistCreate):
             db, address_recepcionist, RecepcionistAddress
         )
 
+        recepcionist_data = get_recepcionist_entity(db, recepcionist_id)
+
+        recepcionist_response = RecepcionistCreateResponse(
+            id=recepcionist_data.id,
+            name=recepcionist_data.name,
+            email=recepcionist_data.email,
+            password=password_initial,
+            must_change_password=recepcionist_data.must_change_password,
+        )
+
         db.commit()
 
-        return get_recepcionist_id(db, recepcionist_id)
+        return recepcionist_response
 
     except Exception:
         db.rollback()
@@ -115,6 +133,7 @@ def build_recepcionist_response(recepcionist):
                     photo=_recepcionist.photo,
                     status=_recepcionist.status,
                     gender=_recepcionist.gender,
+                    must_change_password=_recepcionist.must_change_password,
                 ),
                 address=AddressWithUfStr(
                     uf_address=_recepcionist.uf_address,
@@ -142,6 +161,7 @@ def build_recepcionist_response(recepcionist):
             photo=recepcionist.photo,
             status=recepcionist.status,
             gender=recepcionist.gender,
+            must_change_password=recepcionist.must_change_password,
         ),
         address=AddressWithUfStr(
             uf_address=recepcionist.uf_address,

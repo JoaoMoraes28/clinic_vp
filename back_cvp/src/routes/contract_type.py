@@ -13,18 +13,27 @@ from src.schemas.contract_type import ContractTypeReponse
 from src.schemas.return_messages_standart import ReturnMessageStandard
 from src.schemas.return_messages_standart import ReturnMessageCreateElement
 
+from src.security.jwt import valide_token
+from src.security.jwt import valide_access_level_admin
+
 contract_type_routes = APIRouter(prefix="/contract_type", tags=["Tipos de contrato"])
 
 
 @contract_type_routes.get(
-    "/", response_model=List[ContractTypeReponse], status_code=status.HTTP_200_OK
+    "/",
+    response_model=List[ContractTypeReponse],
+    status_code=status.HTTP_200_OK,
+    dependencies=[Depends(valide_access_level_admin)],
 )
 def get_contract_type(db: Session = Depends(get_db)):
     return controller_contract_type.get_all_contract_type(db)
 
 
 @contract_type_routes.post(
-    "/", response_model=ReturnMessageCreateElement, status_code=status.HTTP_201_CREATED
+    "/",
+    response_model=ReturnMessageCreateElement,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(valide_access_level_admin)],
 )
 def post_contract_type(
     contract_type: ContractTypeCreate, db: Session = Depends(get_db)
@@ -38,6 +47,7 @@ def post_contract_type(
     "/{id_contract_type}",
     response_model=ReturnMessageStandard,
     status_code=status.HTTP_200_OK,
+    dependencies=[Depends(valide_access_level_admin)],
 )
 def delete_contract_type(
     id_contract_type: int = Path(..., ge=1), db: Session = Depends(get_db)

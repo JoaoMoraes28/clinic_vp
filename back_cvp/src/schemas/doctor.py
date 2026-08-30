@@ -23,6 +23,7 @@ class DoctorResponse(DoctorBase):
     admission_date: date
     uf_crm: str = Field(..., max_length=2)
     contract: str | None
+    must_change_password: bool
 
 
 class DoctorDataResponse(BaseModel):
@@ -30,13 +31,31 @@ class DoctorDataResponse(BaseModel):
     address: AddressWithUfStr
 
 
-class DoctorCreateData(DoctorBase):
+class DoctorCreateDataNoPassword(DoctorBase):
     crm_uf_id: int
 
 
-class DoctorCreate(BaseModel):
-    doctor: DoctorCreateData
+class DoctorCreateDataWithPassword(DoctorBase):
+    crm_uf_id: int
+    password: str
+
+
+class DoctorCreateWithPassword(BaseModel):
+    doctor: DoctorCreateDataWithPassword
     address: AddressWithUfId
+
+
+class DoctorCreateNoPassword(BaseModel):
+    doctor: DoctorCreateDataNoPassword
+    address: AddressWithUfId
+
+
+class DoctorResponseCreate(BaseModel):
+    id: int
+    name: str
+    email: str
+    password: str
+    must_change_password: bool
 
 
 class DoctorUpdateData(DoctorBase):

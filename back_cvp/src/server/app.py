@@ -19,37 +19,48 @@ from src.routes.exame_type_routes import exame_type_routes
 from src.routes.medicine_routes import medicine_routes
 from src.routes.medical_recipe_routes import medical_recipe_routes
 from src.routes.exame_routes import exame_routes
+from src.routes.auth_routes import auth_employee_routes
+from src.routes.admin import admin_routes
 
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError, OperationalError
 
+API_PREFIX = "/clinic_vp"
+
 app = FastAPI()
 
-app.include_router(patient_routes)
-app.include_router(doctor_routes)
-app.include_router(uf_routes)
-app.include_router(recepcionist_routes)
-app.include_router(speciality_routes)
-app.include_router(doctor_speciality_routes)
-app.include_router(week_day_routes)
-app.include_router(doctor_day_routes)
-app.include_router(consultation_duration_routes)
-app.include_router(contract_type_routes)
-app.include_router(consultation_routes)
-app.include_router(consultation_record_routes)
-app.include_router(measure_routes)
-app.include_router(laboratory_routes)
-app.include_router(exame_type_routes)
-app.include_router(medicine_routes)
-app.include_router(medical_recipe_routes)
-app.include_router(exame_routes)
+app.include_router(patient_routes, prefix=API_PREFIX)
+app.include_router(doctor_routes, prefix=API_PREFIX)
+app.include_router(uf_routes, prefix=API_PREFIX)
+app.include_router(recepcionist_routes, prefix=API_PREFIX)
+app.include_router(speciality_routes, prefix=API_PREFIX)
+app.include_router(doctor_speciality_routes, prefix=API_PREFIX)
+app.include_router(week_day_routes, prefix=API_PREFIX)
+app.include_router(doctor_day_routes, prefix=API_PREFIX)
+app.include_router(consultation_duration_routes, prefix=API_PREFIX)
+app.include_router(contract_type_routes, prefix=API_PREFIX)
+app.include_router(consultation_routes, prefix=API_PREFIX)
+app.include_router(consultation_record_routes, prefix=API_PREFIX)
+app.include_router(measure_routes, prefix=API_PREFIX)
+app.include_router(laboratory_routes, prefix=API_PREFIX)
+app.include_router(exame_type_routes, prefix=API_PREFIX)
+app.include_router(medicine_routes, prefix=API_PREFIX)
+app.include_router(medical_recipe_routes, prefix=API_PREFIX)
+app.include_router(exame_routes, prefix=API_PREFIX)
+app.include_router(auth_employee_routes, prefix=API_PREFIX)
+app.include_router(admin_routes, prefix=API_PREFIX)
 
 
 @app.exception_handler(IntegrityError)
 async def integrity_exception_handler(request: Request, exc: IntegrityError):
-    print(exc.orig)
+    error_orig = str(exc.orig).split("\n")
+
     return JSONResponse(
         status_code=status.HTTP_400_BAD_REQUEST,
-        content={"error_code": "INTEGRITY_ERROR", "detail": "field invalid."},
+        content={
+            "error_code": "INTEGRITY_ERROR",
+            "detail": "field invalid",
+            "field": f"{error_orig[1].replace("(", "").replace(")", "").replace("DETAIL: ", "")}",
+        },
     )
 
 

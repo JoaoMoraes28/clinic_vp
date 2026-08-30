@@ -22,6 +22,11 @@ class RecepcionistBase(BaseModel):
 class RecepcionistResponse(RecepcionistBase):
     id: int
     admission_date: date
+    must_change_password: bool
+
+
+class RecepcionistCreateBaseWithPassword(RecepcionistBase):
+    password: str
 
 
 class RecepcionistResponseData(BaseModel):
@@ -29,9 +34,21 @@ class RecepcionistResponseData(BaseModel):
     address: AddressWithUfStr
 
 
-class RecepcionistCreate(BaseModel):
+class RecepcionistCreateBaseWithPassword(RecepcionistBase):
+    password: str
+
+
+class RecepcionistCreateNoPassword(BaseModel):
     recepcionist: RecepcionistBase
     address: AddressWithUfId
+
+
+class RecepcionistCreateResponse(BaseModel):
+    id: int
+    name: str
+    email: str
+    password: str
+    must_change_password: bool
 
 
 class RecepcionistUpdate(BaseModel):
@@ -41,6 +58,7 @@ class RecepcionistUpdate(BaseModel):
 
 class RecepcionistChangeStatus(BaseModel):
     new_status: str
+
 
 class RecepcionistReponseChangeStatus(BaseModel):
     id: int

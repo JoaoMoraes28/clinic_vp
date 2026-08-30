@@ -9,6 +9,11 @@ class Address(BaseModel):
     cep: str = Field(..., max_length=8)
 
 
+class AddressCreateAdmin(Address):
+    admin_id: int
+    uf_id: int
+
+
 class AddressCreateDoctor(Address):
     doctor_id: int
     uf_id: int

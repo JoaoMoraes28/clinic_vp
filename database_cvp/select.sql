@@ -44,6 +44,30 @@ inner join uf
 	on address.uf_id = uf.id
 order by name;
 
+create view admin_data as
+select 
+	adm.id,
+	adm.name,
+	adm.admission_date,
+	adm.cpf,
+	adm.phone,
+	adm.email,
+	adm.gender,
+	adm.primary_admin,
+	adm.photo,
+	adm.must_change_password,
+	uf.abbreviation as uf_address,
+	address.city,
+	address.district,
+	address.street,
+	address.number,
+	address.cep
+from admin adm
+inner join admin_address address
+	on address.admin_id = adm.id
+inner join uf
+	on address.uf_id = uf.id;
+
 create view doctor_data as
 select
 	doc.id,
@@ -57,6 +81,7 @@ select
 	doc.photo,
 	doc.status,
 	doc.gender,
+	doc.must_change_password,
 	cot.contract,
 	uf.abbreviation as uf_crm,
 	uf.abbreviation as uf_address,
@@ -87,6 +112,7 @@ select
 	rec.email,
 	rec.photo,
 	rec.gender,
+	rec.must_change_password,
 	uf.abbreviation as uf_address,
 	address.city,
 	address.district,

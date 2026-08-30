@@ -42,6 +42,44 @@ create type blood_type_enum as enum (
     'O_NEGATIVE'
 );
 
+create table uf (
+	id SERIAL primary key,
+	name varchar(30) not null unique,
+	abbreviation varchar(2) not null unique
+);
+
+create table admin (
+	id SERIAL primary key,
+	name varchar(255) not null,
+	admission_date date default current_date,
+	cpf varchar(11) not null unique,
+	phone varchar(11) not null,
+	email varchar(255) not null unique,
+	photo varchar(255),
+	password varchar(255) not null,
+	gender gender_option not null,
+	must_change_password bool not null default true,
+	primary_admin bool not null default false
+);
+
+create table admin_address (
+	id SERIAL primary key,
+	admin_id int not null,
+	uf_id int not null,
+	city varchar(150) not null,
+	district varchar(150) not null,
+	street varchar(150) not null,
+	number varchar(10) not null,
+	cep varchar(8) not null,
+	constraint fk_admin_adress_uf 
+		foreign key (uf_id)
+		references uf(id),
+	constraint fk_admin_adress_admin
+		foreign key (admin_id)
+		references admin(id)
+		on delete cascade
+);
+
 create table patient (
 	id SERIAL primary key,
 	name varchar(255) not null,
@@ -59,13 +97,7 @@ create table patient (
 	phone_emergency varchar(11),
 	notes varchar(500),
 	record_date date default current_date,
-	active boolean default true
-);
-
-create table uf (
-	id SERIAL primary key,
-	name varchar(30) not null unique,
-	abbreviation varchar(2) not null unique
+	active boolean default true not null
 );
 
 create table patient_address (
@@ -96,7 +128,8 @@ create table doctor (
 	email varchar(255) not null unique,
 	bio varchar(500),
 	photo varchar(255),
-	password varchar(10) default 'cvp2802' not null,
+	must_change_password bool not null default true,
+	password varchar(255) not null,
 	status status_doctor_recepcionist not null,
 	gender gender_option not null,
 	constraint fk_crm_uf
@@ -131,7 +164,8 @@ create table recepcionist (
 	phone varchar(11) not null,
 	email varchar(255) not null unique,
 	photo varchar(255),
-	password varchar(10) default 'cvp2802' not null,
+	must_change_password bool not null default true,
+	password varchar(255) not null,
 	gender gender_option not null
 );
 
@@ -278,20 +312,20 @@ create table measure (
 create table laboratory (
 	id SERIAL primary key,
 	laboratory_name varchar(100) not null unique,
-	active bool default true
+	active bool not null default true
 );
 
 create table exame_type (
 	id SERIAL primary key,
 	type_exame varchar(150) not null unique,
-	active bool default true
+	active bool default true not null
 );
 
 create table medicine (
 	id SERIAL primary key,
 	measure_id int not null,
 	medicine_name varchar(150) not null,
-	active bool default true,
+	active bool default true not null,
 	constraint fk_medicine_measure
 		foreign key (measure_id)
 		references measure(id),

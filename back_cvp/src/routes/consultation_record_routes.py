@@ -12,6 +12,9 @@ from src.schemas.consultation_record import ConsultationRecordCreate
 from src.schemas.consultation_record import ConsultationRecordResponse
 from src.schemas.return_messages_standart import ReturnMessageCreateElement
 
+from src.security.jwt import valide_token
+from src.security.jwt import valide_access_level_doctor
+
 consultation_record_routes = APIRouter(
     prefix="/consultation_record", tags=["Registros de consultas"]
 )
@@ -21,6 +24,7 @@ consultation_record_routes = APIRouter(
     "/{id_medical_record}",
     response_model=List[ConsultationRecordResponse],
     status_code=status.HTTP_200_OK,
+    dependencies=[Depends(valide_access_level_doctor)],
 )
 def get_consultation_record(
     id_medical_record: int = Path(..., ge=1), db: Session = Depends(get_db)
@@ -31,7 +35,10 @@ def get_consultation_record(
 
 
 @consultation_record_routes.post(
-    "/", response_model=ReturnMessageCreateElement, status_code=status.HTTP_201_CREATED
+    "/",
+    response_model=ReturnMessageCreateElement,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(valide_access_level_doctor)],
 )
 def post_consultation_record(
     consultation_record: ConsultationRecordCreate, db: Session = Depends(get_db)

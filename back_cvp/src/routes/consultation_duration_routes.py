@@ -14,6 +14,9 @@ from src.schemas.consultation_duration import ConsultationDurationResponse
 from src.schemas.return_messages_standart import ReturnMessageStandard
 from src.schemas.return_messages_standart import ReturnMessageCreateElement
 
+from src.security.jwt import valide_token
+from src.security.jwt import valide_access_level_admin
+
 consultation_duration_routes = APIRouter(
     prefix="/consultation_duration", tags=["Duração de consultas"]
 )
@@ -23,31 +26,33 @@ consultation_duration_routes = APIRouter(
     "/",
     response_model=List[ConsultationDurationResponse],
     status_code=status.HTTP_200_OK,
+    dependencies=[Depends(valide_token)],
 )
 def get_consultation_duration(db: Session = Depends(get_db)):
     return controller_consultation_duration.get_all_consultation_duration(db)
 
 
 @consultation_duration_routes.post(
-    "/", response_model=ReturnMessageCreateElement, status_code=status.HTTP_201_CREATED
+    "/",
+    response_model=ReturnMessageCreateElement,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(valide_access_level_admin)],
 )
 def post_consultation_duration(
     consultation_duration: ConsultationDurationCreate, db: Session = Depends(get_db)
-):
+):    
     id = controller_consultation_duration.registry_consultation_duration(
         db, consultation_duration
     )
 
-    return {
-        "id": id,
-        "element": "Consultation duration"
-    }
+    return {"id": id, "element": "Consultation duration"}
 
 
 @consultation_duration_routes.put(
     "/{id_consultation_duration}",
     response_model=ReturnMessageStandard,
     status_code=status.HTTP_200_OK,
+    dependencies=[Depends(valide_access_level_admin)],
 )
 def put_consultation_duration(
     new_duration: ConsultationDurationUpdate,
@@ -67,6 +72,7 @@ def put_consultation_duration(
     "/{id_consultation_duration}",
     response_model=ReturnMessageStandard,
     status_code=status.HTTP_200_OK,
+    dependencies=[Depends(valide_access_level_admin)],
 )
 def delete_consultation_duration(
     id_consultation_duration: int = Path(..., ge=1), db: Session = Depends(get_db)

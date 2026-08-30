@@ -6,18 +6,24 @@ from sqlalchemy.orm import Session
 from src.database.connection import get_db
 
 from src.schemas.recepcionist import RecepcionistResponseData
-from src.schemas.recepcionist import RecepcionistCreate
+from src.schemas.recepcionist import RecepcionistCreateResponse
+from src.schemas.recepcionist import RecepcionistCreateNoPassword
 from src.schemas.recepcionist import RecepcionistUpdate
 from src.schemas.recepcionist import RecepcionistChangeStatus
 from src.schemas.recepcionist import RecepcionistReponseChangeStatus
 
 from src.controller import recepcionist as controller_recepcionist
 
+from src.security.jwt import valide_access_level_admin
+
 recepcionist_routes = APIRouter(prefix="/recepcionist", tags=["Recepcionistas"])
 
 
 @recepcionist_routes.get(
-    "/", response_model=List[RecepcionistResponseData], status_code=status.HTTP_200_OK
+    "/",
+    response_model=List[RecepcionistResponseData],
+    status_code=status.HTTP_200_OK,
+    dependencies=[Depends(valide_access_level_admin)],
 )
 def get_recepcionist(db: Session = (Depends(get_db)), filter: str | None = None):
     return controller_recepcionist.get_all_recepcionist(db, filter)
@@ -27,6 +33,7 @@ def get_recepcionist(db: Session = (Depends(get_db)), filter: str | None = None)
     "/{recepcionist_id}",
     response_model=RecepcionistResponseData,
     status_code=status.HTTP_200_OK,
+    dependencies=[Depends(valide_access_level_admin)],
 )
 def get_recepcionist_id(
     db: Session = (Depends(get_db)), recepcionist_id: int = Path(..., ge=1)
@@ -36,11 +43,12 @@ def get_recepcionist_id(
 
 @recepcionist_routes.post(
     "/",
-    response_model=RecepcionistResponseData,
+    response_model=RecepcionistCreateResponse,
     status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(valide_access_level_admin)],
 )
 def post_recepcionist(
-    recepcionist: RecepcionistCreate, db: Session = (Depends(get_db))
+    recepcionist: RecepcionistCreateNoPassword, db: Session = (Depends(get_db))
 ):
     return controller_recepcionist.registry_recepcionist(db, recepcionist)
 
@@ -49,19 +57,23 @@ def post_recepcionist(
     "/{recepcionist_id}",
     response_model=RecepcionistResponseData,
     status_code=status.HTTP_200_OK,
+    dependencies=[Depends(valide_access_level_admin)],
 )
 def put_recepcionist(
     update_recepcionist: RecepcionistUpdate,
     db: Session = (Depends(get_db)),
     recepcionist_id: int = Path(..., ge=1),
 ):
-    return controller_recepcionist.modify_recepcionist(db, recepcionist_id, update_recepcionist)
+    return controller_recepcionist.modify_recepcionist(
+        db, recepcionist_id, update_recepcionist
+    )
 
 
 @recepcionist_routes.patch(
     "/{recepcionist_id}/status",
     response_model=RecepcionistReponseChangeStatus,
     status_code=status.HTTP_200_OK,
+    dependencies=[Depends(valide_access_level_admin)],
 )
 def change_status_recepcionist(
     new_status: RecepcionistChangeStatus,
@@ -70,7 +82,4 @@ def change_status_recepcionist(
 ):
     controller_recepcionist.modify_status_recepcionist(db, recepcionist_id, new_status)
 
-    return {
-        "id": recepcionist_id,
-        "status_recepcionist": new_status.new_status
-    }
+    return {"id": recepcionist_id, "status_recepcionist": new_status.new_status}

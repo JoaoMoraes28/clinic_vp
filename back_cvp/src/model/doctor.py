@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from src.database.connection import Base
 from src.database.models.doctor import Doctor
 from src.database.models.views.doctor_data import DoctorData
-from src.schemas.doctor import DoctorCreate
+from src.schemas.doctor import DoctorCreateDataWithPassword
 from src.schemas.doctor import DoctorUpdateData
 
 def select_doctor(db: Session, filter: str | None):
@@ -20,7 +20,7 @@ def select_doctor_id(
     return db.query(model).filter(model.id == id).first()
 
 
-def insert_doctor(db: Session, doctor: DoctorCreate):
+def insert_doctor(db: Session, doctor: DoctorCreateDataWithPassword):
     new_doctor = Doctor(**doctor.model_dump())
 
     db.add(new_doctor)

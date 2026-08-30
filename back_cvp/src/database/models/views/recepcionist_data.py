@@ -4,18 +4,19 @@ from decimal import Decimal
 
 from src.database.connection import Base
 
+
 class RecepcionistData(Base):
     __tablename__ = "recepcionist_data"
 
-    id: Mapped[int] = mapped_column(
-        primary_key=True
-    )
+    id: Mapped[int] = mapped_column(primary_key=True)
 
     name: Mapped[str] = mapped_column()
 
     admission_date: Mapped[date] = mapped_column()
 
     salary: Mapped[Decimal] = mapped_column()
+
+    must_change_password: Mapped[bool] = mapped_column()
 
     cpf: Mapped[str] = mapped_column()
 

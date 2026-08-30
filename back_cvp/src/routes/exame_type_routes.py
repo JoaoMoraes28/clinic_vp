@@ -14,18 +14,27 @@ from src.schemas.exame_type import ExameChangeStatus
 from src.schemas.return_messages_standart import ReturnMessageStandard
 from src.schemas.return_messages_standart import ReturnMessageCreateElement
 
+from src.security.jwt import valide_access_level_doctor
+from src.security.jwt import valide_access_level_admin
+
 exame_type_routes = APIRouter(prefix="/exame_type", tags=["Tipos de exame"])
 
 
 @exame_type_routes.get(
-    "/", response_model=List[ExameTypeResponse], status_code=status.HTTP_200_OK
+    "/",
+    response_model=List[ExameTypeResponse],
+    status_code=status.HTTP_200_OK,
+    dependencies=[Depends(valide_access_level_doctor)],
 )
 def get_exame_type(filter: bool | None = None, db: Session = Depends(get_db)):
     return controller_exame_type.get_all_exame_type(db, filter)
 
 
 @exame_type_routes.post(
-    "/", response_model=ReturnMessageCreateElement, status_code=status.HTTP_201_CREATED
+    "/",
+    response_model=ReturnMessageCreateElement,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(valide_access_level_admin)],
 )
 def post_exame_type(exame_type: ExameTypeWrite, db: Session = Depends(get_db)):
     id = controller_exame_type.registry_exame_type(db, exame_type)
@@ -37,6 +46,7 @@ def post_exame_type(exame_type: ExameTypeWrite, db: Session = Depends(get_db)):
     "/{id_exame_type}",
     response_model=ReturnMessageStandard,
     status_code=status.HTTP_200_OK,
+    dependencies=[Depends(valide_access_level_admin)],
 )
 def change_status_exame_type(
     new_status: ExameChangeStatus,
