@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from src.database.connection import get_db
 
-from src.controller import contract_type as controller_contract_type
+from src.services import contract_type as controller_contract_type
 
 from src.schemas.contract_type import ContractTypeCreate
 from src.schemas.contract_type import ContractTypeReponse

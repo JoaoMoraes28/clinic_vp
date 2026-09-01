@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from src.model import consultation_record as consultation_record_dao
+from src.repositories import consultation_record as consultation_record_dao
 
 from src.schemas.consultation_record import ConsultationRecordCreate
 

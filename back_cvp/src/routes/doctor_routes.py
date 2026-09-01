@@ -4,7 +4,7 @@ from fastapi import APIRouter, status, Depends, Path
 
 from sqlalchemy.orm import Session
 
-from src.controller import doctor as controller
+from src.services import doctor as controller
 
 from src.database.connection import get_db
 

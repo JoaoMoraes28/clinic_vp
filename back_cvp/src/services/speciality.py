@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from src.model import speciality as speciality_dao
+from src.repositories import speciality as speciality_dao
 
 from src.schemas.speciality import SpecialityCreate
 

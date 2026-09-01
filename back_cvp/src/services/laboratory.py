@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 
 from src.exception.exceptions import raise_not_found
 
-from src.model import laboratory as laboratory_dao
+from src.repositories import laboratory as laboratory_dao
 
 from src.schemas.laboratory import LaboratoryWrite
 

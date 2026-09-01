@@ -6,7 +6,7 @@ from typing import List
 
 from sqlalchemy.orm import Session
 
-from src.controller import consultation as controller_consultation
+from src.services import consultation as controller_consultation
 
 from src.database.connection import get_db
 

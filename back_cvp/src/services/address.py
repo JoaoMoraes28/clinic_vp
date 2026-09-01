@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 
 from src.database.connection import Base
 
-from src.model import address as address_dao
+from src.repositories import address as address_dao
 
 from src.schemas.address import AddressCreateRecepcionist
 from src.schemas.address import AddressCreateDoctor

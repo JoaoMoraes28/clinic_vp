@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 
-from src.model import patient as patient_dao
+from src.repositories import patient as patient_dao
 
-from src.controller import address as controller_address
+from src.services import address as controller_address
 
 from src.exception.exceptions import raise_not_found
 

@@ -6,7 +6,7 @@ from typing import List
 
 from src.database.connection import get_db
 
-from src.controller.week_day import get_all_week_days
+from src.services.week_day import get_all_week_days
 
 from src.schemas.week_day import WeekDayResponse
 

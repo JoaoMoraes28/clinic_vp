@@ -4,7 +4,7 @@ from typing import List, Annotated
 
 from sqlalchemy.orm import Session
 
-from src.controller import admin as controller_admin
+from src.services import admin as controller_admin
 
 from src.database.connection import get_db
 

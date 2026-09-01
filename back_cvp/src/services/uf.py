@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from src.model import uf as uf_dao
+from src.repositories import uf as uf_dao
 
 
 def get_all_uf(db: Session):

@@ -12,7 +12,7 @@ from src.schemas.recepcionist import RecepcionistUpdate
 from src.schemas.recepcionist import RecepcionistChangeStatus
 from src.schemas.recepcionist import RecepcionistReponseChangeStatus
 
-from src.controller import recepcionist as controller_recepcionist
+from src.services import recepcionist as controller_recepcionist
 
 from src.security.jwt import valide_access_level_admin
 

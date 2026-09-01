@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from src.model import admin as admin_dao
+from src.repositories import admin as admin_dao
 
 from src.database.models.admin_address import AdminAddress
 
@@ -13,7 +13,7 @@ from src.schemas.address import AddressWithUfStr
 
 from src.schemas.address import AddressCreateAdmin
 
-from src.controller import address as address_controller
+from src.services import address as address_controller
 
 from src.exception.exceptions import raise_not_found
 from src.exception.exceptions import raise_not_access

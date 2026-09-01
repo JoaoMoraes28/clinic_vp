@@ -4,7 +4,7 @@ from typing import List
 
 from sqlalchemy.orm import Session
 
-from src.controller import medicine as controller_medicine
+from src.services import medicine as controller_medicine
 
 from src.database.connection import get_db
 

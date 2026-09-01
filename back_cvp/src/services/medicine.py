@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 
 from src.exception.exceptions import raise_not_found
 
-from src.model import medicine as medicine_dao
+from src.repositories import medicine as medicine_dao
 
 from src.schemas.medicine import MedicineWrite
 

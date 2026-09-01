@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from src.model import doctor_day as doctor_day_dao
+from src.repositories import doctor_day as doctor_day_dao
 
 from src.schemas.doctor_day import DoctorDayCreate
 

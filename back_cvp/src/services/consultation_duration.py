@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 
 from src.exception.exceptions import raise_not_found
 
-from src.model import consultation_duration as consultation_duration_dao
+from src.repositories import consultation_duration as consultation_duration_dao
 
 from src.schemas.consultation_duration import ConsultationDurationCreate
 

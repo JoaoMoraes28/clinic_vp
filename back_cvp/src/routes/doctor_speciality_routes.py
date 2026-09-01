@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from src.database.connection import get_db
 
-from src.controller import doctor_speciality as controller_doctor_speciality
+from src.services import doctor_speciality as controller_doctor_speciality
 
 from src.schemas.doctor_speciality import DoctorSpecialityCreate
 from src.schemas.doctor_speciality import DoctorSpecialityDelete

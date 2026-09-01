@@ -4,7 +4,7 @@ from typing import Annotated
 
 from sqlalchemy.orm import Session
 
-from src.controller import auth as controller_auth
+from src.services import auth as controller_auth
 
 from src.database.connection import get_db
 

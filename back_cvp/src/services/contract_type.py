@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 
 from src.exception.exceptions import raise_not_found
 
-from src.model import contract_type as contract_type_dao
+from src.repositories import contract_type as contract_type_dao
 
 from src.schemas.contract_type import ContractTypeCreate
 

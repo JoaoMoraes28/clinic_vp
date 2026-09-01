@@ -4,7 +4,7 @@ from typing import List
 
 from sqlalchemy.orm import Session
 
-from src.controller import measure as controller_measure
+from src.services import measure as controller_measure
 
 from src.database.connection import get_db
 

@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from src.model import auth as auth_dao
+from src.repositories import auth as auth_dao
 
 from src.exception.exceptions import raise_invalid_credentials
 

@@ -2,9 +2,9 @@ from sqlalchemy.orm import Session
 
 from src.exception.exceptions import raise_not_found
 
-from src.model import recepcionist as recepcionist_dao
+from src.repositories import recepcionist as recepcionist_dao
 
-from src.controller import address as controller_address
+from src.services import address as controller_address
 
 from src.schemas.recepcionist import RecepcionistCreateNoPassword
 from src.schemas.recepcionist import RecepcionistCreateBaseWithPassword

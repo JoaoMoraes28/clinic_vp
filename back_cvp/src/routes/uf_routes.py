@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from src.database.connection import get_db
 
-from src.controller.uf import get_all_uf
+from src.services.uf import get_all_uf
 
 from src.schemas.uf import Uf
 

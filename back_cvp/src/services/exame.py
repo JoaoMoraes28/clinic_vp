@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 
-from src.model import exame as exame_dao
+from src.repositories import exame as exame_dao
 
-from src.controller import (
+from src.services import (
     consultation_record_exame as controller_consultation_record_exame,
 )
 

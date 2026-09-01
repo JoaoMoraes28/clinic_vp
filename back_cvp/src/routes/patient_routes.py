@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List, Annotated
 
 from src.database.connection import get_db
-from src.controller import patient as controller
+from src.services import patient as controller
 
 from src.schemas.patient import PatientResponseData
 from src.schemas.patient import PatientReponseStatus

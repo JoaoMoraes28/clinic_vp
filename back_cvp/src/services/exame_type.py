@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 
 from src.exception.exceptions import raise_not_found
 
-from src.model import exame_type as exame_type_dao
+from src.repositories import exame_type as exame_type_dao
 
 from src.schemas.exame_type import ExameTypeWrite
 

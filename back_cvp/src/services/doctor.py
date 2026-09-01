@@ -12,8 +12,8 @@ from src.schemas.address import AddressWithUfStr
 
 from src.exception.exceptions import raise_not_found
 
-from src.model import doctor as doctor_dao
-from src.controller import address as controller_address
+from src.repositories import doctor as doctor_dao
+from src.services import address as controller_address
 
 from src.database.models.doctor_address import DoctorAddress
 from src.database.models.doctor import Doctor

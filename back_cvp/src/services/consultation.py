@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 
 from datetime import date
 
-from src.model import consultation as consultation_dao
+from src.repositories import consultation as consultation_dao
 
 from src.exception.exceptions import raise_not_found
 

@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from src.model import medical_recipe as medical_recipe_dao
+from src.repositories import medical_recipe as medical_recipe_dao
 
 from src.schemas.medical_recipe import MedicalRecipeCreate
 

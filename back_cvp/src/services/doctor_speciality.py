@@ -5,7 +5,7 @@ from src.exception.exceptions import raise_not_found
 from src.schemas.doctor_speciality import DoctorSpecialityDelete
 from src.schemas.doctor_speciality import DoctorSpecialityCreate
 
-from src.model import doctor_speciality as doctor_speciality_dao
+from src.repositories import doctor_speciality as doctor_speciality_dao
 
 def get_all_doctor_speciality(db: Session, filter_speciality: int | None):
     return doctor_speciality_dao.select_doctor_speciality(db, filter_speciality)
