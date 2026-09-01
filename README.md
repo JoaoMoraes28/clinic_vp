@@ -29,7 +29,7 @@ O banco foi projetado utilizando um modelo relacional, buscando representar as p
 
 ---
 
-### 🗄️ Tecnologias
+### Tecnologias
 
 * **PostgreSQL** — Sistema gerenciador de banco de dados relacional.
 * **SQL** — Linguagem utilizada para definição e manipulação da estrutura do banco.
@@ -46,7 +46,7 @@ O banco foi projetado utilizando um modelo relacional, buscando representar as p
 
 A estrutura atual do banco é centrada nas seguintes tabelas:
 
-#### 👥 Usuários e profissionais
+#### Usuários e profissionais
 
 O sistema possui três tipos de profissionais:
 
@@ -105,11 +105,11 @@ Entre os dados armazenados estão:
 
 ---
 
-### 🔐 ENUMs
+### ENUMs
 
 O banco utiliza tipos `ENUM` do PostgreSQL para restringir determinados campos a valores previamente definidos como status de consultas, gêneros, tipo sanguíneo e estado civil.
 
-### 🔗 Integridade e regras do banco
+### Integridade e regras do banco
 
 O banco utiliza diferentes mecanismos do PostgreSQL para garantir a consistência dos dados.
 
@@ -161,14 +161,14 @@ principalmente em relações onde o registro dependente não deve permanecer ap�
 
 ---
 
-### 🏗️ Modelagem
+### Modelagem
 
 - [Modelo Concentitual](https://app.brmodeloweb.com/publicview/6a60f459a0360f6e6c16a500)
 - [Modelo Lógico](https://app.brmodeloweb.com/logic/6a62a3c5037b600a4dee9801)
 
 ---
 
-### 🔄 Relação com o Backend
+### Relação com o Backend
 
 O banco de dados faz parte da arquitetura geral do **Clinic VP**, sendo consumido pelo backend da aplicação.
 
@@ -189,7 +189,6 @@ PostgreSQL
 
 O **SQLAlchemy** é responsável pelo mapeamento das entidades do banco para os modelos utilizados pela aplicação Python, enquanto o PostgreSQL é responsável pela persistência e integridade dos dados.
 
----
 ---
 
 ## Backend API
@@ -421,7 +420,6 @@ uvicorn src.app:app --reload
 * Utilização de tipagem com Python
 * Documentação automática via OpenAPI
 
----
 ---
 
 ## Frontend Web
