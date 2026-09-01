@@ -164,7 +164,7 @@ principalmente em relações onde o registro dependente não deve permanecer ap�
 ### Modelagem
 
 - [Modelo Concentitual](https://app.brmodeloweb.com/publicview/6a60f459a0360f6e6c16a500)
-- [Modelo Lógico](https://app.brmodeloweb.com/logic/6a62a3c5037b600a4dee9801)
+- [Modelo Lógico](https://app.brmodeloweb.com/publicview/6a97141660b0915e5ff7e4a0)
 
 ---
 
