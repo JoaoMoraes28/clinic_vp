@@ -1,3 +1,69 @@
+# =========================
+# Back-end
+# =========================
 back_cvp/venv/
 back_cvp/**/__pycache__/
 back_cvp/.env
+
+# =========================
+# Front-end
+# =========================
+
+# Compiled output
+dist/
+tmp/
+out-tsc/
+bazel-out/
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+
+# =========================
+# IDEs and editors
+# =========================
+
+front_cpv/.idea/
+front_cpv/.project
+front_cpv/.classpath
+front_cpv/.c9/
+front_cpv/*.launch
+front_cpv/.settings/
+front_cpv/*.sublime-workspace
+
+
+# =========================
+# Visual Studio Code
+# =========================
+
+front_cpv/.vscode/*
+!front_cpv/.vscode/settings.json
+!front_cpv/.vscode/tasks.json
+!front_cpv/.vscode/launch.json
+!front_cpv/.vscode/extensions.json
+!front_cpv/.vscode/mcp.json
+front_cpv/.history/
+
+
+# =========================
+# Miscellaneous
+# =========================
+
+front_cpv/.angular/cache/
+front_cpv/.sass-cache/
+front_cpv/connect.lock
+front_cpv/coverage/
+front_cpv/libpeerconnection.log
+front_cpv/testem.log
+front_cpv/typings/
+front_cpv/__screenshots__/
+
+
+# =========================
+# System files
+# =========================
+
+front_cpv/.DS_Store
+front_cpv/Thumbs.db
