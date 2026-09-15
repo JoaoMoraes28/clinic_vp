@@ -1,3 +1,28 @@
-/* You can add global styles to this file, and also import other style files */
-
 @import 'tailwindcss';
+
+:root {
+    --bg-primary: #F1F5F9;
+    --bg-gray: #D9D9D9;
+    --bg-gradient-primary: #44587E;
+    --bg-blue-lightess: #B1D0EA;
+    --blue-primary: #27649E;
+    --blue-dark: #44587E;
+    --blue-light: #89A8E2;
+    --blue-cian: #577FC8;
+    --blue-lightess: #BFD0EF;
+    --blue-light-button: #6FAAE2;
+    --blue-dark-button: #154C80;
+    --white-default: #FFFFFF;
+    --black-default: #000000;
+    --red-default: #801517;
+    --greed-default: #B5F3C2;
+    --text-color-gray: #868686;
+}
+
+* {
+    font-family: "Roboto", sans-serif;
+}
+
+input:focus {
+    outline: none;
+}

@@ -1,0 +1,28 @@
+<div
+    class="flex flex-col items-center min-w-screen min-h-screen bg-linear-to-r from-(--bg-gradient-primary) to-(--bg-blue-lightess)">
+    <main class="w-[calc(100%-14px)] h-142">
+        <img class="hidden" src="" alt="">
+        <div class="flex flex-col bg-(--white-default) w-full h-full rounded-lg px-6 py-10">
+            <header class="h-24">
+                <h1 class="text-2xl">Seja bem vindo(a)</h1>
+                <p class="text-(--text-color-gray)">Faça seu ligin para acessr sua conta:</p>
+            </header>
+            <form class="flex flex-col flex-1 justify-between">
+                <div class="flex flex-col items-end gap-8 w-full">
+                    @for (input of inputsData; track input.id) {
+                    <div class="w-full">
+                        <app-input-login [id]="input.id" [label]="input.label" [type]="input.type"
+                            [placeholder]="input.placeholder" [inputImg]="input.inputImg">
+                        </app-input-login>
+                    </div>
+                    }
+                    <a href="#" class="text-(--text-color-gray) underline">Esqueci minha senha</a>
+                </div>
+                <div class="w-full h-12">
+                    <app-confirm-button [buttonType]="'button'" [buttonLabel]="'Login'" (clickFunction)="event()">
+                    </app-confirm-button>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
