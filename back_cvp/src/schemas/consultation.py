@@ -14,7 +14,7 @@ class ConsultationCreate(BaseModel):
     hour: time
 
 
-class ConsultationResponsePreview(BaseModel):
+class ConsultationPreview(BaseModel):
     id: int
     patient_name: str
     doctor_name: str
@@ -23,7 +23,12 @@ class ConsultationResponsePreview(BaseModel):
     status: str
 
 
-class ConsultationResponseAccess(ConsultationResponsePreview):
+class ConsultationResponsePreview(BaseModel):
+    hour: time
+    consultations: list[ConsultationPreview]
+
+
+class ConsultationResponseAccess(ConsultationPreview):
     cpf: str
     phone: str
     consultation_date: date

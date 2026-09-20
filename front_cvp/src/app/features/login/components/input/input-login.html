@@ -1,10 +1,18 @@
-<div class="flex flex-col justify-between w-full h-22">
-    <label for="{{id()}}" class="text-xl">{{label()}}</label>
-    <div class="flex w-full h-12 border-2 border-(--blue-primary) rounded-lg">
-        <div class="flex justify-center items-center w-12 h-full bg-(--blue-primary) rounded-tl-sm rounded-bl-sm">
+<div class="flex flex-col justify-between w-full h-26">
+    <div class="flex justify-between items-end">
+        <label for="{{id()}}" class="text-xl">{{label()}}</label>
+        @if (invalidField() == id() || invalidField() === 'email and password') {
+            <span class="text-sm italic text-red-500">{{errorMessage()}}</span>
+        }
+    </div>
+    <div class="flex w-full h-12 border-2 border-(--blue-primary) rounded-lg
+    xl:h-16">
+        <div class="flex justify-center items-center w-12 h-full bg-(--blue-primary) rounded-tl-sm rounded-bl-sm
+        xl:w-14">
             <img aria-hidden="true" src="{{inputImg()}}" class="w-auto h-8">
         </div>
-        <input id="{{id()}}" type="{{type()}}" placeholder="{{placeholder()}}"
-        class="flex-1 pl-2 bg-(--white-default) rounded-tr-lg rounded-br-lg">
+        <input formControlName="{{controlName()}}" id="{{id()}}" type="{{type()}}" placeholder="{{placeholder()}}"
+        class="flex-1 pl-2 bg-(--white-default) rounded-tr-lg rounded-br-lg
+        lg:text-xl xl:pl-4">
     </div>
 </div>

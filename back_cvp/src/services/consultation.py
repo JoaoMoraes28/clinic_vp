@@ -1,16 +1,45 @@
+from collections import defaultdict
+
 from sqlalchemy.orm import Session
 
-from datetime import date
+from datetime import date, time
 
 from src.repositories import consultation as consultation_dao
 
 from src.exception.exceptions import raise_not_found
 
 from src.schemas.consultation import ConsultationCreate
+from src.schemas.consultation import ConsultationResponsePreview
+from src.schemas.consultation import ConsultationPreview
 
 
 def get_all_consultation(db: Session, date: date, id_doctor: int | None):
-    return consultation_dao.select_consultation(db, date, id_doctor)
+    consultations = consultation_dao.select_consultation(db, date, id_doctor)
+
+    consultation_by_hour = defaultdict(list)
+
+    for consultation in consultations:
+        hour = consultation.hour.hour
+
+        _consultation = ConsultationPreview(
+            id=consultation.id,
+            patient_name=consultation.patient_name,
+            doctor_name=consultation.doctor_name,
+            hour=consultation.hour,
+            speciality_name=consultation.speciality_name,
+            status=consultation.status,
+        )
+
+        consultation_by_hour[(hour, 0)].append(_consultation)
+
+    response_consultations: list[ConsultationResponsePreview] = []
+
+    for hour in range(8, 19):
+        _consultation = ConsultationResponsePreview(hour=str(time(hour, 0)), consultations=consultation_by_hour[hour, 0])
+
+        response_consultations.append(_consultation)
+
+    return response_consultations
 
 
 def get_consultation_id(db: Session, id: int):

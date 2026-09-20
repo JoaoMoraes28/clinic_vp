@@ -15,8 +15,12 @@
     --white-default: #FFFFFF;
     --black-default: #000000;
     --red-default: #801517;
-    --greed-default: #B5F3C2;
+    --red-light: #F3B5B5;
+    --green-default: #B5F3C2;
     --text-color-gray: #868686;
+
+    --shadow-default-md: 4px 4px 4px #0000004b;
+    --shadow-default-sm: 2px 2px 4px #00000063;
 }
 
 * {

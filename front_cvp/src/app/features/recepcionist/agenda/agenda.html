@@ -1,1 +1,25 @@
-<p>agenda works!</p>
+<div class="flex flex-col items-center min-w-full min-h-full">
+    <header class="flex flex-col items-center w-full gap-4">
+        <h1 class="text-2xl font-semibold">Consultas agendadas para hoje</h1>
+        <div class="flex justify-end items-center gap-1 w-full">
+            <app-calendary-icon [color]="'var(--blue-dark)'" [height]="22" [width]="22">
+            </app-calendary-icon>
+            <p class="font-bold text-(--blue-dark)">{{todayFormatted}}</p>
+        </div>
+    </header>
+    <section class="flex-1 bg-(--bg-gray) w-full p-2 mt-2">
+        <header class="py-4 bg-(--white-default) shadow-(--shadow-default-sm)">
+            <ul class="grid grid-cols-2 grid-rows-2 gap-4 place-items-center">
+                @for (badge of badges; track badge.text) {
+                <app-badges-consultation [badge]="badge">
+                </app-badges-consultation>
+                }
+            </ul>
+        </header>
+        <ul>
+            <li>
+                
+            </li>
+        </ul>
+    </section>
+</div>

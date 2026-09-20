@@ -7,7 +7,7 @@ import { Component, input, output } from '@angular/core';
 })
 export class ConfirmButton {
   buttonType = input<string>();
-  buttonLabel = input<string>();
+  buttonLabel = input.required<string>();
   clickFunction = output<void>();
 
   onClick() {

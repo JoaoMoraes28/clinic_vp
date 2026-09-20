@@ -1,28 +1,43 @@
-<div
-    class="flex flex-col items-center min-w-screen min-h-screen bg-linear-to-r from-(--bg-gradient-primary) to-(--bg-blue-lightess)">
-    <main class="w-[calc(100%-14px)] h-142">
-        <img class="hidden" src="" alt="">
-        <div class="flex flex-col bg-(--white-default) w-full h-full rounded-lg px-6 py-10">
-            <header class="h-24">
-                <h1 class="text-2xl">Seja bem vindo(a)</h1>
-                <p class="text-(--text-color-gray)">Faça seu ligin para acessr sua conta:</p>
-            </header>
-            <form class="flex flex-col flex-1 justify-between">
-                <div class="flex flex-col items-end gap-8 w-full">
-                    @for (input of inputsData; track input.id) {
-                    <div class="w-full">
-                        <app-input-login [id]="input.id" [label]="input.label" [type]="input.type"
-                            [placeholder]="input.placeholder" [inputImg]="input.inputImg">
-                        </app-input-login>
+<div class="min-w-screen min-h-screen h-screen bg-linear-to-r from-(--bg-gradient-primary) to-(--bg-blue-lightess)">
+    <main class="flex flex-col items-center w-full h-full
+    lg:justify-center">
+        <section class="flex items-center w-[calc(100%-14px)] h-full
+        md:justify-center
+        lg:w-[85%] lg:h-[90%] lg:shadow-lg lg:bg-(--bg-blue-lightess) lg:items-start lg:justify-start lg:rounded-lg
+        xl:aspect-video xl:w-3/4 xl:h-4/5 xl:max-h-198 xl:max-w-8xl">
+            <div class="relative flex flex-col bg-(--white-default) w-full h-8/9 min-h-132 max-h-174 rounded-lg px-6 pb-10 pt-16
+            md:w-3/4 md:max-h-212 md:px-8 md:py-16
+            lg:w-1/2 lg:h-full lg:py-8 lg:max-h-none lg:rounded-tr-none lg:rounded-br-none">
+                <img src="images/banner-log.png" alt="Logo do site" class="absolute right-0 top-0 aspect-square w-18
+                md:w-22 md:right-4 md:top-2">
+                <header class="h-24">
+                    <h2 class="text-2xl">Seja bem vindo(a)</h2>
+                    <p class="text-(--text-color-gray)
+                    xl:mt-2">Faça login para acessar sua conta:</p>
+                </header>
+                <form (ngSubmit)="onSubmit()" [formGroup]="profileForm" class="flex flex-col flex-1 justify-between">
+                    <div class="flex flex-col items-end gap-8 w-full
+                    md:mt-18 md:gap-12
+                    xl:mt-8">
+                        @for (input of inputsData; track input.id) {
+                        <div class="w-full">
+                            <app-input-login [controlName]="input.id" [id]="input.id" [label]="input.label" [type]="input.type"
+                                [placeholder]="input.placeholder" [errorMessage]="input.errorMessage" [invalidField]="statusLogin()" [inputImg]="input.inputImg">
+                            </app-input-login>
+                        </div>
+                        }
+                        <a href="#" class="text-(--text-color-gray) underline
+                        lg:-mt-8">Esqueci minha senha</a>
                     </div>
-                    }
-                    <a href="#" class="text-(--text-color-gray) underline">Esqueci minha senha</a>
-                </div>
-                <div class="w-full h-12">
-                    <app-confirm-button [buttonType]="'button'" [buttonLabel]="'Login'" (clickFunction)="event()">
-                    </app-confirm-button>
-                </div>
-            </form>
-        </div>
+                    <div class="w-full h-12">
+                        <app-confirm-button [buttonLabel]="'Login'">
+                        </app-confirm-button>
+                    </div>
+                </form>
+            </div>
+            <div class="hidden lg:flex lg:items-center lg:justify-center lg:w-1/2 lg:h-full">
+                <img class="lg:aspect-square lg:w-auto lg:h-2/3" src="images/Image_login.png" alt="">
+            </div>
+        </section>
     </main>
 </div>

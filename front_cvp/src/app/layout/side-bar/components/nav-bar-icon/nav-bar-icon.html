@@ -1,0 +1,5 @@
+<div (click)="onClickIcon(iconNavBar().label)" class="lg:flex lg:pl-2 lg:items-center lg:gap-2 lg:w-54 lg:h-12 lg:rounded-md lg:hover:bg-(--white-default)/20 lg:hover:scale-102 lg:transition-all lg:duration-200" [class]="iconSelected() == iconNavBar().label ? 'lg:bg-(--white-default)/70' : ''">
+    <ng-container *ngComponentOutlet="iconNavBar().component" />
+    <p class="lg:font-bold" 
+    [class]="iconSelected() == iconNavBar().label ? 'lg:text-(--blue-dark)' : 'lg:text-(--white-default)'">{{iconNavBar().label}}</p>
+</div>

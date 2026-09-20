@@ -15,12 +15,14 @@ def select_consultation(db: Session, date: date, id_doctor: int | None):
             db.query(ConsultationData)
             .filter(ConsultationData.consultation_date == date)
             .filter(ConsultationData.doctor_id == id_doctor)
+            .order_by(ConsultationData.hour)
             .all()
         )
 
     return (
         db.query(ConsultationData)
         .filter(ConsultationData.consultation_date == date)
+        .order_by(ConsultationData.hour)
         .all()
     )
 
