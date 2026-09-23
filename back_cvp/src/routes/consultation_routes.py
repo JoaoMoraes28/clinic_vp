@@ -17,6 +17,7 @@ from src.schemas.consultation import ConsultationResponseDoctor
 from src.schemas.consultation import ConsultationResponseAccess
 from src.schemas.consultation import VerfifyHourConsultationResponse
 from src.schemas.consultation import VerfifyHourConsultationJSONConsult
+from src.schemas.consultation import CountConsultationResponse
 from src.schemas.return_messages_standart import ReturnMessageCreateElement
 from src.schemas.return_messages_standart import ReturnMessageStandard
 
@@ -72,6 +73,16 @@ def get_hour_consultation(
     return controller_consultation.get_hours_consultation(
         db, verify_data.id_doctor, verify_data.date
     )
+
+
+@consultation_routes.get(
+    "/resume_consultations",
+    response_model=CountConsultationResponse,
+    status_code=status.HTTP_200_OK,
+    dependencies=[Depends(valide_access_level_recepcionist)],
+)
+def get_count_consultation(date: date, db: Session = Depends(get_db)):
+    return controller_consultation.get_count_consultation(db, date)
 
 
 @consultation_routes.post(

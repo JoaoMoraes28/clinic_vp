@@ -56,5 +56,14 @@ class VerfifyHourConsultationJSONConsult(BaseModel):
     date: date
 
 
+class CountConsultationResponse(BaseModel):
+    scheduled: int | None = 0
+    waiting: int | None = 0
+    in_progress: int | None = 0
+    completed: int | None = 0
+    canceled: int | None = 0
+    total: int
+
+
 class ConsultationNewStatus(BaseModel):
     new_status: str

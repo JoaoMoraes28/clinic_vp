@@ -1,0 +1,15 @@
+<div class="flex bg-(--blue-lightess) w-full h-full rounded-lg shadow-(--shadow-default-sm)">
+    <div class="flex flex-col justify-between flex-1 p-2">
+        <div class="flex flex-col">
+            <p class="font-bold text-lg">{{consultation().patient_name}}</p>
+            <p class="text-(--blue-dark) text-sm font-bold">{{consultation().doctor_name}}</p>
+        </div>
+        <div class="flex justify-between items-end">
+            <p class="font-bold text-xl">{{getFormattedHour(consultation().hour)}}</p>
+            <p class="bg-(--white-default)/80 min-w-32 h-8 text-center pt-1 -mr-12 z-90">{{consultation().speciality_name}}</p>
+        </div>
+    </div>
+    <div [style.background-color]="getColorLabelCard(consultation().status)" class="rounded-tr-lg rounded-br-lg w-14 h-full">
+
+    </div>
+</div>

@@ -11,6 +11,7 @@ from src.exception.exceptions import raise_not_found
 from src.schemas.consultation import ConsultationCreate
 from src.schemas.consultation import ConsultationResponsePreview
 from src.schemas.consultation import ConsultationPreview
+from src.schemas.consultation import CountConsultationResponse
 
 
 def get_all_consultation(db: Session, date: date, id_doctor: int | None):
@@ -35,7 +36,9 @@ def get_all_consultation(db: Session, date: date, id_doctor: int | None):
     response_consultations: list[ConsultationResponsePreview] = []
 
     for hour in range(8, 19):
-        _consultation = ConsultationResponsePreview(hour=str(time(hour, 0)), consultations=consultation_by_hour[hour, 0])
+        _consultation = ConsultationResponsePreview(
+            hour=str(time(hour, 0)), consultations=consultation_by_hour[hour, 0]
+        )
 
         response_consultations.append(_consultation)
 
@@ -55,6 +58,25 @@ def get_hours_consultation(db: Session, id_doctor: int, date_consultation: date)
     return consultation_dao.select_hour_doctor_consultation(
         db, id_doctor, date_consultation
     )
+
+
+def get_count_consultation(db: Session, date_consultation: date):
+    resume = consultation_dao.select_cound_consultation(db, date_consultation)
+
+    response: CountConsultationResponse = {}
+    index: int = 0
+    totalConsultation: int = 0
+
+    while index < len(resume):
+        label = str(resume[index][0]).split(".")
+        response[label[1].lower()] = resume[index][1]
+        totalConsultation = totalConsultation + resume[index][1]
+
+        index = index + 1
+
+    response["total"] = totalConsultation
+
+    return response
 
 
 def registry_consultation(db: Session, consultation: ConsultationCreate):

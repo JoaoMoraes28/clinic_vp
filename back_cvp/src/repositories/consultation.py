@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import update, text
+from sqlalchemy import update, text, func
 
 from datetime import date
 
@@ -40,6 +40,14 @@ def select_hour_doctor_consultation(
     )
 
     return result.mappings().all()
+
+
+def select_cound_consultation(db: Session, date_consultation: date):
+    return (
+        db.query(Consultation.status, func.count(Consultation.id))
+        .where(Consultation.consultation_date == date_consultation)
+        .group_by(Consultation.status).all()
+    )
 
 
 def insert_consultation(db: Session, consultation: ConsultationCreate):

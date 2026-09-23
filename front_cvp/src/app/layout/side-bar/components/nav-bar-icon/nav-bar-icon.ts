@@ -1,8 +1,7 @@
 import { NgComponentOutlet } from '@angular/common';
 import { Component, inject, input, output } from '@angular/core';
 import { Router } from '@angular/router';
-import { NavBarIconData } from '../../side-bar';
-import { Navigation } from '../../../../services/navigation/navigation';
+import { NavBarIconData, Navigation } from '../../../../services/navigation/navigation';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({

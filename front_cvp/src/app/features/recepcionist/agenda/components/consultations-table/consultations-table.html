@@ -1,0 +1,22 @@
+<article class="w-full bg-(--white-default)">
+    <header [style.background-color]="headerColor()" class="flex justify-center items-center w-full h-18">
+        <p [class]="index() % 2 ? 'text-(--black-default)' : 'text-(--white-default)'" class="text-2xl">
+            {{getFormattedHour(consultationsData().hour)}}</p>
+    </header>
+    <ul class="flex flex-col gap-8 px-4 py-8">
+        @if (consultationsData().consultations.length == 0) {
+        <li class="flex justify-center items-center w-full">
+            <p class="text-xl text-center italic">Sem consultas agendadas para este horário</p>
+        </li>
+        
+        } @else {
+        @for (consultation of consultationsData().consultations; track consultation.id) {
+        <li class="w-full h-32">
+            <app-consultation-card [consultation]="consultation">
+            </app-consultation-card>
+        </li>
+        }
+
+        }
+    </ul>
+</article>

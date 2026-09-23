@@ -1,0 +1,12 @@
+<div class="fixed flex justify-center items-center bottom-2 z-90 w-screen h-22 lg:hidden">
+    <nav class="w-[95%] h-full bg-(--blue-dark) backdrop-blur-2xl rounded-xl">
+        <ul class="flex justify-around items-center w-full h-full">
+            @for (iconNav of navBarIcons; track iconNav.label) {
+            <li>
+                <app-nav-bar-icon [iconNavBar]="iconNav" (changeIconSelected)="setIconActive(iconNav.label)">
+                </app-nav-bar-icon>
+            </li>
+            }
+        </ul>
+    </nav>
+</div>
