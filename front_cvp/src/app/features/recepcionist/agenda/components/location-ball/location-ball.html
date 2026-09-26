@@ -1,0 +1,9 @@
+<div (click)="moveCarouselTo()" class="lg:flex lg:flex-col-reverse items-center gap-1">
+    <div class="peer lg:bg-(--black-default)/50 lg:w-5 lg:h-5 lg:rounded-full lg:hover:bg-(--black-default)"></div>
+    <div class="peer-hover:opacity-100 opacity-0 lg:relative flex flex-col items-center lg:bg-(--white-default) lg:w-7 lg:h-7">
+        <p class="font-bold">{{hourLabel()}}</p>
+        <div
+            class="absolute -bottom-2 w- h-0 lg:border-l-8 lg:border-r-8 lg:border-t-8 border-l-transparent border-r-transparent border-t-(--white-default)">
+        </div>
+    </div>
+</div>

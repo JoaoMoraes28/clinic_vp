@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, viewChild, viewChildren } from '@angular/core';
 import { CalendaryIcon } from '../../../svg/calendary-icon/calendary-icon';
 import { getDateFormatted, date } from '../../../utils/date/date';
 import { BadgesConsultation } from './components/badges-consultation/badges-consultation';
 import { ConsultationsTable } from './components/consultations-table/consultations-table';
 import { Arrow } from '../../../svg/arrow/arrow';
+import { LocationBall } from './components/location-ball/location-ball';
 
 export interface CountConsultationStatus {
   scheduled: number;
@@ -36,7 +37,7 @@ export interface ConsultationsData {
 }
 
 @Component({
-  imports: [CalendaryIcon, BadgesConsultation, ConsultationsTable, Arrow],
+  imports: [CalendaryIcon, BadgesConsultation, ConsultationsTable, Arrow, LocationBall],
   selector: 'app-agenda',
   templateUrl: './agenda.html',
 })
@@ -184,4 +185,39 @@ export class Agenda {
   ];
 
   todayFormatted: string = getDateFormatted(date);
+
+  carousel = viewChild<ElementRef<HTMLUListElement>>('containerCarousel');
+  consultationsTables = viewChildren<ElementRef>('consultationTable');
+  consultation = viewChild<ElementRef<HTMLLIElement>>('consultation');
+
+  carouselElement: HTMLUListElement | undefined;
+  consultationWidth: number | undefined;
+
+  rollCarousel(direction: 'left' | 'right'): void {
+    this.carouselElement = this.carousel()?.nativeElement;
+    this.consultationWidth = this.consultation()?.nativeElement.offsetWidth;
+
+    if (!this.carouselElement || !this.consultationWidth) return
+
+
+    if (direction == 'right') this.carouselElement!.scrollLeft += this.consultationWidth
+    else this.carouselElement.scrollLeft -= this.consultationWidth
+  }
+
+  rollCarouselByLocationBall(index: number): void {
+    this.consultationWidth = this.consultation()?.nativeElement.offsetWidth;
+    this.carouselElement = this.carousel()?.nativeElement;
+
+    this.carouselElement?.scrollTo({
+      left: this.consultationWidth! * (index - 0.75),
+      behavior: 'smooth'
+    })
+    
+  }
+
+  getHourNumber(hour: string): number {
+    const number: number = Number(hour.split(':')[0])
+
+    return number
+  }
 }
