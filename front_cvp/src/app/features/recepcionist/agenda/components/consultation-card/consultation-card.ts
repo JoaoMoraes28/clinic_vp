@@ -1,7 +1,7 @@
-import { Component, input } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { Consultation } from '../../agenda';
-import { date } from '../../../../../utils/date/date';
-import { formattedHour } from '../../../../../utils/date/date';
+import { date } from '../../../../../utils/date/date-hour';
+import { formattedHour } from '../../../../../utils/date/date-hour';
 
 @Component({
   imports: [],
@@ -10,6 +10,7 @@ import { formattedHour } from '../../../../../utils/date/date';
 })
 export class ConsultationCard {
   consultation = input.required<Consultation>();
+  openModal = output<void>();
 
   getColorLabelCard(status: string): string {
     const hourToday: string = date.toLocaleTimeString();
@@ -33,5 +34,9 @@ export class ConsultationCard {
 
   getFormattedHour(hour: string): string {
     return formattedHour(hour);
+  }
+
+  openModalConsultation(): void {
+    this.openModal.emit();
   }
 }

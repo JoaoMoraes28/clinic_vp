@@ -11,5 +11,5 @@ export function getDateFormatted(date: Date): string {
 }
 
 export function formattedHour(hour: string): string {
-    return hour.slice(0, 5)
-} 
+    return hour.slice(0, 5);
+}

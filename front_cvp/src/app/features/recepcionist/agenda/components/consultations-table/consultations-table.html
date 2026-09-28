@@ -12,7 +12,7 @@
         } @else {
         @for (consultation of consultationsData().consultations; track consultation.id) {
         <li class="w-full h-32">
-            <app-consultation-card [consultation]="consultation">
+            <app-consultation-card (openModal)="changeOpenModal()" [consultation]="consultation">
             </app-consultation-card>
         </li>
         }

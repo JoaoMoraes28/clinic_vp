@@ -58,7 +58,7 @@ def get_consultation_doctor(
 def get_consultation_access(
     db: Session = Depends(get_db), id_consultation: int = Path(..., ge=1)
 ):
-    return controller_consultation.get_consultation_id(db, id_consultation, None)
+    return controller_consultation.get_consultation_id(db, id_consultation)
 
 
 @consultation_routes.get(

@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Cancel } from './cancel';
+import { CancelButton } from './cancel-button';
 
 describe('Cancel', () => {
-  let component: Cancel;
-  let fixture: ComponentFixture<Cancel>;
+  let component: CancelButton;
+  let fixture: ComponentFixture<CancelButton>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Cancel],
+      imports: [CancelButton],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(Cancel);
+    fixture = TestBed.createComponent(CancelButton);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

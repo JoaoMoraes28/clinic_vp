@@ -1,10 +1,11 @@
-import { AfterViewInit, Component, ElementRef, OnInit, viewChild, viewChildren } from '@angular/core';
+import { Component, ElementRef, inject, Renderer2, signal, viewChild, viewChildren } from '@angular/core';
 import { CalendaryIcon } from '../../../svg/calendary-icon/calendary-icon';
-import { getDateFormatted, date } from '../../../utils/date/date';
+import { getDateFormatted, date } from '../../../utils/date/date-hour';
 import { BadgesConsultation } from './components/badges-consultation/badges-consultation';
 import { ConsultationsTable } from './components/consultations-table/consultations-table';
 import { Arrow } from '../../../svg/arrow/arrow';
 import { LocationBall } from './components/location-ball/location-ball';
+import { ConsultationModal } from './components/consultation-modal/consultation-modal';
 
 export interface CountConsultationStatus {
   scheduled: number;
@@ -37,7 +38,7 @@ export interface ConsultationsData {
 }
 
 @Component({
-  imports: [CalendaryIcon, BadgesConsultation, ConsultationsTable, Arrow, LocationBall],
+  imports: [CalendaryIcon, BadgesConsultation, ConsultationsTable, Arrow, LocationBall, ConsultationModal],
   selector: 'app-agenda',
   templateUrl: './agenda.html',
 })
@@ -186,12 +187,20 @@ export class Agenda {
 
   todayFormatted: string = getDateFormatted(date);
 
-  carousel = viewChild<ElementRef<HTMLUListElement>>('containerCarousel');
+  private carousel = viewChild<ElementRef<HTMLUListElement>>('containerCarousel');
   consultationsTables = viewChildren<ElementRef>('consultationTable');
   consultation = viewChild<ElementRef<HTMLLIElement>>('consultation');
 
   carouselElement: HTMLUListElement | undefined;
   consultationWidth: number | undefined;
+
+  isModalConsultationOpen = signal(false);
+  renderer = inject(Renderer2);
+
+  changeViewModal(): void {
+    this.isModalConsultationOpen.set(!this.isModalConsultationOpen());
+    this.renderer.addClass(document.body, 'overflow-hidden')
+  }
 
   rollCarousel(direction: 'left' | 'right'): void {
     this.carouselElement = this.carousel()?.nativeElement;
@@ -212,7 +221,7 @@ export class Agenda {
       left: this.consultationWidth! * (index - 0.75),
       behavior: 'smooth'
     })
-    
+
   }
 
   getHourNumber(hour: string): number {
