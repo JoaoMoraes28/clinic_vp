@@ -1,7 +1,7 @@
 import { Component, computed, input, output, Signal } from '@angular/core';
 import { ConsultationsData } from '../../agenda';
 import { ConsultationCard } from '../consultation-card/consultation-card';
-import { formattedHour } from '../../../../../utils/date/date-hour';
+import { formattedHour } from '../../../../../utils/date-hour';
 
 @Component({
   imports: [ConsultationCard],

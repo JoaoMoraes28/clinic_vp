@@ -1,0 +1,98 @@
+<section class="relative w-full h-full bg-(--bg-primary) py-12 px-6 overflow-auto md:px-12
+        lg:w-172 lg:h-[calc(100%-24px)] lg:aspect-9/16 lg:overflow-hidden lg:mt-3
+        2xl:h-[calc(100%-96px)] 2xl:mt-12">
+    <button (click)="changeModalOpening()" class="absolute right-10 top-4 lg:top-6">
+        <app-close [iconColor]="'var(--blue-primary)'" [width]="32" [height]="32">
+        </app-close>
+    </button>
+    <header class="flex flex-col items-center gap-6 lg:h-48">
+        <div class="flex justify-center items-center w-32 h-32 border-3 border-(--blue-primary) rounded-full">
+            <app-profile-person [colorIcon]="'var(--blue-primary)'" [width]="78" [height]="78">
+            </app-profile-person>
+        </div>
+        <h1 class="text-2xl text-(--blue-primary) font-bold">
+            Angélica Santos da Silva
+        </h1>
+    </header>
+    <ul class="flex flex-col gap-3 mt-8 lg:overflow-auto lg:h-[calc(100%-192px)]">
+        <li class="flex flex-col gap-3 md:flex-row md:gap-0">
+            <div class="md:w-1/2">
+                <app-information-label [datas]="patientDatas()[0]">
+                </app-information-label>
+            </div>
+            <div class="md:w-1/2">
+                <app-information-label [datas]="patientDatas()[1]">
+                </app-information-label>
+            </div>
+
+        </li>
+        <li class="flex flex-col gap-3 md:flex-row md:gap-0">
+            <div class="md:w-1/2">
+                <app-information-label [datas]="patientDatas()[2]">
+                </app-information-label>
+            </div>
+            <div class="md:w-1/2">
+                <app-information-label [datas]="patientDatas()[3]">
+                </app-information-label>
+            </div>
+        </li>
+        <li>
+            <div>
+                <app-information-label [datas]="patientDatas()[4]">
+                </app-information-label>
+            </div>
+        </li>
+        <li class="flex flex-col gap-3 md:flex-row md:gap-0">
+            <div class="md:w-1/2">
+                <app-information-label [datas]="patientDatas()[5]">
+                </app-information-label>
+            </div>
+            <div class="md:w-1/2">
+                <app-information-label [datas]="patientDatas()[6]">
+                </app-information-label>
+            </div>
+        </li>
+        <li class="flex">
+            <div class="w-1/2">
+                <app-information-label [datas]="patientDatas()[7]">
+                </app-information-label>
+            </div>
+            <div class="w-1/2">
+                <app-information-label [datas]="patientDatas()[8]">
+                </app-information-label>
+            </div>
+        </li>
+        <li class="flex flex-col gap-3 md:flex-row md:gap-0">
+            <div class="md:w-1/2">
+                <app-information-label [datas]="patientDatas()[9]">
+                </app-information-label>
+            </div>
+            <div class="md:w-1/2">
+                <app-information-label [datas]="patientDatas()[10]">
+                </app-information-label>
+            </div>
+        </li>
+        <li class="flex flex-col gap-3 md:flex-row md:gap-0">
+            <div class="md:w-1/2">
+                <app-information-label [datas]="patientDatas()[11]">
+                </app-information-label>
+            </div>
+            <div class="md:w-1/2">
+                <app-information-label [datas]="patientDatas()[12]">
+                </app-information-label>
+            </div>
+        </li>
+        <li>
+            <div>
+                <app-information-label [datas]="patientDatas()[13]">
+                </app-information-label>
+            </div>
+        </li>
+        <li>
+            <div>
+                <app-information-label [datas]="patientDatas()[14]">
+                </app-information-label>
+            </div>
+        </li>
+    </ul>
+</section>

@@ -1,6 +1,6 @@
 import { Component, ElementRef, inject, Renderer2, signal, viewChild, viewChildren } from '@angular/core';
 import { CalendaryIcon } from '../../../svg/calendary-icon/calendary-icon';
-import { getDateFormatted, date } from '../../../utils/date/date-hour';
+import { getDateFormatted, date } from '../../../utils/date-hour';
 import { BadgesConsultation } from './components/badges-consultation/badges-consultation';
 import { ConsultationsTable } from './components/consultations-table/consultations-table';
 import { Arrow } from '../../../svg/arrow/arrow';
@@ -198,8 +198,9 @@ export class Agenda {
   renderer = inject(Renderer2);
 
   changeViewModal(): void {
-    this.isModalConsultationOpen.set(!this.isModalConsultationOpen());
-    this.renderer.addClass(document.body, 'overflow-hidden')
+    this.isModalConsultationOpen() ? this.renderer.removeClass(document.body, 'overflow-hidden') : this.renderer.addClass(document.body, 'overflow-hidden');
+
+    this.isModalConsultationOpen.set(!this.isModalConsultationOpen())
   }
 
   rollCarousel(direction: 'left' | 'right'): void {

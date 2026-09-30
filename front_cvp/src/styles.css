@@ -11,6 +11,8 @@
     --blue-light: #89A8E2;
     --blue-cian: #577FC8;
     --blue-lightess: #BFD0EF;
+    --blue-lightness-card-patient: #D3DDE6;
+    --blue-dark-card-hover: #89AED0;
     --blue-light-button: #6FAAE2;
     --blue-dark-button: #154C80;
     --white-default: #FFFFFF;
@@ -26,6 +28,10 @@
 
 * {
     font-family: "Roboto", sans-serif;
+}
+
+body {
+    background-color: var(--bg-primary);
 }
 
 input:focus {

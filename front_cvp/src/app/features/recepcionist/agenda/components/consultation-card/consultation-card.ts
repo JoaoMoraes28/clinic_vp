@@ -1,7 +1,7 @@
 import { Component, input, output } from '@angular/core';
 import { Consultation } from '../../agenda';
-import { date } from '../../../../../utils/date/date-hour';
-import { formattedHour } from '../../../../../utils/date/date-hour';
+import { date } from '../../../../../utils/date-hour';
+import { formattedHour } from '../../../../../utils/date-hour';
 
 @Component({
   imports: [],

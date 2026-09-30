@@ -1,0 +1,18 @@
+<article (click)="changeModalOpening()" class="group relative flex w-full bg-(--blue-lightness-card-patient) rounded-lg aspect-25/9
+            lg:aspect-24/9 hover:bg-(--blue-dark-card-hover) hover:shadow-(--shadow-default-md)">
+    <button class="hidden group-hover:lg:flex lg:absolute lg:rounded-lg lg:top-3 lg:right-3 lg:justify-center lg:items-center lg:w-10 lg:h-10 lg:bg-(--white-default)">
+        <img src="images/agend-consultation.png" alt="Foto de perfil de paciente">
+    </button>
+    <div class="flex justify-center items-center w-1/3 border-r-2 border-(--white-default)">
+        <div class="flex justify-center items-center w-16 h-16 border-2 border-(--blue-dark) rounded-full">
+            <app-profile-person
+            [colorIcon]="'var(--blue-dark)'" [width]="32" [height]="32">
+            </app-profile-person>
+        </div>
+    </div>
+    <div class="flex px-4 w-2/3 flex-col items-center justify-evenly border-l-2 border-(--white-default)">
+        <p class="font-bold text-lg text-nowrap overflow-auto max-w-full">{{patient().name}}</p>
+        <p class="font-light text-md">CPF: {{patient().cpf}}</p>
+        <p class="font-light text-md md:text-sm">Telefone: {{patient().phone}}</p>
+    </div>
+</article>

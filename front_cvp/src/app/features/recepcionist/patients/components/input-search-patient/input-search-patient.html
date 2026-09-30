@@ -1,0 +1,6 @@
+<div class="flex w-full h-full border-2 border-(--blue-primary) rounded-lg">
+    <div class="flex justify-center items-center bg-(--blue-primary) h-full aspect-square rounded-tl-sm roundedb-l-sm">
+        <img class="w-auto h-8" aria-hidden="true" src="images/Search_icon.png" alt="">
+    </div>
+    <input (input)="filterCardPatients($event.target.value)" class="px-2 flex-1" type="text" placeholder="Busque um paciente por nome ou CPF">
+</div>

@@ -3,7 +3,7 @@ import { LabelDatas, DataLabel } from '../../../../../shared/data-label/data-lab
 import { Close } from '../../../../../svg/close/close';
 import { ConfirmButton } from '../../../../../shared/button/confirm/confirm-button';
 import { CancelButton } from '../../../../../shared/button/cancel/cancel-button';
-import { getDateFormatted, formattedHour } from '../../../../../utils/date/date-hour';
+import { getDateFormatted, formattedHour } from '../../../../../utils/date-hour';
 import { Router } from '@angular/router';
 
 @Component({
@@ -50,6 +50,5 @@ export class ConsultationModal {
 
   closeModalConsultation(): void {
     this.closeModal.emit();
-    this.renderer.removeClass(document.body, 'overflow-hidden');
   }
 }
