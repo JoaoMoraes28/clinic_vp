@@ -9,8 +9,8 @@ import { Navigation } from '../../services/navigation/navigation';
   templateUrl: './consultation.html',
 })
 export class Consultation {
-  navigation = inject(Navigation)
-  iconSelected = toSignal(this.navigation.getActiveIcon(), {initialValue: ''})
+  navigation = inject(Navigation);
+  iconSelected = toSignal(this.navigation.getActiveIcon(), {initialValue: ''});
 
   iconColor: Signal<string> = computed(() =>
     this.iconSelected() == 'Consultas' ? 'var(--blue-dark)' : 'var(--white-default)');

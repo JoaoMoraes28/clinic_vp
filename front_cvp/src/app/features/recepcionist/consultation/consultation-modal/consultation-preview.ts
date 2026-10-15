@@ -1,19 +1,18 @@
-import { Component, inject, output, Renderer2 } from '@angular/core';
-import { LabelDatas, DataLabel } from '../../../../../shared/data-label/data-label';
-import { Close } from '../../../../../svg/close/close';
-import { ConfirmButton } from '../../../../../shared/button/confirm/confirm-button';
-import { CancelButton } from '../../../../../shared/button/cancel/cancel-button';
-import { getDateFormatted, formattedHour } from '../../../../../utils/date-hour';
+import { Component, inject, output } from '@angular/core';
 import { Router } from '@angular/router';
+import { Close } from '../../../../svg/close/close';
+import { DataLabel, LabelDatas } from '../../../../shared/data-label/data-label';
+import { ConfirmButton } from '../../../../shared/button/confirm/confirm-button';
+import { CancelButton } from '../../../../shared/button/cancel/cancel-button';
+import { formattedHour, getDateFormatted } from '../../../../utils/date-hour';
 
 @Component({
   imports: [Close, DataLabel, ConfirmButton, CancelButton],
-  selector: 'app-consultation-modal',
-  templateUrl: './consultation-modal.html',
+  selector: 'app-consultation-preview',
+  templateUrl: './consultation-preview.html',
 })
-export class ConsultationModal {
+export class ConsultationPreview {
   router = inject(Router);
-  renderer = inject(Renderer2);
 
   closeModal = output<void>();
 

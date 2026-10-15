@@ -1,9 +1,36 @@
-import { Component } from '@angular/core';
+import { Component, inject, input, output, WritableSignal } from '@angular/core';
+import { Arrow } from '../../svg/arrow/arrow';
+import { ControlContainer, ReactiveFormsModule } from '@angular/forms';
+
+export interface InputDefault {
+  id: string;
+  type: string;
+  label: string;
+  placeholder: string;
+  validField: boolean;
+  errorMessage: string;
+  showArrow: boolean;
+  readonly: boolean;
+  mandatory: boolean;
+  visibleList: WritableSignal<boolean>;
+}
 
 @Component({
-  imports: [],
+  imports: [Arrow, ReactiveFormsModule],
   selector: 'app-input',
-  styleUrl: './input.css',
   templateUrl: './input.html',
+  viewProviders: [
+    {
+      provide: ControlContainer,
+      useFactory: () => inject(ControlContainer, { skipSelf: true })
+    }
+  ]
 })
-export class Input {}
+export class Input {
+  inputDatas = input.required<InputDefault>();
+  functionInput = output<string>();
+
+  changeInputValue(value: string): void {
+    this.functionInput.emit(value);
+  }
+}

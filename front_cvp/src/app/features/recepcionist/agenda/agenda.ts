@@ -5,7 +5,8 @@ import { BadgesConsultation } from './components/badges-consultation/badges-cons
 import { ConsultationsTable } from './components/consultations-table/consultations-table';
 import { Arrow } from '../../../svg/arrow/arrow';
 import { LocationBall } from './components/location-ball/location-ball';
-import { ConsultationModal } from './components/consultation-modal/consultation-modal';
+import { ConsultationPreview } from '../consultation/consultation-modal/consultation-preview';
+import { desactiveScroll } from '../../../utils/renderer-document';
 
 export interface CountConsultationStatus {
   scheduled: number;
@@ -38,7 +39,7 @@ export interface ConsultationsData {
 }
 
 @Component({
-  imports: [CalendaryIcon, BadgesConsultation, ConsultationsTable, Arrow, LocationBall, ConsultationModal],
+  imports: [CalendaryIcon, BadgesConsultation, ConsultationsTable, Arrow, LocationBall, ConsultationPreview],
   selector: 'app-agenda',
   templateUrl: './agenda.html',
 })
@@ -197,8 +198,8 @@ export class Agenda {
   isModalConsultationOpen = signal(false);
   renderer = inject(Renderer2);
 
-  changeViewModal(): void {
-    this.isModalConsultationOpen() ? this.renderer.removeClass(document.body, 'overflow-hidden') : this.renderer.addClass(document.body, 'overflow-hidden');
+  changeViewModalConsultation(): void {
+    desactiveScroll(this.isModalConsultationOpen(), this.renderer)
 
     this.isModalConsultationOpen.set(!this.isModalConsultationOpen())
   }

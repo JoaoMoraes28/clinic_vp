@@ -1,11 +1,21 @@
 <div class="w-full h-full">
     @if(isModalOpening()) {
     <section class="fixed bg-black/40 w-screen h-screen top-0 right-0 z-99
-                lg:flex lg:justify-center">
-        <app-patient-datas [patientDatas]="informationsLabel" (changeIsOpening)="changeModalOpening()">
+                lg:flex lg:justify-center lg:backdrop-blur-xs">
+        <app-patient-datas [patientPreview]="patientPreview()[0]" (changeScheduleConsultationOpen)="changeViewModalScheduleConsultation()" [patientDatas]="informationsLabel" (changeIsOpening)="changeModalOpening()">
         </app-patient-datas>
     </section>
     }
+
+    @if(isModalScheduleConsultationOpen()) {
+    <div
+        class="fixed bg-black/40 w-screen h-screen top-0 right-0 z-99
+                lg:flex lg:justify-center lg:backdrop-blur-xs">
+        <app-schedule-consultation [patientList]="patients" (closeModal)="changeViewModalScheduleConsultation()">
+        </app-schedule-consultation>
+    </div>
+    }
+    
     <header class="fixed top-0 right-0 z-80 p-4 bg-(--bg-primary) h-50 w-full flex flex-col gap-4
             md:h-36 md:px-12 md:pt-6
             lg:static lg:px-0 lg:pt-6 lg:bg-transparent">
@@ -28,7 +38,7 @@
         2xl:grid-cols-3">
             @for (patient of filteredPatients(); track patient.id) {
             <li class="w-full">
-                <app-patient-card [patient]="patient" (changeIsOpening)="changeModalOpening()">
+                <app-patient-card (changeScheduleConsultationOpening)="changeViewModalScheduleConsultation()" [patient]="patient" (changeIsOpening)="changeModalOpening()">
                 </app-patient-card>
             </li>
             }

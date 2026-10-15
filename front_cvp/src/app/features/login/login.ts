@@ -2,7 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { InputLogin } from './components/input/input-login';
 import { ConfirmButton } from '../../shared/button/confirm/confirm-button';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import {Router} from '@angular/router';
+import { Router } from '@angular/router';
 
 interface InputData {
   id: string;
@@ -68,6 +68,6 @@ export class Login {
     } else if (!this.profileForm.controls.password.valid) {
       this._statusLogin.set('password');
 
-    } 
+    }
   }
 }

@@ -2,11 +2,11 @@
     @if(isModalConsultationOpen()) {
     <div
         class="lg:flex lg:justify-center lg:items-center lg:z-99 lg:backdrop-blur-xs lg:fixed lg:left-0 lg:top-0 lg:w-screen lg:h-screen lg:bg-(--black-default)/40">
-        <app-consultation-modal
-        (closeModal)="changeViewModal()">
-        </app-consultation-modal>
+        <app-consultation-preview (closeModal)="changeViewModalConsultation()">
+        </app-consultation-preview>
     </div>
     }
+
     <header class="flex flex-col items-center w-full gap-4
     md:flex-row md:items-end lg:min-h-10">
         <h1 class="text-2xl font-semibold
@@ -42,7 +42,8 @@
                 <li #consultation class="min-w-full snap-center 
                 lg:snap-end
                 xl:min-w-[48%] 2xl:min-w-[32%]">
-                    <app-consultations-table #consultationTable (openModal)="changeViewModal()" [consultationsData]="consultations" [index]="i">
+                    <app-consultations-table #consultationTable (openModal)="changeViewModalConsultation()"
+                        [consultationsData]="consultations" [index]="i">
                     </app-consultations-table>
                 </li>
                 }

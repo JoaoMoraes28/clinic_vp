@@ -1,10 +1,9 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import DeclarativeBase
+from ..security.config import settings
 
-DATABASE_URL = "postgresql+psycopg2://postgres:bcd127@localhost:5432/clinic_vp_db"
-
-engine = create_engine(DATABASE_URL)
+engine = create_engine(settings.database_url)
 SessionLocal = sessionmaker(
     autocommit=False,
     autoflush=False,

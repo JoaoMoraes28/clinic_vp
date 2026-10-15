@@ -1,0 +1,9 @@
+<ul class="flex flex-col w-full h-full bg-(--bg-modal) py-2 overflow-auto border border-(--blue-primary) gap-3 pt-0">
+    @for(element of list(); track element.id) {
+        <li class="flex justify-center items-center w-full h-8">
+            <button type="button" (click)="setValueInInput(element.value, fieldForm(), element.id)" class="text-md">
+                {{element.value}}
+            </button>
+        </li>
+    }
+</ul>

@@ -6,6 +6,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 class Settings(BaseSettings):
     secret_key: str
     database_url: str
+    database_url_pooled: str
 
     model_config = SettingsConfigDict(env_file=BASE_DIR / ".env")
 

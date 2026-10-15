@@ -1,5 +1,5 @@
-import { Component, inject, input, OnInit } from '@angular/core';
-import { ControlContainer, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { Component, inject, input } from '@angular/core';
+import { ControlContainer, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   imports: [ReactiveFormsModule],
@@ -12,7 +12,7 @@ import { ControlContainer, FormControl, ReactiveFormsModule } from '@angular/for
     }
   ]
 })
-export class InputLogin implements OnInit {
+export class InputLogin {
   id = input.required<string>()
   type = input.required<string>()
   label = input.required<string>();
@@ -21,8 +21,4 @@ export class InputLogin implements OnInit {
   controlName = input.required<string>();
   invalidField = input.required<string | null>();
   errorMessage = input.required<string>();
-
-  ngOnInit(): void {
-    
-  }
 }

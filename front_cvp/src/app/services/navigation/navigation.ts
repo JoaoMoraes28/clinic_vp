@@ -26,17 +26,17 @@ export class Navigation {
         {
             label: 'Agendar consulta',
             component: ScheduleConsultation,
-            href: '/recepcionist/schedule-consultation'
+            href: '/recepcionist/patients/true'
         },
         {
             label: 'Pacientes',
             component: Patients,
-            href: '/recepcionist/patients'
+            href: '/recepcionist/patients/false'
         },
         {
             label: 'Cadastro de paciente',
             component: RegistrationPatient,
-            href: '/recepcionist/registration-patient'
+            href: '/recepcionist/register_patient'
         }
     ];
 
@@ -45,6 +45,9 @@ export class Navigation {
     }
 
     setActiveIcon(newIcon: string): void {
+        if (newIcon == 'Agendar consulta') {
+            newIcon = "Pacientes";
+        }
         this.activeIcon.next(newIcon);
     }
 

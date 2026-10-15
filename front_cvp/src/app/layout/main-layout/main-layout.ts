@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SideBar } from '../side-bar/side-bar';
 import { NavBarMobile } from '../nav-bar-mobile/nav-bar-mobile';

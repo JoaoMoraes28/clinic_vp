@@ -1,4 +1,4 @@
-import { Component, inject, Renderer2, signal } from '@angular/core';
+import { Component, inject, OnInit, Renderer2, signal } from '@angular/core';
 import { InputSearchPatient } from './components/input-search-patient/input-search-patient';
 import { AddPatientButton } from './components/add-patient-button/add-patient-button';
 import { PatientCard } from './components/patient-card/patient-card';
@@ -6,6 +6,9 @@ import { getYearsDifference, date, getDateFormatted } from '../../../utils/date-
 import { PatientDatas } from './components/patient-datas/patient-datas';
 import { translateBloodType, translateCivilState, translateGender } from '../../../utils/translate-datas';
 import { formattedCPF, formattedPhone } from '../../../utils/formatted-datas';
+import { desactiveScroll } from '../../../utils/renderer-document';
+import { ScheduleConsultation } from '../consultation/schedule-consultation/schedule-consultation';
+import { ActivatedRoute } from '@angular/router';
 
 export interface Patient {
   name: string;
@@ -57,13 +60,14 @@ export interface DataInformationLabel {
 }
 
 @Component({
-  imports: [InputSearchPatient, AddPatientButton, PatientCard, PatientDatas],
+  imports: [InputSearchPatient, AddPatientButton, PatientCard, PatientDatas, ScheduleConsultation],
   selector: 'app-patients',
   templateUrl: './patients.html',
 })
-export class Patients {
+export class Patients implements OnInit {
   private renderer = inject(Renderer2);
-
+  private activateRoute = inject(ActivatedRoute);
+;
   patientId: PatientModel = {
     patient: {
       name: 'João da Silva',
@@ -154,6 +158,8 @@ export class Patients {
     }
   ];
 
+  patientPreview = signal(this.patients.filter((it) => it.id == this.patientId.patient.id));
+
   addressFormated: string = `${this.patientId.address.street}, ${this.patientId.address.number} - ${this.patientId.address.district} - ${this.patientId.address.city} - ${this.patientId.address.uf_address}`;
 
   informationsLabel: DataInformationLabel[] = [
@@ -216,20 +222,34 @@ export class Patients {
     {
       label: 'Descrição',
       value: this.patientId.patient.notes
-    },
+    }
   ];
 
-  filteredPatients = signal<PatientPreview[]>(this.patients)
+  filteredPatients = signal<PatientPreview[]>(this.patients);
 
   isModalOpening = signal<boolean>(false);
+  isModalScheduleConsultationOpen = signal(false);
 
   filterPatients(value: string): void {
     this.filteredPatients.set(this.patients.filter((it) => it.name.toLowerCase().includes(value.toLowerCase())));
   }
 
   changeModalOpening(): void {
-    this.isModalOpening() ? this.renderer.removeClass(document.body, 'overflow-hidden') : this.renderer.addClass(document.body, 'overflow-hidden');
+    desactiveScroll(this.isModalOpening(), this.renderer);
 
     this.isModalOpening.set(!this.isModalOpening());
+  }
+
+  changeViewModalScheduleConsultation(): void {
+    desactiveScroll(this.isModalScheduleConsultationOpen(), this.renderer);
+
+    this.isModalScheduleConsultationOpen.set(!this.isModalScheduleConsultationOpen())
+  }
+
+  ngOnInit(): void {
+    this.activateRoute.params.subscribe((params) => {
+      const valueBool: boolean = params['open-modal'] == 'false' ? false : true;
+      this.isModalScheduleConsultationOpen.set(valueBool);
+    });
   }
 }
