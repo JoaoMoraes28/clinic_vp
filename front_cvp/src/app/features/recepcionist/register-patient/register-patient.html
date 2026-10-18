@@ -1,1 +1,151 @@
-<p>register-patient works!</p>
+<div (click)="closeOnClickModal($event)" class="px-4 md:px-12
+        lg:py-8
+        2xl:px-24">
+    <header class="flex justify-center items-center">
+        <div class="border-2 border-(--blue-primary) w-28 h-28 flex justify-center items-center rounded-full">
+            <app-profile-person [colorIcon]="'var(--blue-primary)'" [height]="52" [width]="52">
+            </app-profile-person>
+        </div>
+    </header>
+
+    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="mt-12">
+        <section class="flex flex-col gap-6 md:gap-8">
+            <div>
+                <app-input [inputDatas]="inputsDatas[0]">
+                </app-input>
+            </div>
+            <div class="flex flex-col gap-6
+                    md:flex-row md:justify-between">
+                <div class="md:w-[47%]">
+                    <app-input [inputDatas]="inputsDatas[1]">
+                    </app-input>
+                </div>
+
+                <div id="civilState" (click)="openModalChoice(inputsDatas[2].id)" class="relative md:w-[47%]">
+                    <app-input [inputDatas]="inputsDatas[2]">
+                    </app-input>
+                    @if(inputsDatas[2].visibleList()) {
+                    <div class="absolute top-11 w-full h-40 z-80">
+                        <app-fieldset-list [fieldForm]="'civilState'" [list]="civilState" [profileForm]="profileForm">
+                        </app-fieldset-list>
+                    </div>
+                    }
+                </div>
+            </div>
+            <div id="gender" class="flex flex-col gap-6
+                            md:flex-row md:justify-between">
+                <div (click)="openModalChoice(inputsDatas[3].id)" class="relative md:w-[47%]">
+                    <app-input [inputDatas]="inputsDatas[3]">
+                    </app-input>
+                    @if(inputsDatas[3].visibleList()) {
+                    <div class="absolute top-11 w-full h-20 z-80">
+                        <app-fieldset-list [fieldForm]="'gender'" [list]="gender" [profileForm]="profileForm">
+                        </app-fieldset-list>
+                    </div>
+                    }
+                </div>
+
+                <div class="md:w-[47%]">
+                    <app-input [inputDatas]="inputsDatas[4]">
+                    </app-input>
+                </div>
+            </div>
+            <div>
+                <app-input [inputDatas]="inputsDatas[5]">
+                </app-input>
+            </div>
+            <div class="flex flex-col gap-6
+                    md:flex-row md:justify-between">
+                <div class="md:w-[47%]">
+                    <app-input [inputDatas]="inputsDatas[6]">
+                    </app-input>
+                </div>
+                <div class="md:w-[47%]">
+                    <app-input [inputDatas]="inputsDatas[7]">
+                    </app-input>
+                </div>
+            </div>
+            <div class="flex flex-col gap-6
+                    md:flex-row md:justify-between">
+                <div class="md:w-[47%]">
+                    <app-input [inputDatas]="inputsDatas[8]">
+                    </app-input>
+                </div>
+                <div class="md:w-[47%]">
+                    <app-input [inputDatas]="inputsDatas[9]">
+                    </app-input>
+                </div>
+            </div>
+            <div class="flex flex-col gap-6
+                    md:flex-row md:justify-between">
+                <div class="md:w-[47%]">
+                    <app-input [inputDatas]="inputsDatas[10]">
+                    </app-input>
+                </div>
+
+                <div id="bloodType" (click)="openModalChoice(inputsDatas[11].id)" class="relative md:w-[47%]">
+                    <app-input [inputDatas]="inputsDatas[11]">
+                    </app-input>
+                    @if(inputsDatas[11].visibleList()) {
+                    <div class="absolute top-11 w-full h-40 z-80">
+                        <app-fieldset-list [fieldForm]="'bloodType'" [list]="bloodType" [profileForm]="profileForm">
+                        </app-fieldset-list>
+                    </div>
+                    }
+                </div>
+            </div>
+        </section>
+
+        <section class="flex flex-col gap-6 mt-12 md:gap-8">
+            <h2 class="text-(--blue-primary) text-lg font-bold">Endereço <span
+                    class="italic text-sm font-normal">(Digite o CEP primeiro para a busca de dados)</span></h2>
+            <div>
+                <app-input (functionInput)="getCep($event)" [inputDatas]="inputsDatas[12]">
+                </app-input>
+            </div>
+            <div class="flex flex-col gap-6
+                    md:flex-row md:justify-between">
+                <div class="md:w-[47%]">
+                    <app-input [inputDatas]="inputsDatas[13]">
+                    </app-input>
+                </div>
+                <div class="md:w-[47%]">
+                    <app-input [inputDatas]="inputsDatas[14]">
+                    </app-input>
+                </div>
+            </div>
+            <div>
+                <app-input [inputDatas]="inputsDatas[15]">
+                </app-input>
+            </div>
+            <div class="flex flex-col gap-6
+                    md:flex-row md:justify-between">
+                <div class="md:w-[47%]">
+                    <app-input [inputDatas]="inputsDatas[16]">
+                    </app-input>
+                </div>
+                <div class="md:w-[47%]">
+                    <app-input [inputDatas]="inputsDatas[17]">
+                    </app-input>
+                </div>
+            </div>
+            <div class="h-40">
+                <div class="relative flex items-center w-full h-full border border-(--blue-primary) rounded-md">
+                    <label for="obs"
+                        class="absolute left-2 -top-3 w-auto h-6 px-2 bg-(--bg-primary) text-sm text-(--blue-primary)">
+                        Observações
+                    </label>
+                    <textarea class="w-full h-full p-4 text-(--black-default) overflow-auto text-sm"
+                        formControlName="observations" id="obs" placeholder="Descreva brevemente caso o paciente tenha alguma alergia, doença crônica ou faz uso de remédios..."></textarea>
+                </div>
+            </div>
+        </section>
+
+        <div class="flex justify-center items-center w-full h-28">
+            <div class="w-full h-14">
+                <app-confirm-button [buttonLabel]="'Cadastrar'" [buttonType]="'submit'">
+                </app-confirm-button>
+            </div>
+        </div>
+    </form>
+</div>

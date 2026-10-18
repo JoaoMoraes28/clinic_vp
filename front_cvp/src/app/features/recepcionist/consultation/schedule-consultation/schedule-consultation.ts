@@ -258,7 +258,33 @@ export class ScheduleConsultation implements OnInit {
     },
   ]
 
-  OpenCloseModalSelector(id: string) {
+  closeOnClickModal(e: Event) {
+    const element = e.target as HTMLElement;
+
+    if (element.id == 'patient') {
+      this.inputsDatas[3].visibleList.set(false);
+      this.inputsDatas[4].visibleList.set(false);
+      return;
+
+    } else if (element.id == 'speciality') {
+      this.inputsDatas[0].visibleList.set(false);
+      this.inputsDatas[4].visibleList.set(false);
+      return;
+
+    } else if (element.id == 'doctor') {
+      this.inputsDatas[0].visibleList.set(false);
+      this.inputsDatas[3].visibleList.set(false);
+      return;
+
+    }
+
+    this.inputsDatas[0].visibleList.set(false);
+    this.inputsDatas[3].visibleList.set(false);
+    this.inputsDatas[4].visibleList.set(false);
+
+  }
+
+  openCloseModalSelector(id: string) {
     const inputData: InputDefault[] = this.inputsDatas.filter((it) => it.id == id);
 
     inputData[0].visibleList.set(!inputData[0].visibleList())

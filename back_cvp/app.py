@@ -1,5 +1,6 @@
 from fastapi import FastAPI, status, Request
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 from src.routes.patient_routes import patient_routes
 from src.routes.doctor_routes import doctor_routes
@@ -22,11 +23,22 @@ from src.routes.exame_routes import exame_routes
 from src.routes.auth_routes import auth_employee_routes
 from src.routes.admin import admin_routes
 
+
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError, OperationalError
 
 API_PREFIX = "/clinic_vp"
 
 app = FastAPI()
+
+origins = ["http://localhost:4200"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
 
 app.include_router(patient_routes, prefix=API_PREFIX)
 app.include_router(doctor_routes, prefix=API_PREFIX)

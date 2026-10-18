@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { ListDatas } from '../../schedule-consultation';
 import { FormGroup } from '@angular/forms';
 import { PatientPreview } from '../../../../patients/patients';
@@ -15,13 +15,13 @@ export class FieldsetList {
   getPatient = input<(id: number) => PatientPreview>();
 
   setValueInInput(value: string, field: string, id: number): void {
-    
+
     if (field == 'patient') {
       const patient = this.getPatient()!(id);
       this.profileForm().patchValue({
         cpf: patient.cpf,
         phone: patient.phone
-    })
+      })
     }
 
     this.profileForm().patchValue({
