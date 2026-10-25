@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, ElementRef, inject, OnInit, Renderer2, signal, viewChild } from '@angular/core';
 import { ProfilePerson } from '../../../svg/profile-person/profile-person';
 import { InputDefault, Input } from '../../../shared/input/input';
 import { FormBuilder, Validators, ɵInternalFormsSharedModule, ReactiveFormsModule, FormControl } from '@angular/forms';
@@ -6,8 +6,12 @@ import { ConfirmButton } from '../../../shared/button/confirm/confirm-button';
 import { FieldsetList } from '../consultation/schedule-consultation/components/fieldset-list/fieldset-list';
 import { ListDatas } from '../consultation/schedule-consultation/schedule-consultation';
 import { Cep } from '../../../repo/cep/cep';
-import { PatientRegister } from '../../../repo/patient/patient';
+import { Patient, PatientRegister } from '../../../repo/patient/patient';
 import { Uf } from '../../../repo/uf/uf';
+import { translateBloodTypeEn, translateCivilStateEn, translateGenderEn } from '../../../utils/translate-datas';
+import { Cloudinary } from '../../../repo/cloudinary/cloudinary';
+import { ModalResponse } from '../../../services/modal-response/modal-response';
+import { desactiveScroll } from '../../../utils/renderer-document';
 
 @Component({
   imports: [ProfilePerson, Input, ɵInternalFormsSharedModule, ReactiveFormsModule, ConfirmButton, FieldsetList],
@@ -16,8 +20,18 @@ import { Uf } from '../../../repo/uf/uf';
 })
 export class RegisterPatient implements OnInit {
   formBuilder = inject(FormBuilder);
+  private readonly render = inject(Renderer2);
   private serviceCep = inject(Cep);
   private serviceUf = inject(Uf);
+  private servicePatient = inject(Patient);
+  private serviceCloudinary = inject(Cloudinary);
+  private serviceResponseModal = inject(ModalResponse);
+
+  private imgProfile = viewChild<ElementRef>('profileImg');
+
+  changeImgProfileView = signal<boolean>(true);
+
+  private imgFile: File | null = null;
 
   profileForm = this.formBuilder.group({
     name: ['', [Validators.required, Validators.maxLength(255)]],
@@ -164,7 +178,7 @@ export class RegisterPatient implements OnInit {
     },
     {
       id: 'bornDate',
-      type: 'date  ',
+      type: 'date',
       label: 'Data de nascimento',
       placeholder: '30/09/1998',
       validField: this.profileForm.controls.bornDate.valid,
@@ -336,95 +350,111 @@ export class RegisterPatient implements OnInit {
     formField[0].visibleList.set(!formField[0].visibleList())
   }
 
-  onSubmit() {
+  changeImgProfile(e: HTMLInputElement) {
+    if (e.files != null) {
+      const blob = URL.createObjectURL(e.files[0]);
+
+      if (this.imgProfile() != null) {
+        const img: HTMLImageElement = this.imgProfile()?.nativeElement;
+        img.src = blob;
+        this.imgFile = e.files[0];
+        this.changeImgProfileView.set(false);
+      }
+    }
+  }
+
+  async onSubmit() {
     if (!this.profileForm.valid) {
       console.log("Campos inválidos");
 
     } else {
-      this.serviceUf.getUf().subscribe(ufs => {
-        const newPatient: PatientRegister = {
-          patient: {
-            name: this.profileForm.value.name!,
-            professional: this.profileForm.value.profession ? this.profileForm.value.profession : null,
-            cpf: this.profileForm.value.cpf!,
-            gender: this.profileForm.value.gender!,
-            phone: this.profileForm.value.phone!,
-            email: this.profileForm.value.email ? this.profileForm.value.email : null,
-            civil_state: this.profileForm.value.civilState!,
-            photo: null,
-            blood_type: this.profileForm.value.bloodType ? this.profileForm.value.bloodType : null,
-            weight: this.profileForm.value.weight ? Number(this.profileForm.value.weight) : null,
-            height: this.profileForm.value.height ? Number(this.profileForm.value.height) : null,
-            born_date: this.profileForm.value.bornDate!,
-            phone_emergency: this.profileForm.value.emergencyPhone ? this.profileForm.value.emergencyPhone : null,
-            notes: this.profileForm.value.observations ? this.profileForm.value.observations : null
-          },
-          address: {
-            city: this.profileForm.value.city!,
-            district: this.profileForm.value.district!,
-            street: this.profileForm.value.street!,
-            number: this.profileForm.value.number!,
-            cep: this.profileForm.value.cep!,
-            uf_id: 1
-          }
-        }
-        console.log(123)
-        this.postPatient(ufs, newPatient, this.profileForm.value.uf!)
-      })
+      const ufs = await this.serviceUf.getUf();
 
+      let urlProfileImg = null;
+
+      if (this.imgFile != null) urlProfileImg = await this.serviceCloudinary.getUrlImgProfile(this.imgFile);
+
+      const onlyNumbers = (valor: string | null | undefined): string | null => {
+        if (!valor) return null;
+        return valor.replace(/\D/g, '');
+      };
+
+      const formValues = this.profileForm.value;
+
+      const newPatient: PatientRegister = {
+        patient: {
+          name: formValues.name!,
+          professional: formValues.profession || null,
+          cpf: onlyNumbers(formValues.cpf)!,
+          gender: translateGenderEn(formValues.gender!),
+          phone: onlyNumbers(formValues.phone)!,
+          email: formValues.email || null,
+          civil_state: translateCivilStateEn(formValues.civilState!),
+          photo: urlProfileImg,
+          blood_type: translateBloodTypeEn(formValues.bloodType!) || null,
+          weight: formValues.weight ? Number(formValues.weight) : null,
+          height: formValues.height ? Number(formValues.height) : null,
+          born_date: formValues.bornDate!,
+          phone_emergency: onlyNumbers(formValues.emergencyPhone),
+          notes: formValues.observations || null
+        },
+        address: {
+          city: formValues.city!,
+          district: formValues.district!,
+          street: formValues.street!,
+          number: formValues.number!,
+          cep: onlyNumbers(formValues.cep)!,
+          uf_id: 0
+        }
+      };
+
+      this.postPatient(ufs, newPatient, formValues.uf!);
 
     }
   }
 
-  private postPatient(ufs: Uf[], patient: PatientRegister, ufSelected: string) {
+  private async postPatient(ufs: Uf[], patient: PatientRegister, ufSelected: string) {
     const ufId: Uf[] = ufs.filter(it => it.abbreviation.includes(ufSelected));
-    console.log(222)
+
     patient.address.uf_id = ufId[0].id;
 
-    console.log(patient);
-  }
+    const response = await this.servicePatient.postPatient(patient);
 
-  ngOnInit(): void {
-    this.profileForm.get('cpf')?.valueChanges.subscribe(value => {
-      if (!value) return;
+    console.log(response.status)
 
-      const numericValue = value.replace(/\D/g, '').slice(0, 11);
-      let formatted = numericValue;
+    this.serviceResponseModal.setTitle("Cadastro de paciente");
 
-      if (numericValue.length > 9) {
-        formatted = numericValue.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
-      } else if (numericValue.length > 6) {
-        formatted = numericValue.replace(/(\d{3})(\d{3})(\d+)/, '$1.$2.$3');
-      } else if (numericValue.length > 3) {
-        formatted = numericValue.replace(/(\d{3})(\d+)/, '$1.$2');
-      }
+    if (response.ok) {
+      this.serviceResponseModal.setMessage("Paciente cadastrado com sucesso!");
+      this.serviceResponseModal.setButtonLabel("Concluir");
+      this.serviceResponseModal.setRouteNavigate('recepcionist/patients/false');
 
-      this.profileForm.get('cpf')?.setValue(formatted, { emitEvent: false });
+    } else if (response.status == 403) {
+      this.serviceResponseModal.setMessage("Você não possui permissão para realziar esta função!");
+      this.serviceResponseModal.setButtonLabel("Retornar");
+      this.serviceResponseModal.setRouteNavigate('');
 
-    })
+    } else if (response.status == 401) {
+      this.serviceResponseModal.setMessage("Seu token de acesso pode ter expirado!");
+      this.serviceResponseModal.setButtonLabel("Autenticar");
+      this.serviceResponseModal.setRouteNavigate('auth');
+    
+    } else {
+      this.serviceResponseModal.setMessage("Ocorreu um erro ao tentar cadatrar este paciente!");
+      this.serviceResponseModal.setButtonLabel("Tentar novamente");
+      this.serviceResponseModal.setRouteNavigate(null);
+    
+    }
 
-    this.profileForm.get('phone')?.valueChanges.subscribe(value => {
-      if (!value) return;
-
-      const formatted = this.formattedPhone(value);
-
-      this.profileForm.get('phone')?.setValue(formatted, { emitEvent: false });
-
-    })
-
-    this.profileForm.get('emergencyPhone')?.valueChanges.subscribe(value => {
-      if (!value) return;
-
-      const formatted = this.formattedPhone(value);
-
-      this.profileForm.get('emergencyPhone')?.setValue(formatted, { emitEvent: false });
-
-    })
+    this.serviceResponseModal.setModalResponseOpening(true);
+    desactiveScroll(false, this.render);
   }
 
   getCep(cep: string) {
-    if (cep.length == 8) {
-      this.serviceCep.getAddressByCep(cep).subscribe({
+    let cepFormated = cep.replace('-', '');
+
+    if (cepFormated.length == 8) {
+      this.serviceCep.getAddressByCep(cepFormated).subscribe({
         next: (value) => {
           this.profileForm.controls.city.setValue(value.localidade);
           this.profileForm.controls.uf.setValue(value.uf);
@@ -456,4 +486,65 @@ export class RegisterPatient implements OnInit {
       return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7, 11)}`;
     }
   }
+
+  async ngOnInit(): Promise<void> {
+    this.profileForm.get('cpf')?.valueChanges.subscribe(value => {
+      if (!value) return;
+
+      const numericValue = value.replace(/\D/g, '').slice(0, 11);
+      let formatted = numericValue;
+
+      if (numericValue.length > 9) {
+        formatted = numericValue.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+      } else if (numericValue.length > 6) {
+        formatted = numericValue.replace(/(\d{3})(\d{3})(\d+)/, '$1.$2.$3');
+      } else if (numericValue.length > 3) {
+        formatted = numericValue.replace(/(\d{3})(\d+)/, '$1.$2');
+      }
+
+      this.profileForm.get('cpf')?.setValue(formatted, { emitEvent: false });
+
+    })
+
+    this.profileForm.get('cep')?.valueChanges.subscribe(value => {
+      if (!value) return;
+
+      let numbers = value.replace(/\D/g, '');
+      let cepFormated = '';
+
+      if (numbers.length === 0) {
+        cepFormated = '';
+      }
+      else if (numbers.length <= 5) {
+        cepFormated = numbers;
+      }
+      else {
+        let part1 = numbers.substring(0, 5);
+        let part2 = numbers.substring(5, 8);
+
+        cepFormated = part1 + '-' + part2;
+      }
+
+      this.profileForm.get('cep')?.setValue(cepFormated, { emitEvent: false });
+    })
+
+    this.profileForm.get('phone')?.valueChanges.subscribe(value => {
+      if (!value) return;
+
+      const formatted = this.formattedPhone(value);
+
+      this.profileForm.get('phone')?.setValue(formatted, { emitEvent: false });
+
+    })
+
+    this.profileForm.get('emergencyPhone')?.valueChanges.subscribe(value => {
+      if (!value) return;
+
+      const formatted = this.formattedPhone(value);
+
+      this.profileForm.get('emergencyPhone')?.setValue(formatted, { emitEvent: false });
+
+    })
+  }
+
 }

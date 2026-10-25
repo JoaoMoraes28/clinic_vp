@@ -1,0 +1,16 @@
+@if (isOpenModal()) {
+<div class="fixed flex justify-center items-center pb-12 bg-black/40 w-screen h-screen top-0 right-0 z-99 backdrop-blur-xs">
+
+    <output class="flex flex-col items-center justify-evenly w-[85%] px-4 aspect-16/11 bg-(--bg-primary)">
+        <h2 class="text-(--blue-primary) text-xl font-bold">{{title()}}</h2>
+        <p class="text-(--black-default) text-center">{{message()}}</p>
+        <div class="w-1/2 aspect-16/5">
+            <app-confirm-button
+            [buttonLabel]="buttonLabel()"
+            (clickFunction)="clickButtonModal()">
+            </app-confirm-button>
+        </div>
+    </output>
+
+</div>
+}

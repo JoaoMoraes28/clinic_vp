@@ -34,6 +34,11 @@ body {
     background-color: var(--bg-primary);
 }
 
+output {
+  font-family: inherit; /* Garante que ela use a mesma fonte do resto do seu site */
+  font-size: inherit;
+}
+
 input:focus {
     outline: none;
 }

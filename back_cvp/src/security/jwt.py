@@ -26,7 +26,7 @@ def create_access_token(user_id: int, role: str, user_name: str):
         "role": role,
         "name": user_name,
         "iat": issued_date_time,
-        "exp": issued_date_time + timedelta(minutes=30),
+        "exp": issued_date_time + timedelta(hours=4),
     }
 
     return jwt.encode(payload, settings.secret_key, algorithm="HS256")

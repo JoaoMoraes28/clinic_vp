@@ -8,7 +8,7 @@ import path from 'path';
 
 export const routes: Routes = [
     {
-        path: '',
+        path: 'auth',
         component: Login,
         title: 'Login'
     },
@@ -30,9 +30,5 @@ export const routes: Routes = [
                 component: RegisterPatient
             }
         ]
-    },
-    {
-        path: '**',
-        component: Login
     }
 ];

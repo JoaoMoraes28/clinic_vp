@@ -7,9 +7,9 @@ import { Injectable } from '@angular/core';
 export class Token {
 
     getAuthHeaders(): HttpHeaders {
-        const token1 = localStorage.getItem('token');
+        //const token1 = localStorage.getItem('token');
 
-        const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwicm9sZSI6ImFkbWluIiwibmFtZSI6ImFkbWluIiwiaWF0IjoxNzkyMzYxMzIxLCJleHAiOjE3OTIzNjMxMjF9.rcy06YF_PdqwgIoFGK52OdsvX8cMC3olSehJW8faC0g';
+        const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwicm9sZSI6ImFkbWluIiwibmFtZSI6ImFkbWluIiwiaWF0IjoxNzkyOTYxMTcwLCJleHAiOjE3OTI5NjI5NzB9.Ccqx4OagMcpM7QVXOEv3QeXM8eiujk8Shand3-ZoHBI';
 
         return new HttpHeaders({
             'Content-Type': 'application/json',

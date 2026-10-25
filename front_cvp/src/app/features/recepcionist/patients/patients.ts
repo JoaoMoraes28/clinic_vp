@@ -4,7 +4,7 @@ import { AddPatientButton } from './components/add-patient-button/add-patient-bu
 import { PatientCard } from './components/patient-card/patient-card';
 import { getYearsDifference, date, getDateFormatted } from '../../../utils/date-hour';
 import { PatientDatas } from './components/patient-datas/patient-datas';
-import { translateBloodType, translateCivilState, translateGender } from '../../../utils/translate-datas';
+import { translateBloodTypeBr, translateCivilStateBr, translateGenderBr } from '../../../utils/translate-datas';
 import { formattedCPF, formattedPhone } from '../../../utils/formatted-datas';
 import { desactiveScroll } from '../../../utils/renderer-document';
 import { ScheduleConsultation } from '../consultation/schedule-consultation/schedule-consultation';
@@ -169,11 +169,11 @@ export class Patients implements OnInit {
     },
     {
       label: 'Estado civil',
-      value: translateCivilState(this.patientId.patient.civil_state)
+      value: translateCivilStateBr(this.patientId.patient.civil_state)
     },
     {
       label: 'Gênero',
-      value: translateGender(this.patientId.patient.gender)
+      value: translateGenderBr(this.patientId.patient.gender)
     },
     {
       label: 'Profissão',
@@ -209,7 +209,7 @@ export class Patients implements OnInit {
     },
     {
       label: 'Tipo sanguíneo',
-      value: translateBloodType(this.patientId.patient.blood_type)
+      value: translateBloodTypeBr(this.patientId.patient.blood_type)
     },
     {
       label: 'Cadastro',

@@ -1,4 +1,4 @@
-export function translateGender(gender: string): string {
+export function translateGenderBr(gender: string): string {
     switch (gender) {
         case 'MALE':
             return 'Masculino';
@@ -10,7 +10,7 @@ export function translateGender(gender: string): string {
     return '';
 }
 
-export function translateStatusConsultation(status: string): string {
+export function translateStatusConsultationBr(status: string): string {
     switch (status) {
         case 'SCHEDULED':
             return 'Agendada';
@@ -31,7 +31,7 @@ export function translateStatusConsultation(status: string): string {
     return '';
 }
 
-export function translateCivilState(state: string): string {
+export function translateCivilStateBr(state: string): string {
     switch (state) {
         case 'SINGLE':
             return 'Solteiro(a)';
@@ -53,7 +53,7 @@ export function translateCivilState(state: string): string {
     return '';
 }
 
-export function translateStatusEmployee(status: string): string {
+export function translateStatusEmployeeBr(status: string): string {
     switch (status) {
         case 'ACTIVE':
             return 'Ativo(a)';
@@ -72,7 +72,7 @@ export function translateStatusEmployee(status: string): string {
     return '';
 }
 
-export function translateBloodType(type: string): string {
+export function translateBloodTypeBr(type: string): string {
     switch (type) {
         case 'A_POSITIVE':
             return 'A+';
@@ -92,23 +92,137 @@ export function translateBloodType(type: string): string {
         case 'AB_NEGATIVE':
             return 'AB-';
 
-        case 'O_POSITIVE':
+        case 'O_NEGATIVE':
             return 'O-';
 
-        case 'O_NEGATIVE':
+        case 'O_POSITIVE':
             return 'O+';
     }
 
     return '';
 }
 
-export function translatePriorityExame(priority: string): string {
+export function translatePriorityExameBr(priority: string): string {
     switch (priority) {
         case 'NORMAL':
             return 'Normal';
 
         case 'URGENT':
             return 'Urgente';
+    }
+
+    return '';
+}
+
+export function translateGenderEn(gender: string): string {
+    switch (gender) {
+        case 'Masculino':
+            return 'MALE';
+
+        case 'Feminino':
+            return 'FEMALE';
+    }
+
+    return '';
+}
+
+export function translateStatusConsultationEn(status: string): string {
+    switch (status) {
+        case 'Agendada':
+            return 'SCHEDULED';
+
+        case 'Em espera':
+            return 'WAITING';
+
+        case 'Em andamento':
+            return 'IN_PROGRESS';
+
+        case 'Concluída':
+            return 'COMPLETED';
+
+        case 'Cancelada':
+            return 'CANCELED';
+    }
+
+    return '';
+}
+
+export function translateCivilStateEn(state: string): string {
+    switch (state) {
+        case 'Solteiro(a)':
+            return 'SINGLE';
+
+        case 'Casado(a)':
+            return 'MARRIED';
+
+        case 'Divorciado(a)':
+            return 'DIVORCIED';
+
+        case 'Viúvo(a)':
+            return 'WIDOWED';
+
+        case 'Separado(a)':
+            return 'SEPARATED';
+    }
+
+    return '';
+}
+
+export function translateStatusEmployeeEn(status: string): string {
+    switch (status) {
+        case 'Ativo(a)':
+            return 'ACTIVE';
+
+        case 'Desativado(a)':
+            return 'DESACTIVE';
+
+        case 'De férias':
+            return 'VACATION';
+
+        case 'Afastado':
+            return 'AWAY';
+    }
+
+    return '';
+}
+
+export function translateBloodTypeEn(type: string): string {
+    switch (type) {
+        case 'A+':
+            return 'A_POSITIVE';
+
+        case 'A-':
+            return 'A_NEGATIVE';
+
+        case 'B+':
+            return 'B_POSITIVE';
+
+        case 'B-':
+            return 'B_NEGATIVE';
+
+        case 'AB+':
+            return 'AB_POSITIVE';
+
+        case 'AB-':
+            return 'AB_NEGATIVE';
+
+        case 'O+':
+            return 'O_POSITIVE';
+
+        case 'O-':
+            return 'O_NEGATIVE';
+    }
+
+    return '';
+}
+
+export function translatePriorityExameEn(priority: string): string {
+    switch (priority) {
+        case 'Normal':
+            return 'NORMAL';
+
+        case 'Urgente':
+            return 'URGENT';
     }
 
     return '';

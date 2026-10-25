@@ -2,9 +2,17 @@
         lg:py-8
         2xl:px-24">
     <header class="flex justify-center items-center">
-        <div class="border-2 border-(--blue-primary) w-28 h-28 flex justify-center items-center rounded-full">
-            <app-profile-person [colorIcon]="'var(--blue-primary)'" [height]="52" [width]="52">
-            </app-profile-person>
+        <div class="border-2 border-(--blue-primary) w-38 h-38 flex rounded-full">
+            <input (change)="changeImgProfile($event.target)" id="fileInputImg" type="file" hidden>
+            <label class="w-full h-full flex justify-center items-center rounded-full" for="fileInputImg">
+
+                <app-profile-person [hidden]="!changeImgProfileView()" [colorIcon]="'var(--blue-primary)'" [height]="72" [width]="72">
+                </app-profile-person>
+
+                <img #profileImg [hidden]="changeImgProfileView()" class="w-full h-full rounded-full object-cover object-center" src=""
+                    alt="Imagem de perfil escolhida">
+
+            </label>
         </div>
     </header>
 
@@ -136,7 +144,8 @@
                         Observações
                     </label>
                     <textarea class="w-full h-full p-4 text-(--black-default) overflow-auto text-sm"
-                        formControlName="observations" id="obs" placeholder="Descreva brevemente caso o paciente tenha alguma alergia, doença crônica ou faz uso de remédios..."></textarea>
+                        formControlName="observations" id="obs"
+                        placeholder="Descreva brevemente caso o paciente tenha alguma alergia, doença crônica ou faz uso de remédios..."></textarea>
                 </div>
             </div>
         </section>

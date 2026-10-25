@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { Token } from '../token/token';
 
 export interface Uf {
@@ -15,9 +15,10 @@ export class Uf {
     private http = inject(HttpClient);
     private serviceToken = inject(Token);
 
-    getUf(): Observable<Uf[]> {
-        const url = 'https://clinic-vp.onrender.com/clinic_vp/uf'
+    async getUf(): Promise<Uf[]> {
+        const url = 'http://localhost:3001/clinic_vp/uf'
 
-        return this.http.get<Uf[]>(url, { headers: this.serviceToken.getAuthHeaders() });
+        const response: Uf[] = await firstValueFrom(this.http.get<Uf[]>(url, { headers: this.serviceToken.getAuthHeaders() }));
+        return response;
     }
 }

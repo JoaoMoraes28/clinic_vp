@@ -1,6 +1,6 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { Token } from '../token/token';
 
 export interface PatientResponseData {
@@ -76,9 +76,15 @@ export class Patient {
     private http = inject(HttpClient);
     private headers = inject(Token);
 
-    urlBase: string = 'https://clinic-vp.onrender.com/clinic_vp/patient/'
+    urlBase: string = 'http://localhost:3001/clinic_vp/patient/'
 ;
-    postPatient(patient: PatientRegister): Observable<PatientResponse> {
-        return this.http.post<PatientResponse>(this.urlBase, patient, { headers: this.headers.getAuthHeaders() });
+    async postPatient(patient: PatientRegister): Promise<HttpResponse<PatientResponse>> {
+        const response: HttpResponse<PatientResponse> = await firstValueFrom(this.http.post<PatientResponse>(this.urlBase, patient, { observe: 'response', headers: this.headers.getAuthHeaders() }));
+        return response;
+    }
+
+    async getPatient(): Promise<HttpResponse<PatientResponse[]>> {
+        const response: HttpResponse<PatientResponse[]> = await firstValueFrom(this.http.get<PatientResponse[]>(this.urlBase, { observe: 'response', headers: this.headers.getAuthHeaders() }));
+        return response;
     }
 }
