@@ -370,6 +370,8 @@ export class RegisterPatient implements OnInit {
     } else {
       const ufs = await this.serviceUf.getUf();
 
+      if (!ufs) return;
+
       let urlProfileImg = null;
 
       if (this.imgFile != null) urlProfileImg = await this.serviceCloudinary.getUrlImgProfile(this.imgFile);
@@ -420,31 +422,9 @@ export class RegisterPatient implements OnInit {
 
     const response = await this.servicePatient.postPatient(patient);
 
-    console.log(response.status)
+    if (!response) return;
 
     this.serviceResponseModal.setTitle("Cadastro de paciente");
-
-    if (response.ok) {
-      this.serviceResponseModal.setMessage("Paciente cadastrado com sucesso!");
-      this.serviceResponseModal.setButtonLabel("Concluir");
-      this.serviceResponseModal.setRouteNavigate('recepcionist/patients/false');
-
-    } else if (response.status == 403) {
-      this.serviceResponseModal.setMessage("Você não possui permissão para realziar esta função!");
-      this.serviceResponseModal.setButtonLabel("Retornar");
-      this.serviceResponseModal.setRouteNavigate('');
-
-    } else if (response.status == 401) {
-      this.serviceResponseModal.setMessage("Seu token de acesso pode ter expirado!");
-      this.serviceResponseModal.setButtonLabel("Autenticar");
-      this.serviceResponseModal.setRouteNavigate('auth');
-    
-    } else {
-      this.serviceResponseModal.setMessage("Ocorreu um erro ao tentar cadatrar este paciente!");
-      this.serviceResponseModal.setButtonLabel("Tentar novamente");
-      this.serviceResponseModal.setRouteNavigate(null);
-    
-    }
 
     this.serviceResponseModal.setModalResponseOpening(true);
     desactiveScroll(false, this.render);

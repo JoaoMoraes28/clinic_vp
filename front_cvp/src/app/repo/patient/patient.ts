@@ -1,7 +1,9 @@
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { Token } from '../token/token';
+import { environment } from '../../../environments/environment';
+import { ModalResponse } from '../../services/modal-response/modal-response';
 
 export interface PatientResponseData {
     id: number;
@@ -75,16 +77,37 @@ export interface PatientRegister {
 export class Patient {
     private http = inject(HttpClient);
     private headers = inject(Token);
+    private readonly serviceModalResponse = inject(ModalResponse);
 
-    urlBase: string = 'http://localhost:3001/clinic_vp/patient/'
-;
-    async postPatient(patient: PatientRegister): Promise<HttpResponse<PatientResponse>> {
-        const response: HttpResponse<PatientResponse> = await firstValueFrom(this.http.post<PatientResponse>(this.urlBase, patient, { observe: 'response', headers: this.headers.getAuthHeaders() }));
-        return response;
+    urlBase: string = `${environment.baseUrlApi}/patient`;
+
+    async postPatient(patient: PatientRegister): Promise<PatientResponse | false> {
+        try {
+            const response: PatientResponse = await firstValueFrom(this.http.post<PatientResponse>(this.urlBase, patient, { headers: this.headers.getAuthHeaders() }));
+            return response;
+
+        } catch (error) {
+            if (error instanceof HttpErrorResponse) {
+                if (error.status == 403) {
+                    this.serviceModalResponse.constructorModalResponse(true, "Cadastro de Paciente", "Você não possui permissão para realziar esta função!", "Retornar", '');
+
+                } else if (error.status == 401) {
+                    this.serviceModalResponse.constructorModalResponse(true, "Cadastro de Paciente", "Seu token de acesso pode ter expirado!", "Autenticar", 'auth');
+
+                } else if (error.status == 400) {
+                    this.serviceModalResponse.constructorModalResponse(true, "Cadastro de Paciente", `Informações inválidas! (${error.error.field})`, "Tentar novamente", null);
+
+                } else {
+                    this.serviceModalResponse.constructorModalResponse(true, "Cadastro de Paciente", "Ocorreu um erro ao tentar cadatrar este paciente!", "Tentar novamente", null);
+                }
+            }
+
+            return false;
+        }
     }
 
-    async getPatient(): Promise<HttpResponse<PatientResponse[]>> {
-        const response: HttpResponse<PatientResponse[]> = await firstValueFrom(this.http.get<PatientResponse[]>(this.urlBase, { observe: 'response', headers: this.headers.getAuthHeaders() }));
+    async getPatient(): Promise<PatientResponse[]> {
+        const response: PatientResponse[] = await firstValueFrom(this.http.get<PatientResponse[]>(this.urlBase, { headers: this.headers.getAuthHeaders() }));
         return response;
     }
 }

@@ -5,7 +5,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
     providedIn: 'root'
 })
 export class ModalResponse {
-    private isModalResponseOpening = new BehaviorSubject<boolean>(false);
+    private isModalResponseOpening = new BehaviorSubject<boolean>(true);
     private title = new BehaviorSubject<string>("Cadastro de Paciente");
     private message = new BehaviorSubject<string>("Paciente cadastrado com sucesso!");
     private buttonLabel = new BehaviorSubject<string>("Concluir");
@@ -49,5 +49,13 @@ export class ModalResponse {
 
     getRouteNavigate(): Observable<string | null> {
         return this.routeNavigate.asObservable();
+    }
+
+    constructorModalResponse(open: boolean, title: string, message: string, label: string, newRoute: string | null) {
+        this.setModalResponseOpening(open);
+        this.setTitle(title);
+        this.setMessage(message);
+        this.setButtonLabel(label);
+        this.setRouteNavigate(newRoute);
     }
 }
