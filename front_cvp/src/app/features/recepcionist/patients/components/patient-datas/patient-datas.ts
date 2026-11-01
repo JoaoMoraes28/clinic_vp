@@ -2,9 +2,10 @@ import { Component, inject, input, output } from '@angular/core';
 import { Close } from '../../../../../svg/close/close';
 import { ProfilePerson } from '../../../../../svg/profile-person/profile-person';
 import { InformationLabel } from '../../../../../shared/information-label/information-label';
-import { DataInformationLabel, PatientPreview } from '../../patients';
+import { DataInformationLabel } from '../../patients';
 import { ButtonAgendConsultation } from '../button-agend-consultation/button-agend-consultation';
 import { SelectedPatientConsultation } from '../../../../../services/select-patient/selected-patient-consultation';
+import { PatientPreview } from '../../../../../repo/patient/patient';
 
 @Component({
   imports: [Close, ProfilePerson, InformationLabel, ButtonAgendConsultation],

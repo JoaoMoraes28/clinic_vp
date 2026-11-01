@@ -5,7 +5,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
     providedIn: 'root'
 })
 export class ModalResponse {
-    private isModalResponseOpening = new BehaviorSubject<boolean>(true);
+    private isModalResponseOpening = new BehaviorSubject<boolean>(false);
     private title = new BehaviorSubject<string>("Cadastro de Paciente");
     private message = new BehaviorSubject<string>("Paciente cadastrado com sucesso!");
     private buttonLabel = new BehaviorSubject<string>("Concluir");

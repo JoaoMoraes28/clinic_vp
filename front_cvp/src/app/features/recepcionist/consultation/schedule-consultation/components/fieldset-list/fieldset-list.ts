@@ -1,7 +1,7 @@
 import { Component, input } from '@angular/core';
 import { ListDatas } from '../../schedule-consultation';
 import { FormGroup } from '@angular/forms';
-import { PatientPreview } from '../../../../patients/patients';
+import { PatientPreview } from '../../../../../../repo/patient/patient';
 
 @Component({
   imports: [],

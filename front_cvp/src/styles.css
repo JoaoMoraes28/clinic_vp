@@ -35,7 +35,7 @@ body {
 }
 
 output {
-  font-family: inherit; /* Garante que ela use a mesma fonte do resto do seu site */
+  font-family: inherit;
   font-size: inherit;
 }
 
@@ -49,4 +49,20 @@ textarea:focus {
 
 ::-webkit-scrollbar {
     display: none;
+}
+
+@keyframes roll-loading {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@layer components {
+    .animate-roll {
+        animation: roll-loading 1s ease-in-out forwards infinite;
+    }
 }

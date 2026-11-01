@@ -4,9 +4,9 @@ import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CancelButton } from '../../../../shared/button/cancel/cancel-button';
 import { ConfirmButton } from '../../../../shared/button/confirm/confirm-button';
 import { Close } from '../../../../svg/close/close';
-import { PatientPreview } from '../../patients/patients';
 import { SelectedPatientConsultation } from '../../../../services/select-patient/selected-patient-consultation';
 import { FieldsetList } from './components/fieldset-list/fieldset-list';
+import { PatientPreview } from '../../../../repo/patient/patient';
 
 export interface Speciality {
   id: number;

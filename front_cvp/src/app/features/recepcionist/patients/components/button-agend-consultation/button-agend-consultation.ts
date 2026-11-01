@@ -1,6 +1,6 @@
 import { Component, inject, input, output } from '@angular/core';
-import { PatientPreview } from '../../patients';
 import { SelectedPatientConsultation } from '../../../../../services/select-patient/selected-patient-consultation';
+import { PatientPreview } from '../../../../../repo/patient/patient';
 
 @Component({
   imports: [],

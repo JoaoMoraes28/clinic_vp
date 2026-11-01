@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { PatientPreview } from '../../features/recepcionist/patients/patients';
+import { PatientPreview } from '../../repo/patient/patient';
 
 @Injectable({
     providedIn: 'root'

@@ -7,7 +7,7 @@ export function translateGenderBr(gender: string): string {
             return 'Feminino';
     }
 
-    return '';
+    return 'N/A';
 }
 
 export function translateStatusConsultationBr(status: string): string {
@@ -28,7 +28,7 @@ export function translateStatusConsultationBr(status: string): string {
             return 'Cancelada';
     }
 
-    return '';
+    return 'N/A';
 }
 
 export function translateCivilStateBr(state: string): string {
@@ -50,7 +50,7 @@ export function translateCivilStateBr(state: string): string {
 
     }
 
-    return '';
+    return 'N/A';
 }
 
 export function translateStatusEmployeeBr(status: string): string {
@@ -69,7 +69,7 @@ export function translateStatusEmployeeBr(status: string): string {
 
     }
 
-    return '';
+    return 'N/A';
 }
 
 export function translateBloodTypeBr(type: string): string {
@@ -99,7 +99,7 @@ export function translateBloodTypeBr(type: string): string {
             return 'O+';
     }
 
-    return '';
+    return 'N/A';
 }
 
 export function translatePriorityExameBr(priority: string): string {
@@ -111,7 +111,7 @@ export function translatePriorityExameBr(priority: string): string {
             return 'Urgente';
     }
 
-    return '';
+    return 'N/A';
 }
 
 export function translateGenderEn(gender: string): string {

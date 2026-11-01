@@ -6,12 +6,15 @@ import { ConfirmButton } from '../../../shared/button/confirm/confirm-button';
 import { FieldsetList } from '../consultation/schedule-consultation/components/fieldset-list/fieldset-list';
 import { ListDatas } from '../consultation/schedule-consultation/schedule-consultation';
 import { Cep } from '../../../repo/cep/cep';
-import { Patient, PatientRegister } from '../../../repo/patient/patient';
+import { Patient, PatientRegister, PatientResponse } from '../../../repo/patient/patient';
 import { Uf } from '../../../repo/uf/uf';
 import { translateBloodTypeEn, translateCivilStateEn, translateGenderEn } from '../../../utils/translate-datas';
 import { Cloudinary } from '../../../repo/cloudinary/cloudinary';
 import { ModalResponse } from '../../../services/modal-response/modal-response';
 import { desactiveScroll } from '../../../utils/renderer-document';
+import { LoadingMessage } from '../../../services/loading-message/loading-message';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ValideResponseApi } from '../../../services/valide-response/valide-response-api';
 
 @Component({
   imports: [ProfilePerson, Input, ɵInternalFormsSharedModule, ReactiveFormsModule, ConfirmButton, FieldsetList],
@@ -25,13 +28,17 @@ export class RegisterPatient implements OnInit {
   private serviceUf = inject(Uf);
   private servicePatient = inject(Patient);
   private serviceCloudinary = inject(Cloudinary);
-  private serviceResponseModal = inject(ModalResponse);
+  private readonly serviceModalResponse = inject(ModalResponse);
+  private readonly loadingModal = inject(LoadingMessage);
+  private readonly serviceValidate = inject(ValideResponseApi);
 
   private imgProfile = viewChild<ElementRef>('profileImg');
 
   changeImgProfileView = signal<boolean>(true);
 
   private imgFile: File | null = null;
+
+  ufs: Uf[] = [];
 
   profileForm = this.formBuilder.group({
     name: ['', [Validators.required, Validators.maxLength(255)]],
@@ -52,7 +59,7 @@ export class RegisterPatient implements OnInit {
     district: ['', Validators.required],
     street: ['', Validators.required],
     number: ['', Validators.required],
-    observations: ['', Validators.required]
+    observations: ['']
   });
 
   inputsDatas: InputDefault[] = [
@@ -368,9 +375,7 @@ export class RegisterPatient implements OnInit {
       console.log("Campos inválidos");
 
     } else {
-      const ufs = await this.serviceUf.getUf();
-
-      if (!ufs) return;
+      this.loadingModal.setModalLoadingOpening(true);
 
       let urlProfileImg = null;
 
@@ -410,24 +415,26 @@ export class RegisterPatient implements OnInit {
         }
       };
 
-      this.postPatient(ufs, newPatient, formValues.uf!);
+      this.postPatient(newPatient, formValues.uf!);
 
     }
   }
 
-  private async postPatient(ufs: Uf[], patient: PatientRegister, ufSelected: string) {
-    const ufId: Uf[] = ufs.filter(it => it.abbreviation.includes(ufSelected));
+  private async postPatient(patient: PatientRegister, ufSelected: string) {
+    const ufId: Uf[] = this.ufs.filter(it => it.abbreviation.includes(ufSelected));
 
     patient.address.uf_id = ufId[0].id;
 
     const response = await this.servicePatient.postPatient(patient);
 
-    if (!response) return;
+    this.loadingModal.setModalLoadingOpening(false);
 
-    this.serviceResponseModal.setTitle("Cadastro de paciente");
+    const isValid = this.serviceValidate.valideResponseUfGet(response, "Cadastro de Paciente");
 
-    this.serviceResponseModal.setModalResponseOpening(true);
-    desactiveScroll(false, this.render);
+    if (isValid) {
+      this.serviceModalResponse.constructorModalResponse(true, "Cadastro de Paciente", "Paciente cadastrado com sucesso", "Concluir", "recepcionist/patients/false");
+      desactiveScroll(false, this.render);
+    }
   }
 
   getCep(cep: string) {
@@ -525,6 +532,16 @@ export class RegisterPatient implements OnInit {
       this.profileForm.get('emergencyPhone')?.setValue(formatted, { emitEvent: false });
 
     })
+
+    const responseUf = await this.serviceUf.getUf();
+
+    if (Array.isArray(responseUf)) {
+      this.ufs = responseUf;
+      return;
+    }
+    
+    desactiveScroll(false, this.render);
+    this.serviceValidate.valideResponseUfGet(responseUf, "Busca de UF");
   }
 
 }

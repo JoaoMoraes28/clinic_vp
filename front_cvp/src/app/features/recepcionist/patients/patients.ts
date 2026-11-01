@@ -9,233 +9,140 @@ import { formattedCPF, formattedPhone } from '../../../utils/formatted-datas';
 import { desactiveScroll } from '../../../utils/renderer-document';
 import { ScheduleConsultation } from '../consultation/schedule-consultation/schedule-consultation';
 import { ActivatedRoute } from '@angular/router';
-
-export interface Patient {
-  name: string;
-  professional: string;
-  cpf: string;
-  gender: string;
-  phone: string;
-  email: string;
-  civil_state: string;
-  photo: string;
-  blood_type: string;
-  weight: number;
-  height: number;
-  born_date: string;
-  phone_emergency: string;
-  notes: string;
-  id: number;
-  record_date: string;
-  active: boolean;
-  medical_record_id: number;
-}
-
-export interface PatientAddress {
-  city: string;
-  district: string;
-  street: string;
-  number: string;
-  cep: string;
-  uf_address: string;
-}
-
-export interface PatientModel {
-  patient: Patient;
-  address: PatientAddress;
-}
-
-export interface PatientPreview {
-  id: number;
-  name: string;
-  cpf: string;
-  phone: string;
-  photo: string;
-  medical_record_id: number;
-}
+import { Patient, PatientPreview } from '../../../repo/patient/patient';
+import { OutputLoading } from '../../../layout/loading-response/components/output-loading/output-loading';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ValideResponseApi } from '../../../services/valide-response/valide-response-api';
 
 export interface DataInformationLabel {
   label: string;
-  value: string | number;
+  value: string | number | null;
 }
 
 @Component({
-  imports: [InputSearchPatient, AddPatientButton, PatientCard, PatientDatas, ScheduleConsultation],
+  imports: [InputSearchPatient, AddPatientButton, PatientCard, PatientDatas, ScheduleConsultation, OutputLoading],
   selector: 'app-patients',
   templateUrl: './patients.html',
 })
 export class Patients implements OnInit {
+  private readonly servicePatients = inject(Patient);
   private renderer = inject(Renderer2);
   private activateRoute = inject(ActivatedRoute);
-;
-  patientId: PatientModel = {
-    patient: {
-      name: 'João da Silva',
-      professional: 'Desenvolvedor de Software',
-      cpf: '12345678910',
-      gender: 'MALE',
-      phone: '11987654321',
-      email: 'joao.silva@example.com',
-      civil_state: 'SINGLE',
-      photo: 'https://example.com/photos/joao-silva.jpg',
-      blood_type: 'O_POSITIVE',
-      weight: 68.5,
-      height: 1.7,
-      born_date: '2005-06-15',
-      phone_emergency: '11912345678',
-      notes: 'Paciente sem observações adicionais.',
-      id: 1,
-      record_date: '2026-09-29',
-      active: true,
-      medical_record_id: 1
-    },
-    address: {
-      city: 'Jandira',
-      district: 'Centro',
-      street: 'Rua das Flores',
-      number: '150',
-      cep: '06600-000',
-      uf_address: 'SP'
-    }
-  }
+  private readonly serviceValide = inject(ValideResponseApi);
 
-  patients: PatientPreview[] = [
-    {
-      id: 1,
-      name: 'João da Silva Costa Henrique',
-      cpf: '123.456.789-01',
-      phone: '(11) 98765-4321',
-      photo: 'assets/images/patients/patient-1.jpg',
-      medical_record_id: 101
-    },
-    {
-      id: 2,
-      name: 'Maria Oliveira',
-      cpf: '234.567.890-12',
-      phone: '(11) 97654-3210',
-      photo: 'assets/images/patients/patient-2.jpg',
-      medical_record_id: 102
-    },
-    {
-      id: 3,
-      name: 'Carlos Santos',
-      cpf: '345.678.901-23',
-      phone: '(11) 96543-2109',
-      photo: 'assets/images/patients/patient-3.jpg',
-      medical_record_id: 103
-    },
-    {
-      id: 4,
-      name: 'Ana Souza',
-      cpf: '456.789.012-34',
-      phone: '(11) 95432-1098',
-      photo: 'assets/images/patients/patient-4.jpg',
-      medical_record_id: 104
-    },
-    {
-      id: 5,
-      name: 'Pedro Almeida',
-      cpf: '567.890.123-45',
-      phone: '(11) 94321-0987',
-      photo: 'assets/images/patients/patient-5.jpg',
-      medical_record_id: 105
-    },
-    {
-      id: 6,
-      name: 'Juliana Costa',
-      cpf: '678.901.234-56',
-      phone: '(11) 93210-9876',
-      photo: 'assets/images/patients/patient-6.jpg',
-      medical_record_id: 106
-    },
-    {
-      id: 7,
-      name: 'Rafael Pereira',
-      cpf: '789.012.345-67',
-      phone: '(11) 92109-8765',
-      photo: 'assets/images/patients/patient-7.jpg',
-      medical_record_id: 107
-    }
-  ];
+  isModalLoadingOpening = signal<boolean>(true);
+  patients = signal<PatientPreview[]>([]);
 
-  patientPreview = signal(this.patients.filter((it) => it.id == this.patientId.patient.id));
+  patientPreview = signal<PatientPreview>({
+    id: 0,
+    name: '',
+    cpf: '',
+    medical_record_id: 0,
+    phone: '',
+    photo: ''
+  });
 
-  addressFormated: string = `${this.patientId.address.street}, ${this.patientId.address.number} - ${this.patientId.address.district} - ${this.patientId.address.city} - ${this.patientId.address.uf_address}`;
-
-  informationsLabel: DataInformationLabel[] = [
-    {
-      label: 'CPF',
-      value: formattedCPF(this.patientId.patient.cpf)
-    },
-    {
-      label: 'Estado civil',
-      value: translateCivilStateBr(this.patientId.patient.civil_state)
-    },
-    {
-      label: 'Gênero',
-      value: translateGenderBr(this.patientId.patient.gender)
-    },
-    {
-      label: 'Profissão',
-      value: this.patientId.patient.professional
-    },
-    {
-      label: 'Email',
-      value: this.patientId.patient.email
-    },
-    {
-      label: 'Telefone',
-      value: formattedPhone(this.patientId.patient.phone)
-    },
-    {
-      label: 'Emergência',
-      value: formattedPhone(this.patientId.patient.phone_emergency)
-    },
-    {
-      label: 'Peso',
-      value: this.patientId.patient.weight
-    },
-    {
-      label: 'Altura',
-      value: this.patientId.patient.height
-    },
-    {
-      label: 'Data de nascimento',
-      value: getDateFormatted(this.patientId.patient.born_date)
-    },
-    {
-      label: 'Idade',
-      value: getYearsDifference(this.patientId.patient.born_date, date)
-    },
-    {
-      label: 'Tipo sanguíneo',
-      value: translateBloodTypeBr(this.patientId.patient.blood_type)
-    },
-    {
-      label: 'Cadastro',
-      value: getDateFormatted(this.patientId.patient.record_date)
-    },
-    {
-      label: 'Endereço',
-      value: this.addressFormated
-    },
-    {
-      label: 'Descrição',
-      value: this.patientId.patient.notes
-    }
-  ];
-
-  filteredPatients = signal<PatientPreview[]>(this.patients);
+  filteredPatients = signal<PatientPreview[]>(this.patients());
 
   isModalOpening = signal<boolean>(false);
   isModalScheduleConsultationOpen = signal(false);
 
+  informationsLabel = signal<DataInformationLabel[]>([]);
+
   filterPatients(value: string): void {
-    this.filteredPatients.set(this.patients.filter((it) => it.name.toLowerCase().includes(value.toLowerCase())));
+    this.filteredPatients.set(this.patients().filter((it) => it.name.toLowerCase().includes(value.toLowerCase())));
   }
 
-  changeModalOpening(): void {
+  async changeModalOpening(id: number): Promise<void> {
     desactiveScroll(this.isModalOpening(), this.renderer);
+
+    const patient = await this.servicePatients.getPatient(id);
+
+    if (patient instanceof HttpErrorResponse || !patient) {
+      return;
+    }
+
+    this.patientPreview.set({
+      id: patient.patient.id,
+      name: patient.patient.name,
+      cpf: formattedCPF(patient.patient.cpf),
+      medical_record_id: patient.patient.medical_record_id,
+      phone: formattedPhone(patient.patient.phone),
+      photo: patient.patient.photo
+    });
+
+    const addressFormated: string = `${patient.address.street}, ${patient.address.number} - ${patient.address.district} - ${patient.address.city} - ${patient.address.uf_address}`;
+
+    this.informationsLabel.set([
+      {
+        label: 'CPF',
+        value: formattedCPF(patient.patient.cpf)
+      },
+      {
+        label: 'Estado civil',
+        value: translateCivilStateBr(patient.patient.civil_state)
+      },
+      {
+        label: 'Gênero',
+        value: translateGenderBr(patient.patient.gender)
+      },
+      {
+        label: 'Profissão',
+        value: patient.patient.professional ? patient.patient.professional : 'N/A'
+      },
+      {
+        label: 'Email',
+        value: patient.patient.email ? patient.patient.email : 'N/A'
+      },
+      {
+        label: 'Telefone',
+        value: formattedPhone(patient.patient.phone)
+      },
+      {
+        label: 'Emergência',
+        value: patient.patient.phone_emergency ? formattedPhone(patient.patient.phone_emergency) : 'N/A'
+      },
+      {
+        label: 'Peso',
+        value: patient.patient.weight ? patient.patient.weight : 'N/A'
+      },
+      {
+        label: 'Altura',
+        value: patient.patient.height ? patient.patient.height : 'N/A'
+      },
+      {
+        label: 'Data de nascimento',
+        value: getDateFormatted(patient.patient.born_date)
+      },
+      {
+        label: 'Idade',
+        value: getYearsDifference(patient.patient.born_date, date)
+      },
+      {
+        label: 'Tipo sanguíneo',
+        value: translateBloodTypeBr(patient.patient.blood_type)
+      },
+      {
+        label: 'Cadastro',
+        value: getDateFormatted(patient.patient.record_date)
+      },
+      {
+        label: 'Endereço',
+        value: addressFormated
+      },
+      {
+        label: 'Descrição',
+        value: patient.patient.notes ? patient.patient.notes : 'N/A'
+      },
+      {
+        label: 'Nome',
+        value: patient.patient.name
+      },
+      {
+        label: 'Foto',
+        value: patient.patient.photo
+      }
+    ])
 
     this.isModalOpening.set(!this.isModalOpening());
   }
@@ -246,10 +153,20 @@ export class Patients implements OnInit {
     this.isModalScheduleConsultationOpen.set(!this.isModalScheduleConsultationOpen())
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.activateRoute.params.subscribe((params) => {
       const valueBool: boolean = params['open-modal'] == 'false' ? false : true;
       this.isModalScheduleConsultationOpen.set(valueBool);
     });
+
+    const patients = await this.servicePatients.getPatientsPreview()
+
+    if (Array.isArray(patients)) {
+      this.patients.set(patients);
+      this.filteredPatients.set(patients);
+    }
+
+    this.isModalLoadingOpening.set(false);
+    this.serviceValide.valideResponseUfGet(patients, "Busca de Pacientes");
   }
 }
