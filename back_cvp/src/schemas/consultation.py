@@ -51,11 +51,6 @@ class VerfifyHourConsultationResponse(BaseModel):
     available: bool
 
 
-class VerfifyHourConsultationJSONConsult(BaseModel):
-    id_doctor: int
-    date: date
-
-
 class CountConsultationResponse(BaseModel):
     scheduled: int | None = 0
     waiting: int | None = 0

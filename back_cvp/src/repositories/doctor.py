@@ -6,17 +6,15 @@ from src.database.models.views.doctor_data import DoctorData
 from src.schemas.doctor import DoctorCreateDataWithPassword
 from src.schemas.doctor import DoctorUpdateData
 
+
 def select_doctor(db: Session, filter: str | None):
     if filter:
         return db.query(DoctorData).filter(DoctorData.status == filter).all()
 
     return db.query(DoctorData).all()
 
-def select_doctor_id(
-    db: Session, 
-    id: int,
-    model: type[Base]
-):
+
+def select_doctor_id(db: Session, id: int, model: type[Base]):
     return db.query(model).filter(model.id == id).first()
 
 
@@ -30,11 +28,8 @@ def insert_doctor(db: Session, doctor: DoctorCreateDataWithPassword):
 
     return new_doctor.id
 
-def update_doctor(
-    db: Session, 
-    doctor_update: DoctorUpdateData, 
-    doctor_db: Doctor
-):
+
+def update_doctor(db: Session, doctor_update: DoctorUpdateData, doctor_db: Doctor):
     update_doctor = doctor_update.model_dump(exclude_unset=True)
 
     for field, value in update_doctor.items():

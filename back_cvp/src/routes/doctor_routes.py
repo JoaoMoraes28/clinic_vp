@@ -15,7 +15,6 @@ from src.schemas.doctor import DoctorResponseCreate
 from src.schemas.doctor import DoctorUpdate
 from src.schemas.doctor import DoctorReponseStatus
 
-from src.security.jwt import valide_token
 from src.security.jwt import valide_access_level_admin
 
 doctor_routes = APIRouter(prefix="/doctor", tags=["Médicos(as)"])
