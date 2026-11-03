@@ -1,4 +1,4 @@
-<form (click)="closeOnClickModal($event)" [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="fixed top-0 right-0 bg-(--bg-primary) z-99 flex flex-col justify-between items-center px-4 pt-8 pb-6 w-full h-full overflow-auto
+<form (click)="closeOnClickModal($event)" [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="fixed top-0 right-0 bg-(--bg-primary) z-98 flex flex-col justify-between items-center px-4 pt-8 pb-6 w-full h-full overflow-auto
     md:px-12
     lg:relative lg:aspect-28/32 lg:w-auto lg:h-[calc(100%-24px)] lg:mt-3 lg:pb-0
     2xl:h-[calc(100%-128px)] 2xl:mt-16">
@@ -80,11 +80,11 @@
             md:flex-row md:justify-between
             lg:h-12 lg:justify-between lg:flex-row lg:gap-0">
             <div class="w-full h-12 md:w-[45%] lg:w-[47%]">
-                <app-cancel-button [buttonLabel]="'Cancelar consulta'" [buttonType]="'button'">
+                <app-cancel-button [buttonLabel]="'Cancelar'" [buttonType]="'button'">
                 </app-cancel-button>
             </div>
             <div class="w-full h-12 md:w-[45%] lg:w-[47%]">
-                <app-confirm-button [buttonLabel]="'Confirmar consulta'"></app-confirm-button>
+                <app-confirm-button [buttonLabel]="'Agendar'"></app-confirm-button>
             </div>
         </div>
     </div>

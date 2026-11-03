@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, OnInit, output, signal } from '@angular/core';
+import { Component, computed, inject, input, OnInit, output, Renderer2, signal } from '@angular/core';
 import { InputDefault, Input } from '../../../../shared/input/input';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CancelButton } from '../../../../shared/button/cancel/cancel-button';
@@ -10,7 +10,11 @@ import { Patient, PatientPreview } from '../../../../repo/patient/patient';
 import { Speciality, SpecialityResponse } from '../../../../repo/speciality/speciality';
 import { ValideResponseApi } from '../../../../services/valide-response/valide-response-api';
 import { Doctor, DoctorData, DoctorSpeciality } from '../../../../repo/doctor/doctor';
-import { Consultation, HourAvaliableConsultation } from '../../../../repo/consultation/consultation';
+import { Consultation, ConsultationWrite, HourAvaliableConsultation } from '../../../../repo/consultation/consultation';
+import { ReturnMessageCreateElement } from '../../../../repo/dto-response-standart/interface-response';
+import { desactiveScroll } from '../../../../utils/renderer-document';
+import { ModalResponse } from '../../../../services/modal-response/modal-response';
+import { LoadingMessage } from '../../../../services/loading-message/loading-message';
 
 export interface ListDatas {
   id: number;
@@ -29,7 +33,10 @@ export class ScheduleConsultation implements OnInit {
   private readonly serviceDoctor = inject(Doctor);
   private readonly serviceConsultation = inject(Consultation);
   private readonly servicePatient = inject(Patient);
+  private readonly serviceModalResponse = inject(ModalResponse);
+  private readonly serviceLoadingModal = inject(LoadingMessage);
   formBuilder = inject(FormBuilder);
+  renderer = inject(Renderer2);
   closeModal = output<void>();
 
   profileForm = this.formBuilder.group({
@@ -222,14 +229,40 @@ export class ScheduleConsultation implements OnInit {
     this.closeModal.emit();
   }
 
-  onSubmit(): void {
+  async onSubmit(): Promise<void> {
     if (!this.profileForm.valid) {
-      console.log(this.profileForm)
       console.log("Campos inválidos");
 
     } else {
-      console.log(this.profileForm.value);
+      this.serviceLoadingModal.setModalLoadingOpening(true);
+
+      const consultationWrite: ConsultationWrite = {
+        patient_id: Number(this.profileForm.get('patientId')?.value),
+        doctor_id: Number(this.profileForm.get('doctorId')?.value),
+        speciality_id: Number(this.profileForm.get('specialityId')?.value),
+        consultation_date: this.profileForm.get('date')?.value!,
+        hour: this.profileForm.get('hour')?.value!,
+        recepcionist_id: 11,
+        medical_record_id: 53
+      }
+
+      await this.postConsultation(consultationWrite);
     }
+  }
+
+  async postConsultation(consultation: ConsultationWrite): Promise<void> {
+    const response: ReturnMessageCreateElement | unknown = await this.serviceConsultation.postConsultation(consultation);
+
+    this.serviceLoadingModal.setModalLoadingOpening(false);
+    
+    const isValid: boolean = await this.serviceValide.valideResponse(response, "Cadastro de Consulta");
+
+    desactiveScroll(false, this.renderer);
+    if (!isValid) {
+      return;
+    }
+
+    this.serviceModalResponse.constructorModalResponse(true, "Cadastro de Consulta", "Consulta agendada com sucesso!", "Concluir", null);
   }
 
   async ngOnInit(): Promise<void> {

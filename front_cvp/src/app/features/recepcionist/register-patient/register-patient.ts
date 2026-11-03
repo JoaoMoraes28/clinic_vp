@@ -15,15 +15,18 @@ import { desactiveScroll } from '../../../utils/renderer-document';
 import { LoadingMessage } from '../../../services/loading-message/loading-message';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ValideResponseApi } from '../../../services/valide-response/valide-response-api';
+import { Close } from '../../../svg/close/close';
+import { Router } from '@angular/router';
 
 @Component({
-  imports: [ProfilePerson, Input, ɵInternalFormsSharedModule, ReactiveFormsModule, ConfirmButton, FieldsetList],
+  imports: [ProfilePerson, Input, ɵInternalFormsSharedModule, ReactiveFormsModule, ConfirmButton, FieldsetList, Close],
   selector: 'app-register-patient',
   templateUrl: './register-patient.html'
 })
 export class RegisterPatient implements OnInit {
   formBuilder = inject(FormBuilder);
   private readonly render = inject(Renderer2);
+  private readonly router = inject(Router);
   private serviceCep = inject(Cep);
   private serviceUf = inject(Uf);
   private servicePatient = inject(Patient);
@@ -326,7 +329,11 @@ export class RegisterPatient implements OnInit {
     { id: 8, value: 'O-' }
   ]
 
-  closeOnClickModal(e: Event) {
+  closeModalScheduleConsultation(): void {
+    this.router.navigate(['/recepcionist/patients']);
+  }
+
+  closeOnClickModalOptionsSelect(e: Event) {
     const element = e.target as HTMLElement;
 
     if (element.id == 'civilState') {
