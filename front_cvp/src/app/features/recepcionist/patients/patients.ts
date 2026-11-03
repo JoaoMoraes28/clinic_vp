@@ -45,7 +45,7 @@ export class Patients implements OnInit {
   filteredPatients = signal<PatientPreview[]>(this.patients());
 
   isModalOpening = signal<boolean>(false);
-  isModalScheduleConsultationOpen = signal(false);
+  isModalScheduleConsultationOpen = signal<boolean>(false);
 
   informationsLabel = signal<DataInformationLabel[]>([]);
 
@@ -167,6 +167,6 @@ export class Patients implements OnInit {
     }
 
     this.isModalLoadingOpening.set(false);
-    this.serviceValide.valideResponseUfGet(patients, "Busca de Pacientes");
+    await this.serviceValide.valideResponse(patients, "Busca de Pacientes");
   }
 }

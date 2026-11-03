@@ -429,7 +429,7 @@ export class RegisterPatient implements OnInit {
 
     this.loadingModal.setModalLoadingOpening(false);
 
-    const isValid = this.serviceValidate.valideResponseUfGet(response, "Cadastro de Paciente");
+    const isValid = await this.serviceValidate.valideResponse(response, "Cadastro de Paciente");
 
     if (isValid) {
       this.serviceModalResponse.constructorModalResponse(true, "Cadastro de Paciente", "Paciente cadastrado com sucesso", "Concluir", "recepcionist/patients/false");
@@ -541,7 +541,7 @@ export class RegisterPatient implements OnInit {
     }
     
     desactiveScroll(false, this.render);
-    this.serviceValidate.valideResponseUfGet(responseUf, "Busca de UF");
+    await this.serviceValidate.valideResponse(responseUf, "Busca de UF");
   }
 
 }

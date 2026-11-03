@@ -1,7 +1,8 @@
-import { Component, input } from '@angular/core';
+import { Component, input, OnInit } from '@angular/core';
 import { ListDatas } from '../../schedule-consultation';
 import { FormGroup } from '@angular/forms';
 import { PatientPreview } from '../../../../../../repo/patient/patient';
+import { formattedCPF, formattedPhone } from '../../../../../../utils/formatted-datas';
 
 @Component({
   imports: [],
@@ -15,13 +16,28 @@ export class FieldsetList {
   getPatient = input<(id: number) => PatientPreview>();
 
   setValueInInput(value: string, field: string, id: number): void {
-
-    if (field == 'patient') {
-      const patient = this.getPatient()!(id);
-      this.profileForm().patchValue({
-        cpf: patient.cpf,
-        phone: patient.phone
-      })
+    switch (field) {
+      case 'patient': {
+        const patient = this.getPatient()!(id);
+        this.profileForm().patchValue({
+          cpf: formattedCPF(patient.cpf),
+          phone: formattedPhone(patient.phone),
+          patientId: id.toString()
+        })
+        break;
+      }
+      case 'doctor': {
+        this.profileForm().patchValue({
+          doctorId: id
+        })
+        break;
+      }
+      case 'speciality': {
+        this.profileForm().patchValue({
+          specialityId: id
+        })
+        break;
+      }
     }
 
     this.profileForm().patchValue({

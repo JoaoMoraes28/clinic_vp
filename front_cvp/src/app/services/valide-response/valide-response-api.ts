@@ -8,7 +8,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 export class ValideResponseApi {
     private readonly serviceModalResponse = inject(ModalResponse);
 
-    valideResponseUfGet(response: unknown, title: string): boolean {
+    async valideResponse(response: unknown, title: string): Promise<boolean> {
         if (response instanceof HttpErrorResponse) {
             switch (response.status) {
                 case 403: this.serviceModalResponse.constructorModalResponse(true, title, "Você não possui permissão para realizar esta ação!", "Retornar", ''); break;

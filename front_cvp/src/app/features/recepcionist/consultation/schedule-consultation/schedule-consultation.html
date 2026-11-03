@@ -58,9 +58,21 @@
             <div class="md:w-[47%]">
                 <app-input [inputDatas]="inputsDatas[5]"></app-input>
             </div>
-            <div class="md:w-[47%]">
+
+            <div id="hour-available" (click)="openCloseModalSelector(inputsDatas[6].id)" class="relative md:w-[47%]">
                 <app-input [inputDatas]="inputsDatas[6]"></app-input>
+                @if(inputsDatas[6].visibleList()) {
+                <div class="absolute bottom-11.25 w-28 h-90 z-80 flex flex-col">
+                    <div class="w-full h-[calc(100%-1px)]">
+                        <app-fieldset-list [fieldForm]="'hour'" [list]="dataHourAvaliable()"
+                            [profileForm]="profileForm">
+                        </app-fieldset-list>
+                    </div>
+                    <div class="flex flex-1 bg-(--bg-primary)"></div>
+                </div>
+                }
             </div>
+
         </div>
     </div>
     <div class="flex w-full h-38 py-4 lg:items-center">

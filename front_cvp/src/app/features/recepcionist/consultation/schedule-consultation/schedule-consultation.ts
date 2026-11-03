@@ -6,43 +6,11 @@ import { ConfirmButton } from '../../../../shared/button/confirm/confirm-button'
 import { Close } from '../../../../svg/close/close';
 import { SelectedPatientConsultation } from '../../../../services/select-patient/selected-patient-consultation';
 import { FieldsetList } from './components/fieldset-list/fieldset-list';
-import { PatientPreview } from '../../../../repo/patient/patient';
-
-export interface Speciality {
-  id: number;
-  speciality_name: string;
-}
-
-export interface DoctorData {
-  doctor: Doctor;
-  address: Address;
-}
-
-export interface Doctor {
-  name: string;
-  crm: string;
-  cpf: string;
-  phone: string;
-  email: string;
-  bio: string;
-  photo: string;
-  status: string;
-  gender: string;
-  id: number;
-  admission_date: string;
-  uf_crm: string;
-  contract: string;
-  must_change_password: boolean;
-}
-
-export interface Address {
-  city: string;
-  district: string;
-  street: string;
-  number: string;
-  cep: string;
-  uf_address: string;
-}
+import { Patient, PatientPreview } from '../../../../repo/patient/patient';
+import { Speciality, SpecialityResponse } from '../../../../repo/speciality/speciality';
+import { ValideResponseApi } from '../../../../services/valide-response/valide-response-api';
+import { Doctor, DoctorData, DoctorSpeciality } from '../../../../repo/doctor/doctor';
+import { Consultation, HourAvaliableConsultation } from '../../../../repo/consultation/consultation';
 
 export interface ListDatas {
   id: number;
@@ -56,9 +24,13 @@ export interface ListDatas {
 })
 export class ScheduleConsultation implements OnInit {
   private selectedPatient = inject(SelectedPatientConsultation);
+  private readonly serviceSpecialitys = inject(Speciality);
+  private readonly serviceValide = inject(ValideResponseApi);
+  private readonly serviceDoctor = inject(Doctor);
+  private readonly serviceConsultation = inject(Consultation);
+  private readonly servicePatient = inject(Patient);
   formBuilder = inject(FormBuilder);
   closeModal = output<void>();
-  patientList = input.required<PatientPreview[]>();
 
   profileForm = this.formBuilder.group({
     patient: ['', [Validators.required]],
@@ -67,109 +39,32 @@ export class ScheduleConsultation implements OnInit {
     speciality: ['', [Validators.required]],
     doctor: ['', [Validators.required]],
     date: ['', [Validators.required]],
-    hour: ['', [Validators.required]]
+    hour: ['', [Validators.required]],
+    //-----------------------------------//
+    patientId: ['', [Validators.required]],
+    specialityId: ['', [Validators.required]],
+    doctorId: ['', [Validators.required]],
   })
 
-  specialitys = signal<Speciality[]>([
-    {
-      id: 1,
-      speciality_name: "Cardiologista"
-    },
-    {
-      id: 2,
-      speciality_name: "Urologista"
-    },
-    {
-      id: 3,
-      speciality_name: "Ginecologista"
-    }
-  ]);
+  patientList = signal<PatientPreview[]>([])
 
-  doctors = signal<DoctorData[]>([
-    {
-      doctor: {
-        name: "Carlos Eduardo Silva",
-        crm: "123456",
-        cpf: "123.456.789-00",
-        phone: "(11) 98888-7777",
-        email: "carlos.silva@example.com",
-        bio: "Médico especialista em cardiologia.",
-        photo: "https://example.com/photos/carlos.jpg",
-        status: "ACTIVE",
-        gender: "MALE",
-        id: 1,
-        admission_date: "2024-03-15",
-        uf_crm: "SP",
-        contract: "CLT",
-        must_change_password: false
-      },
-      address: {
-        city: "São Paulo",
-        district: "Vila Mariana",
-        street: "Rua Domingos de Morais",
-        number: "1500",
-        cep: "04010-200",
-        uf_address: "SP"
-      }
-    },
-    {
-      doctor: {
-        name: "Fernanda Oliveira Santos",
-        crm: "654321",
-        cpf: "987.654.321-00",
-        phone: "(11) 97777-6666",
-        email: "fernanda.santos@example.com",
-        bio: "Médica especialista em dermatologia.",
-        photo: "https://example.com/photos/fernanda.jpg",
-        status: "ACTIVE",
-        gender: "FEMALE",
-        id: 2,
-        admission_date: "2025-08-20",
-        uf_crm: "RJ",
-        contract: "PJ",
-        must_change_password: true
-      },
-      address: {
-        city: "Rio de Janeiro",
-        district: "Copacabana",
-        street: "Avenida Nossa Senhora de Copacabana",
-        number: "850",
-        cep: "22060-002",
-        uf_address: "RJ"
-      }
-    }
-  ])
+  specialitys = signal<SpecialityResponse[]>([]);
 
-  dataPatients = computed(() => this.patientList().map(it => {
-    return {
-      id: it.id,
-      value: it.name
-    }
-  }))
+  doctors = signal<DoctorData[]>([])
 
-  dataSpeciality = signal<ListDatas[]>(
-    this.specialitys().map(it => {
-      return {
-        id: it.id,
-        value: it.speciality_name
-      }
-    })
-  )
+  dataPatients = signal<ListDatas[]>([]);
 
-  dataDoctor = signal<ListDatas[]>(
-    this.doctors().map(it => {
-      return {
-        id: it.doctor.id,
-        value: it.doctor.name
-      }
-    })
-  )
+  dataSpeciality = signal<ListDatas[]>([]);
 
-  filteredSpeciality = signal<ListDatas[]>(this.dataSpeciality());
+  dataDoctor = signal<ListDatas[]>([]);
+
+  dataHourAvaliable = signal<ListDatas[]>([]);
+
+  filteredSpeciality = signal<ListDatas[]>([]);
 
   filteredPatients = signal<ListDatas[]>([]);
 
-  filteredDoctors = signal<ListDatas[]>(this.dataDoctor());
+  filteredDoctors = signal<ListDatas[]>([]);
 
   inputsDatas: InputDefault[] = [
     {
@@ -253,7 +148,7 @@ export class ScheduleConsultation implements OnInit {
       placeholder: '00:00',
       type: 'time',
       mandatory: true,
-      readonly: false,
+      readonly: true,
       visibleList: signal(false)
     },
   ]
@@ -264,16 +159,25 @@ export class ScheduleConsultation implements OnInit {
     if (element.id == 'patient') {
       this.inputsDatas[3].visibleList.set(false);
       this.inputsDatas[4].visibleList.set(false);
+      this.inputsDatas[6].visibleList.set(false);
       return;
 
     } else if (element.id == 'speciality') {
       this.inputsDatas[0].visibleList.set(false);
       this.inputsDatas[4].visibleList.set(false);
+      this.inputsDatas[6].visibleList.set(false);
       return;
 
     } else if (element.id == 'doctor') {
       this.inputsDatas[0].visibleList.set(false);
       this.inputsDatas[3].visibleList.set(false);
+      this.inputsDatas[6].visibleList.set(false);
+      return;
+
+    } else if (element.id == 'hour') {
+      this.inputsDatas[0].visibleList.set(false);
+      this.inputsDatas[3].visibleList.set(false);
+      this.inputsDatas[4].visibleList.set(false);
       return;
 
     }
@@ -281,7 +185,7 @@ export class ScheduleConsultation implements OnInit {
     this.inputsDatas[0].visibleList.set(false);
     this.inputsDatas[3].visibleList.set(false);
     this.inputsDatas[4].visibleList.set(false);
-
+    this.inputsDatas[6].visibleList.set(false);
   }
 
   openCloseModalSelector(id: string) {
@@ -320,6 +224,7 @@ export class ScheduleConsultation implements OnInit {
 
   onSubmit(): void {
     if (!this.profileForm.valid) {
+      console.log(this.profileForm)
       console.log("Campos inválidos");
 
     } else {
@@ -327,7 +232,10 @@ export class ScheduleConsultation implements OnInit {
     }
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    const patients: PatientPreview[] | unknown = await this.servicePatient.getPatientsPreview();
+
+    await this.getPatientsFormatter(patients);
 
     this.selectedPatient.getSelectedPatient().subscribe(
       patient => {
@@ -339,14 +247,164 @@ export class ScheduleConsultation implements OnInit {
           this.profileForm.patchValue({
             patient: patient.name,
             cpf: patient.cpf,
-            phone: patient.phone
+            phone: patient.phone,
+            patientId: patient.id.toString()
           })
 
         }
       }
     )
 
+    this.profileForm.get('speciality')?.valueChanges.subscribe(speciality => {
+      const specialityChoice: SpecialityResponse[] = this.specialitys().filter(it => it.speciality_name.toLowerCase() == speciality?.toLowerCase());
+
+      if (specialityChoice[0]) {
+        const idSpecialityString: string = specialityChoice[0].id.toString();
+        this.profileForm.get('specialityId')?.setValue(idSpecialityString);
+
+      } else {
+        this.profileForm.get('specialityId')?.setValue(null);
+      }
+    })
+
+    this.profileForm.get('patient')?.valueChanges.subscribe(patient => {
+      const patientChoice: PatientPreview[] = this.patientList().filter(it => it.name.toLowerCase() == patient?.toLowerCase());
+
+      if (patientChoice[0] && patientChoice.length == 1) {
+        const idPatientString: string = patientChoice[0].id.toString();
+        this.profileForm.get('patientId')?.setValue(idPatientString);
+
+      } else {
+        this.profileForm.get('patientId')?.setValue(null);
+      }
+    })
+
+    this.profileForm.get('specialityId')?.valueChanges.subscribe(specialityId => {
+      this.getDoctorsBySpeciality(Number(specialityId));
+
+      this.profileForm.get('doctor')?.setValue("");
+    })
+
+    this.profileForm.get('doctor')?.valueChanges.subscribe(doctor => {
+      this.profileForm.get('date')?.setValue("");
+      this.profileForm.get('hour')?.setValue("");
+    })
+
+    this.profileForm.get('date')?.valueChanges.subscribe(date => {
+      this.getHourAvaliable();
+    })
+
+    this.profileForm.get('doctorId')?.valueChanges.subscribe(doctorId => {
+      this.getHourAvaliable();
+    })
+
     this.filteredPatients.set(this.dataPatients());
 
+    this.getSpecialitysFormatter();
+
+  }
+
+  async getPatientsFormatter(patients: PatientPreview[] | unknown): Promise<void> {
+    if (Array.isArray(patients)) {
+      const dataPatients: ListDatas[] = patients.map(it => {
+        return {
+          id: it.id,
+          value: it.name
+        }
+      })
+
+      this.patientList.set(patients);
+      this.dataPatients.set(dataPatients);
+      this.filteredPatients.set(dataPatients);
+    }
+
+    await this.serviceValide.valideResponse(patients, "Busca de pacientes");
+  }
+
+  async getSpecialitysFormatter(): Promise<void> {
+    const specialitys = await this.serviceSpecialitys.getSpeciality();
+
+    if (Array.isArray(specialitys)) {
+      this.specialitys.set(specialitys);
+
+      const dataSpeciality: ListDatas[] = specialitys.map(it => {
+        return {
+          id: it.id,
+          value: it.speciality_name
+        }
+      })
+
+      this.dataSpeciality.set(dataSpeciality);
+      this.filteredSpeciality.set(dataSpeciality);
+
+      return;
+    }
+
+    await this.serviceValide.valideResponse(specialitys, "Busca de Especialidades");
+  }
+
+  async getDoctorFormatter(doctors: DoctorSpeciality[] | unknown): Promise<void> {
+    if (Array.isArray(doctors)) {
+      this.doctors.set(doctors);
+
+      const dataDoctor: ListDatas[] = doctors.map(it => {
+        return {
+          id: it.doctor_id,
+          value: it.name
+        }
+      })
+
+      this.dataDoctor.set(dataDoctor);
+      this.filteredDoctors.set(dataDoctor);
+
+      return;
+    }
+
+    await this.serviceValide.valideResponse(doctors, "Busca de Doutores(as)")
+  }
+
+  async getHoursFormatter(hours: HourAvaliableConsultation[] | unknown): Promise<void> {
+    if (Array.isArray(hours)) {
+      const hoursAvaliable: HourAvaliableConsultation[] = hours.filter(it => it.available);
+
+      const dataHours: ListDatas[] = hoursAvaliable.map(it => {
+        const splitHour = it.hour_consultation.split(":");
+        const hourFormatted: string = `${splitHour[0]}:${splitHour[1]}`;
+
+        return {
+          id: it.id,
+          value: hourFormatted
+        }
+      })
+
+      this.dataHourAvaliable.set(dataHours);
+      return;
+    }
+
+    await this.serviceValide.valideResponse(hours, "Busca de horários disponíveis")
+  }
+
+  async getDoctorsBySpeciality(specialityId: number) {
+    const doctors: DoctorSpeciality[] | unknown = await this.serviceDoctor.getDoctorsBySpeciality(specialityId);
+
+    if (Array.isArray(doctors)) {
+      this.getDoctorFormatter(doctors);
+      return;
+    }
+
+    await this.serviceValide.valideResponse(doctors, "Busca de Doutores(as) por Especialidades")
+  }
+
+  async getHourAvaliable(): Promise<void> {
+    const doctorId = this.profileForm.get('doctorId')?.value;
+    const date = this.profileForm.get('date')?.value;
+
+    if (doctorId == null || date == null || doctorId == "" || date == "") {
+      return;
+    }
+
+    const hours: HourAvaliableConsultation[] | unknown = await this.serviceConsultation.getHoursAvaliableConsultation(date, Number(doctorId));
+
+    this.getHoursFormatter(hours);
   }
 }
