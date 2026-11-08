@@ -4,10 +4,7 @@ from src.database.models.doctor import Doctor
 
 
 class ResponseAuth(BaseModel):
-    id: int
-    name: str
     token: str
-    email: str
     photo: str | None
 
 

@@ -17,7 +17,7 @@ from fastapi import Depends
 oauth2_schema = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
-def create_access_token(user_id: int, role: str, user_name: str):
+def create_access_token(user_id: int, role: str, user_name: str, email: str):
 
     issued_date_time = datetime.now(timezone.utc)
 
@@ -25,6 +25,7 @@ def create_access_token(user_id: int, role: str, user_name: str):
         "sub": str(user_id),
         "role": role,
         "name": user_name,
+        "email": email,
         "iat": issued_date_time,
         "exp": issued_date_time + timedelta(hours=4),
     }

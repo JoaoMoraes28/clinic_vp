@@ -35,13 +35,13 @@ def get_auth_credentials(db: Session, datas: CreateAuth):
         raise_invalid_credentials()
 
     token = create_access_token(
-        result["employee"]["id"], result["role"], result["employee"]["name"]
+        result["employee"]["id"],
+        result["role"],
+        result["employee"]["name"],
+        result["employee"]["email"],
     )
 
     return {
-        "id": result["employee"]["id"],
-        "name": result["employee"]["name"],
-        "email": result["employee"]["email"],
         "photo": result["employee"]["photo"],
         "token": token,
     }
