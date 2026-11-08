@@ -7,6 +7,8 @@ class ResponseAuth(BaseModel):
     id: int
     name: str
     token: str
+    email: str
+    photo: str | None
 
 
 class ResponseQueryEmployee(BaseModel):

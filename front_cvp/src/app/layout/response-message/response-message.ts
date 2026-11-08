@@ -4,6 +4,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ConfirmButton } from '../../shared/button/confirm/confirm-button';
 import { desactiveScroll } from '../../utils/renderer-document';
 import { Router } from '@angular/router';
+import { Location } from '@angular/common';
+import { ro } from 'date-fns/locale';
 
 @Component({
   imports: [ConfirmButton],
@@ -13,6 +15,7 @@ import { Router } from '@angular/router';
 export class ResponseMessage {
   private readonly serviceResponseMessage = inject(ModalResponse);
   private readonly render = inject(Renderer2);
+  private readonly location = inject(Location);
   private router = inject(Router);
 
   isOpenModal = toSignal(this.serviceResponseMessage.getModalResponseOpening());
@@ -26,9 +29,10 @@ export class ResponseMessage {
     desactiveScroll(true, this.render);
 
     this.serviceResponseMessage.getRouteNavigate().subscribe(value => {
-      if (value) {
-        this.router.navigate([value]);
-
+      switch(value) {
+        case (null): break;
+        case (''): this.location.back(); break;
+        default: this.router.navigate([value]);
       }
     })
 

@@ -12,6 +12,6 @@ export class ScheduleConsultation {
   iconSelected = toSignal(this.navigation.getActiveIcon(), { initialValue: '' })
 
   iconColor: Signal<string> = computed(() =>
-    this.iconSelected() == 'Agendar consulta' ? 'var(--blue-dark)' : 'var(--white-default)');
+    this.iconSelected() == '/recepcionist/patients/true' ? 'var(--blue-dark)' : 'var(--white-default)');
 }
 

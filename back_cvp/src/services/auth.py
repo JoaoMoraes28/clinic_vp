@@ -41,6 +41,8 @@ def get_auth_credentials(db: Session, datas: CreateAuth):
     return {
         "id": result["employee"]["id"],
         "name": result["employee"]["name"],
+        "email": result["employee"]["email"],
+        "photo": result["employee"]["photo"],
         "token": token,
     }
 

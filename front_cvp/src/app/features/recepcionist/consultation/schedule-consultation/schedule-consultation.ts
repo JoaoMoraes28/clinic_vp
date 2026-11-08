@@ -1,11 +1,11 @@
-import { Component, computed, inject, input, OnInit, output, Renderer2, signal } from '@angular/core';
+import { Component, inject, OnInit, output, Renderer2, signal } from '@angular/core';
 import { InputDefault, Input } from '../../../../shared/input/input';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CancelButton } from '../../../../shared/button/cancel/cancel-button';
 import { ConfirmButton } from '../../../../shared/button/confirm/confirm-button';
 import { Close } from '../../../../svg/close/close';
 import { SelectedPatientConsultation } from '../../../../services/select-patient/selected-patient-consultation';
-import { FieldsetList } from './components/fieldset-list/fieldset-list';
+import { FieldsetList, DatasList, FullDatasList } from '../../../../shared/fieldset-list/fieldset-list';
 import { Patient, PatientPreview } from '../../../../repo/patient/patient';
 import { Speciality, SpecialityResponse } from '../../../../repo/speciality/speciality';
 import { ValideResponseApi } from '../../../../services/valide-response/valide-response-api';
@@ -15,11 +15,7 @@ import { ReturnMessageCreateElement } from '../../../../repo/dto-response-standa
 import { desactiveScroll } from '../../../../utils/renderer-document';
 import { ModalResponse } from '../../../../services/modal-response/modal-response';
 import { LoadingMessage } from '../../../../services/loading-message/loading-message';
-
-export interface ListDatas {
-  id: number;
-  value: string;
-}
+import { Router } from '@angular/router';
 
 @Component({
   imports: [Input, CancelButton, ConfirmButton, Close, ReactiveFormsModule, FieldsetList],
@@ -35,9 +31,10 @@ export class ScheduleConsultation implements OnInit {
   private readonly servicePatient = inject(Patient);
   private readonly serviceModalResponse = inject(ModalResponse);
   private readonly serviceLoadingModal = inject(LoadingMessage);
+  private readonly router = inject(Router);
+  closeModal = output<void>();
   formBuilder = inject(FormBuilder);
   renderer = inject(Renderer2);
-  closeModal = output<void>();
 
   profileForm = this.formBuilder.group({
     patient: ['', [Validators.required]],
@@ -51,6 +48,7 @@ export class ScheduleConsultation implements OnInit {
     patientId: ['', [Validators.required]],
     specialityId: ['', [Validators.required]],
     doctorId: ['', [Validators.required]],
+    medicalRecordId: ['', [Validators.required]]
   })
 
   patientList = signal<PatientPreview[]>([])
@@ -59,19 +57,36 @@ export class ScheduleConsultation implements OnInit {
 
   doctors = signal<DoctorData[]>([])
 
-  dataPatients = signal<ListDatas[]>([]);
+  dataPatients = signal<DatasList[]>([]);
 
-  dataSpeciality = signal<ListDatas[]>([]);
+  dataSpeciality = signal<DatasList[]>([]);
 
-  dataDoctor = signal<ListDatas[]>([]);
+  dataDoctor = signal<DatasList[]>([]);
 
-  dataHourAvaliable = signal<ListDatas[]>([]);
+  emptyMessageHour: string = "Nenhum horário disponível encontrado. Verifique o campo de especialidade e doutor(a).";
+  emptyMessagePatient: string = "Nenhum paciente encontrado.";
+  emptyMessageDoctor: string = "Nenhum doutor(a) encontrado. Verifique a busca de especialidade.";
+  emptyMessageSpeciality: string = "Nenhuma especialidade encontrado.";
 
-  filteredSpeciality = signal<ListDatas[]>([]);
+  dataHourAvaliable = signal<FullDatasList>({
+    emptyMessage: this.emptyMessageHour,
+    dataList: []
+  });
 
-  filteredPatients = signal<ListDatas[]>([]);
+  filteredSpeciality = signal<FullDatasList>({
+    emptyMessage: this.emptyMessageSpeciality,
+    dataList: []
+  });
 
-  filteredDoctors = signal<ListDatas[]>([]);
+  filteredPatients = signal<FullDatasList>({
+    emptyMessage: this.emptyMessagePatient,
+    dataList: []
+  });
+
+  filteredDoctors = signal<FullDatasList>({
+    emptyMessage: this.emptyMessageDoctor,
+    dataList: []
+  });
 
   inputsDatas: InputDefault[] = [
     {
@@ -208,25 +223,36 @@ export class ScheduleConsultation implements OnInit {
   }
 
   filterPatients(name: string): void {
-    const filterResult: ListDatas[] = this.dataPatients().filter(it => it.value.toLowerCase().includes(name.toLowerCase()));
+    const filterResult: DatasList[] = this.dataPatients().filter(it => it.value.toLowerCase().includes(name.toLowerCase()));
 
-    this.filteredPatients.set(filterResult);
+    this.filteredPatients.set({
+      emptyMessage: this.emptyMessagePatient,
+      dataList: filterResult
+    });
   }
 
   filterSpecialitys(name: string): void {
-    const filterResult: ListDatas[] = this.dataSpeciality().filter(it => it.value.toLowerCase().includes(name.toLowerCase()));
+    const filterResult: DatasList[] = this.dataSpeciality().filter(it => it.value.toLowerCase().includes(name.toLowerCase()));
 
-    this.filteredSpeciality.set(filterResult);
+    this.filteredSpeciality.set({
+      emptyMessage: this.emptyMessageSpeciality,
+      dataList: filterResult
+    });
   }
 
   filterDoctors(name: string): void {
     const doctors = this.dataDoctor().filter(it => it.value.toLowerCase().includes(name.toLowerCase()));
 
-    this.filteredDoctors.set(doctors);
+    this.filteredDoctors.set({
+      emptyMessage: this.emptyMessageDoctor,
+      dataList: doctors
+    });
   }
 
   closeModalScheduleConsultation(): void {
     this.closeModal.emit();
+    this.router.navigate(['/recepcionist/patients/false']);
+
   }
 
   async onSubmit(): Promise<void> {
@@ -243,7 +269,7 @@ export class ScheduleConsultation implements OnInit {
         consultation_date: this.profileForm.get('date')?.value!,
         hour: this.profileForm.get('hour')?.value!,
         recepcionist_id: 11,
-        medical_record_id: 53
+        medical_record_id: Number(this.profileForm.get('medicalRecordId')?.value)
       }
 
       await this.postConsultation(consultationWrite);
@@ -254,15 +280,17 @@ export class ScheduleConsultation implements OnInit {
     const response: ReturnMessageCreateElement | unknown = await this.serviceConsultation.postConsultation(consultation);
 
     this.serviceLoadingModal.setModalLoadingOpening(false);
-    
+
     const isValid: boolean = await this.serviceValide.valideResponse(response, "Cadastro de Consulta");
 
     desactiveScroll(false, this.renderer);
+
     if (!isValid) {
       return;
     }
 
     this.serviceModalResponse.constructorModalResponse(true, "Cadastro de Consulta", "Consulta agendada com sucesso!", "Concluir", null);
+    this.closeModalScheduleConsultation();
   }
 
   async ngOnInit(): Promise<void> {
@@ -281,7 +309,8 @@ export class ScheduleConsultation implements OnInit {
             patient: patient.name,
             cpf: patient.cpf,
             phone: patient.phone,
-            patientId: patient.id.toString()
+            patientId: patient.id.toString(),
+            medicalRecordId: patient.medical_record_id.toString()
           })
 
         }
@@ -331,7 +360,10 @@ export class ScheduleConsultation implements OnInit {
       this.getHourAvaliable();
     })
 
-    this.filteredPatients.set(this.dataPatients());
+    this.filteredPatients.set({
+      emptyMessage: this.emptyMessagePatient,
+      dataList: this.dataPatients()
+    });
 
     this.getSpecialitysFormatter();
 
@@ -339,7 +371,7 @@ export class ScheduleConsultation implements OnInit {
 
   async getPatientsFormatter(patients: PatientPreview[] | unknown): Promise<void> {
     if (Array.isArray(patients)) {
-      const dataPatients: ListDatas[] = patients.map(it => {
+      const dataPatients: DatasList[] = patients.map(it => {
         return {
           id: it.id,
           value: it.name
@@ -348,9 +380,13 @@ export class ScheduleConsultation implements OnInit {
 
       this.patientList.set(patients);
       this.dataPatients.set(dataPatients);
-      this.filteredPatients.set(dataPatients);
+      this.filteredPatients.set({
+        emptyMessage: this.emptyMessagePatient,
+        dataList: dataPatients
+      });
     }
 
+    desactiveScroll(false, this.renderer);
     await this.serviceValide.valideResponse(patients, "Busca de pacientes");
   }
 
@@ -360,7 +396,7 @@ export class ScheduleConsultation implements OnInit {
     if (Array.isArray(specialitys)) {
       this.specialitys.set(specialitys);
 
-      const dataSpeciality: ListDatas[] = specialitys.map(it => {
+      const dataSpeciality: DatasList[] = specialitys.map(it => {
         return {
           id: it.id,
           value: it.speciality_name
@@ -368,11 +404,15 @@ export class ScheduleConsultation implements OnInit {
       })
 
       this.dataSpeciality.set(dataSpeciality);
-      this.filteredSpeciality.set(dataSpeciality);
+      this.filteredSpeciality.set({
+        emptyMessage: this.emptyMessageSpeciality,
+        dataList: dataSpeciality
+      });
 
       return;
     }
 
+    desactiveScroll(false, this.renderer);
     await this.serviceValide.valideResponse(specialitys, "Busca de Especialidades");
   }
 
@@ -380,7 +420,7 @@ export class ScheduleConsultation implements OnInit {
     if (Array.isArray(doctors)) {
       this.doctors.set(doctors);
 
-      const dataDoctor: ListDatas[] = doctors.map(it => {
+      const dataDoctor: DatasList[] = doctors.map(it => {
         return {
           id: it.doctor_id,
           value: it.name
@@ -388,11 +428,15 @@ export class ScheduleConsultation implements OnInit {
       })
 
       this.dataDoctor.set(dataDoctor);
-      this.filteredDoctors.set(dataDoctor);
+      this.filteredDoctors.set({
+        emptyMessage: this.emptyMessageDoctor,
+        dataList: dataDoctor
+      });
 
       return;
     }
 
+    desactiveScroll(false, this.renderer);
     await this.serviceValide.valideResponse(doctors, "Busca de Doutores(as)")
   }
 
@@ -400,7 +444,7 @@ export class ScheduleConsultation implements OnInit {
     if (Array.isArray(hours)) {
       const hoursAvaliable: HourAvaliableConsultation[] = hours.filter(it => it.available);
 
-      const dataHours: ListDatas[] = hoursAvaliable.map(it => {
+      const dataHours: DatasList[] = hoursAvaliable.map(it => {
         const splitHour = it.hour_consultation.split(":");
         const hourFormatted: string = `${splitHour[0]}:${splitHour[1]}`;
 
@@ -410,10 +454,14 @@ export class ScheduleConsultation implements OnInit {
         }
       })
 
-      this.dataHourAvaliable.set(dataHours);
+      this.dataHourAvaliable.set({
+        emptyMessage: this.emptyMessageHour,
+        dataList: dataHours
+      });
       return;
     }
 
+    desactiveScroll(false, this.renderer);
     await this.serviceValide.valideResponse(hours, "Busca de horários disponíveis")
   }
 
@@ -425,6 +473,7 @@ export class ScheduleConsultation implements OnInit {
       return;
     }
 
+    desactiveScroll(false, this.renderer);
     await this.serviceValide.valideResponse(doctors, "Busca de Doutores(as) por Especialidades")
   }
 

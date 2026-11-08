@@ -12,5 +12,5 @@ export class RegistrationPatient {
   iconSelected = toSignal(this.navigation.getActiveIcon(), {initialValue: ''})
 
   iconColor: Signal<string> = computed(() =>
-    this.iconSelected() == 'Cadastro de paciente' ? 'var(--blue-dark)' : 'var(--white-default)');
+    this.iconSelected() == '/recepcionist/register_patient' ? 'var(--blue-dark)' : 'var(--white-default)');
 }

@@ -1,0 +1,15 @@
+<ul
+    class="flex min-h-32 flex-col w-full h-full bg-(--bg-modal) py-2 overflow-auto border border-(--blue-primary) gap-8">
+    @if (list().dataList.length == 0) {
+    <p class="p-1 italic text-sm text-center text-(--text-color-gray)">{{list().emptyMessage}}</p>
+
+    } @else {
+    @for(element of list().dataList; track element.id) {
+    <li class="flex justify-center items-center w-full h-8">
+        <button type="button" (click)="setValueInInput(element.value, fieldForm(), element.id)" class="text-sm px-4">
+            {{element.value}}
+        </button>
+    </li>
+    }
+    }
+</ul>

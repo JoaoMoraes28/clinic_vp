@@ -61,8 +61,22 @@ textarea:focus {
     }
 }
 
+@keyframes loading-bar {
+    0% {
+        width: 100%;
+    }
+
+    100% {
+        width: 0px;
+    }
+}
+
 @layer components {
     .animate-roll {
         animation: roll-loading 1s ease-in-out forwards infinite;
+    }
+
+    .animate-loading-bar {
+        animation: loading-bar 3s ease-in-out forwards infinite;
     }
 }

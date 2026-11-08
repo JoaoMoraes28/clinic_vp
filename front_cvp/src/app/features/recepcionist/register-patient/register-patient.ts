@@ -1,19 +1,17 @@
 import { Component, ElementRef, inject, OnInit, Renderer2, signal, viewChild } from '@angular/core';
 import { ProfilePerson } from '../../../svg/profile-person/profile-person';
 import { InputDefault, Input } from '../../../shared/input/input';
-import { FormBuilder, Validators, ɵInternalFormsSharedModule, ReactiveFormsModule, FormControl } from '@angular/forms';
+import { FormBuilder, Validators, ɵInternalFormsSharedModule, ReactiveFormsModule } from '@angular/forms';
 import { ConfirmButton } from '../../../shared/button/confirm/confirm-button';
-import { FieldsetList } from '../consultation/schedule-consultation/components/fieldset-list/fieldset-list';
-import { ListDatas } from '../consultation/schedule-consultation/schedule-consultation';
+import { FieldsetList, DatasList, FullDatasList } from '../../../shared/fieldset-list/fieldset-list';
 import { Cep } from '../../../repo/cep/cep';
-import { Patient, PatientRegister, PatientResponse } from '../../../repo/patient/patient';
+import { Patient, PatientRegister } from '../../../repo/patient/patient';
 import { Uf } from '../../../repo/uf/uf';
 import { translateBloodTypeEn, translateCivilStateEn, translateGenderEn } from '../../../utils/translate-datas';
 import { Cloudinary } from '../../../repo/cloudinary/cloudinary';
 import { ModalResponse } from '../../../services/modal-response/modal-response';
 import { desactiveScroll } from '../../../utils/renderer-document';
 import { LoadingMessage } from '../../../services/loading-message/loading-message';
-import { HttpErrorResponse } from '@angular/common/http';
 import { ValideResponseApi } from '../../../services/valide-response/valide-response-api';
 import { Close } from '../../../svg/close/close';
 import { Router } from '@angular/router';
@@ -284,53 +282,62 @@ export class RegisterPatient implements OnInit {
     }
   ];
 
-  civilState: ListDatas[] = [
-    {
-      id: 1,
-      value: "Solteiro(a)"
-    },
-    {
-      id: 2,
-      value: "Casado(a)"
-    },
-    {
-      id: 3,
-      value: "Divorciado(a)"
-    },
-    {
-      id: 4,
-      value: "Viúvo(a)"
-    },
-    {
-      id: 5,
-      value: "Separado(a)"
-    }
-  ];
+  civilState: FullDatasList = {
+    emptyMessage: "Sem estados civils para exibir.",
+    dataList: [
+      {
+        id: 1,
+        value: "Solteiro(a)"
+      },
+      {
+        id: 2,
+        value: "Casado(a)"
+      },
+      {
+        id: 3,
+        value: "Divorciado(a)"
+      },
+      {
+        id: 4,
+        value: "Viúvo(a)"
+      },
+      {
+        id: 5,
+        value: "Separado(a)"
+      }
+    ]
+  };
 
-  gender: ListDatas[] = [
-    {
-      id: 1,
-      value: 'Masculino'
-    },
-    {
-      id: 2,
-      value: 'Feminino'
-    }
-  ]
+  gender: FullDatasList = {
+    emptyMessage: "Sem gêneros para exibir.",
+    dataList: [
+      {
+        id: 1,
+        value: 'Masculino'
+      },
+      {
+        id: 2,
+        value: 'Feminino'
+      }
+    ]
+  }
 
-  bloodType: ListDatas[] = [
-    { id: 1, value: 'A+' },
-    { id: 2, value: 'A-' },
-    { id: 3, value: 'B+' },
-    { id: 4, value: 'B-' },
-    { id: 5, value: 'AB+' },
-    { id: 6, value: 'AB-' },
-    { id: 7, value: 'O+' },
-    { id: 8, value: 'O-' }
-  ]
+  bloodType: FullDatasList = {
+    emptyMessage: "Sem tipos sanguíneos para exibir",
+    dataList: [
+      { id: 1, value: 'A+' },
+      { id: 2, value: 'A-' },
+      { id: 3, value: 'B+' },
+      { id: 4, value: 'B-' },
+      { id: 5, value: 'AB+' },
+      { id: 6, value: 'AB-' },
+      { id: 7, value: 'O+' },
+      { id: 8, value: 'O-' }
+    ]
+  }
 
-  closeModalScheduleConsultation(): void {
-    this.router.navigate(['/recepcionist/patients']);
+  closeModalRegisterPatient(): void {
+    this.router.navigate(['/recepcionist/patients/false']);
   }
 
   closeOnClickModalOptionsSelect(e: Event) {
@@ -540,13 +547,17 @@ export class RegisterPatient implements OnInit {
 
     })
 
+    await this.getUfs();
+  }
+
+  async getUfs(): Promise<void> {
     const responseUf = await this.serviceUf.getUf();
 
     if (Array.isArray(responseUf)) {
       this.ufs = responseUf;
       return;
     }
-    
+
     desactiveScroll(false, this.render);
     await this.serviceValidate.valideResponse(responseUf, "Busca de UF");
   }

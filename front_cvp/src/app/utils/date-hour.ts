@@ -1,4 +1,4 @@
-import { differenceInYears, format, subYears } from "date-fns";
+import { differenceInYears } from "date-fns";
 
 export const date = new Date();
 
@@ -7,7 +7,14 @@ export function getToday(): Date {
 }
 
 export function getDateFormatted(date: Date | string): string {
-    return format(date, 'dd/MM/yyyy');
+    const dateIso = new Date(date);
+
+    return new Intl.DateTimeFormat('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        timeZone: 'UTC'
+    }).format(dateIso);
 }
 
 export function formattedHour(hour: string): string {

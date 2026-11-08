@@ -1,10 +1,16 @@
-import { Component, inject, output } from '@angular/core';
+import { Component, inject, output, Renderer2 } from '@angular/core';
 import { Router } from '@angular/router';
 import { Close } from '../../../../svg/close/close';
-import { DataLabel, LabelDatas } from '../../../../shared/data-label/data-label';
+import { DataLabel } from '../../../../shared/data-label/data-label';
 import { ConfirmButton } from '../../../../shared/button/confirm/confirm-button';
 import { CancelButton } from '../../../../shared/button/cancel/cancel-button';
-import { formattedHour, getDateFormatted } from '../../../../utils/date-hour';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { ConsultationSelected } from '../../../../services/consultation-selected/consultation-selected';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Consultation, WriteConsultationStatus } from '../../../../repo/consultation/consultation';
+import { ValideResponseApi } from '../../../../services/valide-response/valide-response-api';
+import { ModalResponse } from '../../../../services/modal-response/modal-response';
+import { desactiveScroll } from '../../../../utils/renderer-document';
 
 @Component({
   imports: [Close, DataLabel, ConfirmButton, CancelButton],
@@ -13,41 +19,49 @@ import { formattedHour, getDateFormatted } from '../../../../utils/date-hour';
 })
 export class ConsultationPreview {
   router = inject(Router);
-
   closeModal = output<void>();
 
-  labelData: LabelDatas[] = [
-    {
-      label: 'Paciente',
-      value: 'Amanda Turci'
-    },
-    {
-      label: 'CPF',
-      value: '123.456.789-10'
-    },
-    {
-      label: 'Telefone',
-      value: '(11) 93294-7289'
-    },
-    {
-      label: 'Especialidade',
-      value: 'Cardiologista'
-    },
-    {
-      label: 'Doutor(a)',
-      value: 'Rodrigo Nunes Ferreira'
-    },
-    {
-      label: 'Data',
-      value: getDateFormatted(new Date('2026-09-23'))
-    },
-    {
-      label: 'Horário',
-      value: formattedHour('09:00:00')
-    }
-  ];
+  private readonly renderer = inject(Renderer2);
+  private readonly consultationSelected = inject(ConsultationSelected);
+  private readonly serviceValide = inject(ValideResponseApi);
+  private readonly serviceConsultation = inject(Consultation);
+  private readonly serviceModalResponse = inject(ModalResponse);
+
+  labelData = toSignal(this.consultationSelected.getConsultationSelected());
+  idConsultationSelected = toSignal(this.consultationSelected.getIdConsultationSelected(), { initialValue: 0 });
 
   closeModalConsultation(): void {
     this.closeModal.emit();
+  }
+
+  async changeStatusConsultation(status: string): Promise<void> {
+    const newStatus: WriteConsultationStatus = {
+      new_status: status
+    };
+
+    const response: HttpErrorResponse | boolean = await this.serviceConsultation.patchStatusConsultation(this.idConsultationSelected(), newStatus);
+
+    const isValid: boolean = await this.serviceValide.valideResponse(response, "Mudanca de Status de Consulta");
+
+    if (!(response instanceof HttpErrorResponse) && isValid) {
+      let responseStatus: string;
+
+      if (status == 'CANCELED') {
+        responseStatus = "cancelada";
+
+      } else {
+        responseStatus = "em espera";
+      }
+
+      desactiveScroll(false, this.renderer)
+      this.serviceModalResponse.constructorModalResponse(true, "Mudanca de Status de Consulta", `Status da consulta alterada para ${responseStatus}!`, "Concluir", '');
+
+      this.closeModalConsultation();
+
+      this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+        this.router.navigate(['recepcionist/agenda']);
+      });
+    }
+
   }
 }

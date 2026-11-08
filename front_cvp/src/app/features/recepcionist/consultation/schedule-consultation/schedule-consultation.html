@@ -62,7 +62,7 @@
             <div id="hour-available" (click)="openCloseModalSelector(inputsDatas[6].id)" class="relative md:w-[47%]">
                 <app-input [inputDatas]="inputsDatas[6]"></app-input>
                 @if(inputsDatas[6].visibleList()) {
-                <div class="absolute bottom-11.25 w-28 h-90 z-80 flex flex-col">
+                <div class="absolute bottom-11.25 w-auto h-62 z-80 flex flex-col">
                     <div class="w-full h-[calc(100%-1px)]">
                         <app-fieldset-list [fieldForm]="'hour'" [list]="dataHourAvaliable()"
                             [profileForm]="profileForm">
@@ -80,7 +80,7 @@
             md:flex-row md:justify-between
             lg:h-12 lg:justify-between lg:flex-row lg:gap-0">
             <div class="w-full h-12 md:w-[45%] lg:w-[47%]">
-                <app-cancel-button [buttonLabel]="'Cancelar'" [buttonType]="'button'">
+                <app-cancel-button [buttonLabel]="'Cancelar'" [buttonType]="'button'" (clickFunction)="closeModalScheduleConsultation()">
                 </app-cancel-button>
             </div>
             <div class="w-full h-12 md:w-[45%] lg:w-[47%]">

@@ -100,6 +100,7 @@ def post_consultation(consultation: ConsultationCreate, db: Session = Depends(ge
     "/{id_consultation}",
     response_model=ReturnMessageStandard,
     status_code=status.HTTP_200_OK,
+    dependencies=[Depends(valide_access_level_recepcionist)],
 )
 def put_consultation(
     new_status: ConsultationNewStatus,

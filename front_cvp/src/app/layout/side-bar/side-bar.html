@@ -1,4 +1,4 @@
-<aside class="hidden lg:fixed lg:flex lg:flex-col lg:items-center lg:h-screen lg:w-58 lg:bg-(--blue-dark)
+<aside class="hidden lg:fixed lg:flex lg:flex-col lg:items-center lg:h-screen lg:w-58 bg-linear-to-b from-(--blue-light) to-(--blue-dark)
         xl:w-72">
     <header class="lg:w-full lg:h-22 p-2">
         <div
@@ -18,10 +18,16 @@
     </nav>
     <footer class="lg:flex lg:items-center lg:gap-4 lg:border-t-2 lg:w-[95%] lg:border-(--white-default) lg:h-22">
         <div
-            class="lg:flex lg:justify-center lg:items-center lg:rounded-full lg:w-9 lg:h-9 lg:border-2 lg:border-(--white-default)">
+            class="lg:flex lg:justify-center lg:items-center lg:rounded-full lg:w-14 lg:h-14 lg:border-2 lg:border-(--white-default)">
+            @if (accountPhoto() == null) {
             <app-profile-person [colorIcon]="'var(--white-default)'" [height]="20" [width]="20">
             </app-profile-person>
+            }
+            @else {
+            <img class="w-full h-full object-cover object-center rounded-full" [src]="accountPhoto()"
+                alt="Imagem de perfil do usuário logado.">
+            }
         </div>
-        <span class="lg:text-lg lg:text-(--white-default)">Fabrício Silva</span>
+        <span class="lg:text-xl lg:text-(--white-default)">{{accountName()}}</span>
     </footer>
 </aside>

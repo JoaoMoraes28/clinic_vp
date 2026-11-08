@@ -12,16 +12,16 @@
     <div class="flex-1 flex flex-col justify-center w-full py-4 gap-6 mt-6 md:py-0 lg:mt-12">
         <h3 class="text-(--blue-primary) font-bold">Dados do Paciente</h3>
         <div class="w-full">
-            <app-data-label [labelData]="labelData[0]">
+            <app-data-label [labelData]="labelData()![0]">
             </app-data-label>
         </div>
         <div class="flex flex-col gap-6 md:gap-0 md:flex-row md:justify-between">
             <div class="md:w-[47%]">
-                <app-data-label [labelData]="labelData[1]">
+                <app-data-label [labelData]="labelData()![1]">
                 </app-data-label>
             </div>
             <div class="md:w-[47%]">
-                <app-data-label [labelData]="labelData[2]">
+                <app-data-label [labelData]="labelData()![2]">
                 </app-data-label>
             </div>
         </div>
@@ -31,21 +31,21 @@
         <h3 class="text-(--blue-primary) font-bold">Dados da Consulta</h3>
         <div class="flex flex-col gap-6 md:flex-row md:gap-0 md:justify-between">
             <div class="md:w-[47%]">
-                <app-data-label [labelData]="labelData[3]">
+                <app-data-label [labelData]="labelData()![3]">
                 </app-data-label>
             </div>
             <div class="md:w-[47%]">
-                <app-data-label [labelData]="labelData[4]">
+                <app-data-label [labelData]="labelData()![4]">
                 </app-data-label>
             </div>
         </div>
         <div class="flex flex-col gap-6 md:flex-row md:gap-0 md:justify-between">
             <div class="md:w-[47%]">
-                <app-data-label [labelData]="labelData[5]">
+                <app-data-label [labelData]="labelData()![5]">
                 </app-data-label>
             </div>
             <div class="md:w-[47%]">
-                <app-data-label [labelData]="labelData[6]">
+                <app-data-label [labelData]="labelData()![6]">
                 </app-data-label>
             </div>
         </div>
@@ -56,11 +56,11 @@
         md:flex-row md:justify-between
         lg:h-12 lg:justify-between lg:flex-row lg:gap-0">
             <div class="w-full h-12 md:w-[45%] lg:w-[47%]">
-                <app-cancel-button [buttonLabel]="'Cancelar consulta'" [buttonType]="'button'">
+                <app-cancel-button (clickFunction)="changeStatusConsultation('CANCELED')" [buttonLabel]="'Cancelar consulta'" [buttonType]="'button'">
                 </app-cancel-button>
             </div>
             <div class="w-full h-12 md:w-[45%] lg:w-[47%]">
-                <app-confirm-button [buttonLabel]="'Confirmar consulta'"></app-confirm-button>
+                <app-confirm-button (clickFunction)="changeStatusConsultation('WAITING')" [buttonLabel]="'Confirmar consulta'" [buttonType]="'button'"></app-confirm-button>
             </div>
         </div>
     </div>

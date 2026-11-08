@@ -1,4 +1,4 @@
-import { Component, computed, inject, Signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Navigation } from '../../services/navigation/navigation';
 
@@ -9,8 +9,8 @@ import { Navigation } from '../../services/navigation/navigation';
 })
 export class Patients {
   navigation = inject(Navigation)
-  iconSelected = toSignal(this.navigation.getActiveIcon(), {initialValue: ''})
+  iconSelected = toSignal(this.navigation.getActiveIcon(), { initialValue: '' })
 
   iconColor: Signal<string> = computed(() =>
-    this.iconSelected() == 'Pacientes' ? 'var(--blue-dark)' : 'var(--white-default)');
+    this.iconSelected() == '/recepcionist/patients/false' ? 'var(--blue-dark)' : 'var(--white-default)');
 }

@@ -156,17 +156,21 @@ export class Patients implements OnInit {
   async ngOnInit(): Promise<void> {
     this.activateRoute.params.subscribe((params) => {
       const valueBool: boolean = params['open-modal'] == 'false' ? false : true;
+
       this.isModalScheduleConsultationOpen.set(valueBool);
     });
 
     const patients = await this.servicePatients.getPatientsPreview()
 
+    this.isModalLoadingOpening.set(false);
+
     if (Array.isArray(patients)) {
       this.patients.set(patients);
       this.filteredPatients.set(patients);
+      return;
     }
 
-    this.isModalLoadingOpening.set(false);
+    desactiveScroll(false, this.renderer);
     await this.serviceValide.valideResponse(patients, "Busca de Pacientes");
   }
 }

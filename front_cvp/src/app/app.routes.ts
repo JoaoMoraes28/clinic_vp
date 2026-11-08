@@ -4,9 +4,13 @@ import { MainLayout } from './layout/main-layout/main-layout';
 import { Agenda } from './features/recepcionist/agenda/agenda';
 import { Patients } from './features/recepcionist/patients/patients';
 import { RegisterPatient } from './features/recepcionist/register-patient/register-patient';
-import path from 'path';
 
 export const routes: Routes = [
+    {
+        path: '',
+        component: Login,
+        title: 'Login'
+    },
     {
         path: 'auth',
         component: Login,

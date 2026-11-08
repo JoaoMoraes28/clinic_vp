@@ -10,7 +10,7 @@ from src.schemas.auth import CreateAuth
 
 
 def valide_credentials(db: Session, datas: CreateAuth):
-    script_doctor = select(Doctor.id, Doctor.name, Doctor.password).where(
+    script_doctor = select(Doctor.id, Doctor.name, Doctor.password, Doctor.email, Doctor.photo).where(
         Doctor.email == datas.email
     )
 
@@ -18,13 +18,13 @@ def valide_credentials(db: Session, datas: CreateAuth):
 
     if not doctor:
         script_recepcionist = select(
-            Recepcionist.id, Recepcionist.name, Recepcionist.password
+            Recepcionist.id, Recepcionist.name, Recepcionist.password, Recepcionist.photo, Recepcionist.email
         ).where(Recepcionist.email == datas.email)
 
         recepcionist = db.execute(script_recepcionist).mappings().first()
 
         if not recepcionist:
-            script_admin = select(Admin.id, Admin.name, Admin.password).where(
+            script_admin = select(Admin.id, Admin.name, Admin.password, Admin.email, Admin.photo).where(
                 Admin.email == datas.email
             )
 

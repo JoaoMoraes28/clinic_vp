@@ -1,21 +1,18 @@
-import { Component, ElementRef, inject, Renderer2, signal, viewChild, viewChildren } from '@angular/core';
-import { CalendaryIcon } from '../../../svg/calendary-icon/calendary-icon';
-import { getDateFormatted, date } from '../../../utils/date-hour';
+import { Component, ElementRef, inject, OnInit, Renderer2, signal, viewChild, viewChildren } from '@angular/core';
+import { date } from '../../../utils/date-hour';
 import { BadgesConsultation } from './components/badges-consultation/badges-consultation';
 import { ConsultationsTable } from './components/consultations-table/consultations-table';
 import { Arrow } from '../../../svg/arrow/arrow';
 import { LocationBall } from './components/location-ball/location-ball';
 import { ConsultationPreview } from '../consultation/consultation-modal/consultation-preview';
 import { desactiveScroll } from '../../../utils/renderer-document';
-
-export interface CountConsultationStatus {
-  scheduled: number;
-  waiting: number;
-  in_progress: number;
-  completed: number;
-  canceled: number;
-  total: number;
-}
+import { Consultation, ConsultationResponsePreview, ResumeConsultations } from '../../../repo/consultation/consultation';
+import { ValideResponseApi } from '../../../services/valide-response/valide-response-api';
+import { OutputLoading } from '../../../layout/loading-response/components/output-loading/output-loading';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ConsultationSelected } from '../../../services/consultation-selected/consultation-selected';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { format } from 'date-fns';
 
 export interface Badge {
   text: string;
@@ -24,169 +21,50 @@ export interface Badge {
   quantity: number;
 }
 
-export interface Consultation {
-  id: number;
-  patient_name: string;
-  doctor_name: string;
-  hour: string;
-  speciality_name: string;
-  status: string;
-}
-
-export interface ConsultationsData {
-  hour: string;
-  consultations: Consultation[];
-}
-
 @Component({
-  imports: [CalendaryIcon, BadgesConsultation, ConsultationsTable, Arrow, LocationBall, ConsultationPreview],
+  imports: [BadgesConsultation, ConsultationsTable, Arrow, LocationBall, ConsultationPreview, OutputLoading],
   selector: 'app-agenda',
   templateUrl: './agenda.html',
 })
-export class Agenda {
-  stausConsultations: CountConsultationStatus = {
-    scheduled: 12,
-    canceled: 2,
-    completed: 6,
-    in_progress: 7,
-    waiting: 9,
-    total: 26
-  }
+export class Agenda implements OnInit {
+  private readonly serviceConsultation = inject(Consultation);
+  private readonly serviceValide = inject(ValideResponseApi);
+  private readonly serviceConsultationSelected = inject(ConsultationSelected);
 
-  consultationsData: ConsultationsData[] = [
-    {
-      hour: "08:00:00",
-      consultations: [
-        {
-          id: 4,
-          patient_name: "Carla oliveira",
-          doctor_name: "Dr Caio Costa",
-          hour: "08:00:00",
-          speciality_name: "Urologista",
-          status: "COMPLETED"
-        },
-        {
-          id: 3,
-          patient_name: "Marcos Henrique Oliveira",
-          doctor_name: "Dra. Amanda Silva",
-          hour: "08:00:00",
-          speciality_name: "Neurologista",
-          status: "WAITING"
-        },
-        {
-          id: 5,
-          patient_name: "Carla oliveira",
-          doctor_name: "Dra. Amanda Silva",
-          hour: "08:30:00",
-          speciality_name: "Ginecologista",
-          status: "WAITING"
-        }
-      ]
-    },
-    {
-      hour: "09:00:00",
-      consultations: [
-        {
-          id: 6,
-          patient_name: "Carla oliveira",
-          doctor_name: "Dra. Amanda Silva",
-          hour: "09:30:00",
-          speciality_name: "Ginecologista",
-          status: "CANCELED"
-        },
-        {
-          id: 7,
-          patient_name: "Carla oliveira",
-          doctor_name: "Dra. Amanda Silva",
-          hour: "09:45:00",
-          speciality_name: "Ginecologista",
-          status: "SCHEDULED"
-        }
-      ]
-    },
-    {
-      hour: "10:00:00",
-      consultations: [
-        {
-          id: 9,
-          patient_name: "Carla oliveira",
-          doctor_name: "Dra. Amanda Silva",
-          hour: "10:00:00",
-          speciality_name: "Ginecologista",
-          status: "SCHEDULED"
-        },
-        {
-          id: 8,
-          patient_name: "Carla oliveira",
-          doctor_name: "Dra. Amanda Silva",
-          hour: "10:45:00",
-          speciality_name: "Ginecologista",
-          status: "SCHEDULED"
-        }
-      ]
-    },
-    {
-      hour: "11:00:00",
-      consultations: []
-    },
-    {
-      hour: "12:00:00",
-      consultations: []
-    },
-    {
-      hour: "13:00:00",
-      consultations: []
-    },
-    {
-      hour: "14:00:00",
-      consultations: []
-    },
-    {
-      hour: "15:00:00",
-      consultations: []
-    },
-    {
-      hour: "16:00:00",
-      consultations: []
-    },
-    {
-      hour: "17:00:00",
-      consultations: []
-    },
-    {
-      hour: "18:00:00",
-      consultations: []
-    }
-  ];
+  idConsultationSelected = toSignal(this.serviceConsultationSelected.getConsultationSelected());
 
-  badges: Badge[] = [
+  isLoadingConsultations = signal<boolean>(false);
+
+  consultationsPreviewData = signal<ConsultationResponsePreview[]>([]);
+
+  badges = signal<Badge[]>([
     {
       text: 'Agendadas',
       colorBadge: 'var(--blue-dark)',
       colorText: 'var(--white-default)',
-      quantity: this.stausConsultations.scheduled
+      quantity: 0
     },
     {
       text: 'Em espera',
       colorBadge: 'var(--blue-cian)',
       colorText: 'var(--white-default)',
-      quantity: this.stausConsultations.waiting
+      quantity: 0
     },
     {
       text: 'Canceladas',
       colorBadge: 'var(--red-light)',
       colorText: 'var(--black-default)',
-      quantity: this.stausConsultations.canceled
+      quantity: 0
     },
     {
       text: 'Concluídas',
       colorBadge: 'var(--green-default) ',
       colorText: 'var(--blue-dark)',
-      quantity: this.stausConsultations.completed
+      quantity: 0
     }
-  ];
+  ]);
 
-  todayFormatted: string = getDateFormatted(date);
+  todayFormatted = () => { return format(date, "yyyy-MM-dd") }
 
   private carousel = viewChild<ElementRef<HTMLUListElement>>('containerCarousel');
   consultationsTables = viewChildren<ElementRef>('consultationTable');
@@ -195,13 +73,13 @@ export class Agenda {
   carouselElement: HTMLUListElement | undefined;
   consultationWidth: number | undefined;
 
-  isModalConsultationOpen = signal(false);
+  isModalConsultationOpen = toSignal(this.serviceConsultationSelected.getConsultationModal(), { initialValue: false });
   renderer = inject(Renderer2);
 
-  changeViewModalConsultation(): void {
+  async changeViewModalConsultation(): Promise<void> {
     desactiveScroll(this.isModalConsultationOpen(), this.renderer)
 
-    this.isModalConsultationOpen.set(!this.isModalConsultationOpen())
+    this.serviceConsultationSelected.setConsultationModal(!this.isModalConsultationOpen());
   }
 
   rollCarousel(direction: 'left' | 'right'): void {
@@ -230,5 +108,66 @@ export class Agenda {
     const number: number = Number(hour.split(':')[0])
 
     return number
+  }
+
+  async ngOnInit(): Promise<void> {
+    await this.updateConsultationAndResume(this.todayFormatted());
+  }
+
+  async updateConsultationAndResume(date: string) {
+    await this.getResumeConsultation(date);
+    await this.getConsultations(date);
+  }
+
+  async getResumeConsultation(date: string): Promise<void> {
+    const response: ResumeConsultations | HttpErrorResponse | false = await this.serviceConsultation.getCountConsultations(date);
+
+    const isValid: boolean = await this.serviceValide.valideResponse(response, "Busca de Resumo de Consultas");
+
+    if (!(response instanceof HttpErrorResponse) && response && isValid) {
+      this.badges.set([
+
+        {
+          text: 'Agendadas',
+          colorBadge: 'var(--blue-dark)',
+          colorText: 'var(--white-default)',
+          quantity: response.scheduled
+        },
+        {
+          text: 'Em espera',
+          colorBadge: 'var(--blue-cian)',
+          colorText: 'var(--white-default)',
+          quantity: response.waiting
+        },
+        {
+          text: 'Canceladas',
+          colorBadge: 'var(--red-light)',
+          colorText: 'var(--black-default)',
+          quantity: response.canceled
+        },
+        {
+          text: 'Concluídas',
+          colorBadge: 'var(--green-default) ',
+          colorText: 'var(--blue-dark)',
+          quantity: response.completed
+        }
+      ])
+    }
+  }
+
+  async getConsultations(date: string): Promise<void> {
+    this.isLoadingConsultations.set(false);
+
+    const response: ConsultationResponsePreview[] | unknown = await this.serviceConsultation.getConsultationPreview(date);
+
+    if (Array.isArray(response)) {
+      this.consultationsPreviewData.set(response);
+      this.isLoadingConsultations.set(true);
+      return;
+    }
+
+    this.isLoadingConsultations.set(true);
+
+    await this.serviceValide.valideResponse(response, "Busca de Consultas");
   }
 }
